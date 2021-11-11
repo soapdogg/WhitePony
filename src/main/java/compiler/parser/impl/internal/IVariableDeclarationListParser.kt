@@ -1,13 +1,13 @@
 package compiler.parser.impl.internal
 
-import compiler.core.IDeclarationChildNode
 import compiler.core.Token
+import compiler.core.VariableDeclarationListNode
 
-internal interface IDeclarationChildParser {
+internal interface IVariableDeclarationListParser {
     fun parse(
         tokens: List<Token>,
         startingPosition: Int,
         type: String,
         identifierValue: String,
-    ): Pair<IDeclarationChildNode, Int>
+    ): Pair<VariableDeclarationListNode, Int>
 }
