@@ -20,7 +20,7 @@ class StatementParser(
                 val (body, currentPosition1) = parse(tokens, startingPosition + 1)
                 //while
                 //LParent
-                val (expression, currentPosition2) = expressionParser.parse(tokens, currentPosition1 + 2)
+                val (expression, currentPosition2) = expressionParser.parse(tokens, currentPosition1 + 2, TokenType.RIGHT_PARENTHESES)
                 //RParent
                 //Semicolon
                 val doStatement = DoWhileNode(
@@ -32,11 +32,11 @@ class StatementParser(
             TokenType.FOR -> {
                 //for
                 //LParent
-                val (initExpression, currentPosition1) = expressionParser.parse(tokens, startingPosition + 2)
+                val (initExpression, currentPosition1) = expressionParser.parse(tokens, startingPosition + 2, TokenType.SEMICOLON)
                 //Semi
-                val (testExpression, currentPosition2) = expressionParser.parse(tokens, currentPosition1 + 1)
+                val (testExpression, currentPosition2) = expressionParser.parse(tokens, currentPosition1 + 1, TokenType.SEMICOLON)
                 //Semi
-                val (incrementExpression, currentPosition3) = expressionParser.parse(tokens, currentPosition2 + 1)
+                val (incrementExpression, currentPosition3) = expressionParser.parse(tokens, currentPosition2 + 1, TokenType.RIGHT_PARENTHESES)
                 //RParent
                 val (body, currentPosition4) = parse(tokens, currentPosition3 + 1)
                 val forNode = ForNode(
@@ -50,7 +50,7 @@ class StatementParser(
             TokenType.IF -> {
                 //if
                 //LParent
-                val (booleanExpression, currentPosition1) = expressionParser.parse(tokens, startingPosition + 2)
+                val (booleanExpression, currentPosition1) = expressionParser.parse(tokens, startingPosition + 2, TokenType.RIGHT_PARENTHESES)
                 //RParent
                 val (ifBody, currentPosition2) = parse(tokens, currentPosition1 + 1)
                 if (tokens[currentPosition2].type == TokenType.ELSE) {
@@ -86,7 +86,7 @@ class StatementParser(
             }
             TokenType.RETURN -> {
                 //return
-                val (expression, currentPosition1) = expressionParser.parse(tokens, startingPosition + 1) //expressionStatement?
+                val (expression, currentPosition1) = expressionParser.parse(tokens, startingPosition + 1, TokenType.SEMICOLON) //expressionStatement?
                 //semi
                 val returnNode = ReturnNode(expression)
                 Pair(returnNode, currentPosition1 + 1)
@@ -102,14 +102,14 @@ class StatementParser(
             TokenType.WHILE -> {
                 //while
                 //LParent
-                val (expression, currentPosition1) = expressionParser.parse(tokens, startingPosition + 2)
+                val (expression, currentPosition1) = expressionParser.parse(tokens, startingPosition + 2, TokenType.RIGHT_PARENTHESES)
                 //RParent
                 val (body, currentPosition2) = parse(tokens, currentPosition1 + 1)
                 val whileNode = WhileNode(expression, body)
                 Pair(whileNode, currentPosition2)
             }
             else -> {
-                val (expression, currentPosition1) = expressionParser.parse(tokens, startingPosition)
+                val (expression, currentPosition1) = expressionParser.parse(tokens, startingPosition, TokenType.SEMICOLON)
                 //Semi
                 val expressionStatementNode = ExpressionStatementNode(expression)
                 Pair(expressionStatementNode, currentPosition1 + 1)
