@@ -4,6 +4,8 @@ import compiler.parser.impl.*
 import compiler.parser.impl.DeclarationStatementParser
 import compiler.parser.impl.FunctionDeclarationParser
 import compiler.parser.impl.Parser
+import compiler.parser.impl.internal.IArrayParser
+import compiler.parser.impl.internal.IAssignParser
 import compiler.parser.impl.internal.ITokenTypeAsserter
 import compiler.parser.impl.internal.IVariableDeclarationParser
 import org.mockito.Mockito
@@ -14,7 +16,12 @@ enum class ParserSingleton {
     private val tokenTypeAsserter = Mockito.mock(ITokenTypeAsserter::class.java)
 
     private val expressionParser = FakeExpressionParser()
-    private val variableDeclarationParser = Mockito.mock(IVariableDeclarationParser::class.java)
+    private val arrayParser = Mockito.mock(IArrayParser::class.java)
+    private val assignParser = Mockito.mock(IAssignParser::class.java)
+    private val variableDeclarationParser = VariableDeclarationParser(
+        arrayParser,
+        assignParser
+    )
 
     private val statementParser = StatementParser(
         expressionParser,
