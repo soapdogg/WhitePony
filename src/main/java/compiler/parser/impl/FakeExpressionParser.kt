@@ -6,7 +6,7 @@ import compiler.core.Token
 import compiler.core.TokenType
 import compiler.parser.impl.internal.IExpressionParser
 
-class FakeExpressionParser(
+internal class FakeExpressionParser(
 
 ): IExpressionParser {
     override fun parse(

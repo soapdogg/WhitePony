@@ -6,7 +6,7 @@ import compiler.core.VariableDeclarationListNode
 import compiler.parser.impl.internal.ITokenTypeAsserter
 import compiler.parser.impl.internal.IVariableDeclarationListParser
 
-class VariableDeclarationListParser(
+internal class VariableDeclarationListParser(
     private val tokenTypeAsserter: ITokenTypeAsserter
 ): IVariableDeclarationListParser {
     override fun parse(

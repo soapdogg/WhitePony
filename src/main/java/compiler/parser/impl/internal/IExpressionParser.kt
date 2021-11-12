@@ -4,7 +4,7 @@ import compiler.core.IExpressionNode
 import compiler.core.Token
 import compiler.core.TokenType
 
-interface IExpressionParser {
+internal interface IExpressionParser {
     fun parse(
         tokens: List<Token>,
         startingPosition: Int,
