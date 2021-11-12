@@ -5,23 +5,27 @@ import compiler.core.Token
 import compiler.core.TokenType
 import compiler.parser.impl.internal.IArrayParser
 import compiler.parser.impl.internal.IExpressionParser
+import compiler.parser.impl.internal.ITokenTypeAsserter
 
 internal class ArrayParser(
+    private val tokenTypeAsserter: ITokenTypeAsserter,
     private val expressionParser: IExpressionParser
 ): IArrayParser {
     override fun parse(
         tokens: List<Token>,
         startingPosition: Int
     ): Pair<ArrayNode, Int> {
-        //LeftBracket
-        val hasIndex = tokens[startingPosition + 1].type != TokenType.RIGHT_BRACKET
-        val (expression, currentPosition) = if (hasIndex) {
-            expressionParser.parse(tokens, startingPosition + 1, setOf(TokenType.RIGHT_BRACKET))
+        tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.LEFT_BRACKET)
+        val positionAfterLeftBracket = startingPosition + 1
+        val hasIndex = tokens[positionAfterLeftBracket].type != TokenType.RIGHT_BRACKET
+        val (expressionNode, positionAfterExpression) = if (hasIndex) {
+            expressionParser.parse(tokens, positionAfterLeftBracket, setOf(TokenType.RIGHT_BRACKET))
         } else {
-            Pair(null, startingPosition + 1)
+            Pair(null, positionAfterLeftBracket)
         }
-        //RightBracket
-        val arrayNode = ArrayNode(expression)
-        return Pair(arrayNode, currentPosition + 1)
+        tokenTypeAsserter.assertTokenType(tokens, positionAfterExpression, TokenType.RIGHT_BRACKET)
+        val positionAfterRightBracket = positionAfterExpression + 1
+        val arrayNode = ArrayNode(expressionNode)
+        return Pair(arrayNode, positionAfterRightBracket)
     }
 }

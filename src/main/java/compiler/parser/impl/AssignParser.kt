@@ -5,17 +5,20 @@ import compiler.core.Token
 import compiler.core.TokenType
 import compiler.parser.impl.internal.IAssignParser
 import compiler.parser.impl.internal.IExpressionParser
+import compiler.parser.impl.internal.ITokenTypeAsserter
 
 internal class AssignParser(
-    private val expressionParser: IExpressionParser
+    private val tokenTypeAsserter: ITokenTypeAsserter,
+    private val expressionParser: IExpressionParser //TODO expressionStatementParser?
 ): IAssignParser {
     override fun parse(
         tokens: List<Token>,
         startingPosition: Int
     ): Pair<AssignNode, Int> {
-        //ASSIGN
-        val (expression, currentPosition) = expressionParser.parse(tokens, startingPosition + 1, setOf(TokenType.COMMA, TokenType.SEMICOLON))
-        val assignNode = AssignNode(expression)
-        return Pair(assignNode, currentPosition)
+        tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.BINARY_ASSIGN)
+        val positionAfterAssign = startingPosition + 1
+        val (expressionNode, positionAfterExpression) = expressionParser.parse(tokens, positionAfterAssign, setOf(TokenType.COMMA, TokenType.SEMICOLON))
+        val assignNode = AssignNode(expressionNode)
+        return Pair(assignNode, positionAfterExpression)
     }
 }

@@ -3,11 +3,12 @@ package compiler.parser.impl
 import compiler.core.*
 import compiler.parser.impl.internal.IExpressionParser
 import compiler.parser.impl.internal.IStatementParser
+import compiler.parser.impl.internal.IVariableDeclarationListParser
 import compiler.parser.impl.internal.IVariableDeclarationParser
 
 internal class StatementParser(
     private val expressionParser: IExpressionParser,
-    private val variableDeclarationParser: IVariableDeclarationParser
+    private val variableDeclarationListParser: IVariableDeclarationListParser,
 ) : IStatementParser {
     override fun parse(
         tokens: List<Token>,
@@ -87,30 +88,13 @@ internal class StatementParser(
             }
             TokenType.RETURN -> {
                 //return
-                val (expression, currentPosition1) = expressionParser.parse(tokens, startingPosition + 1, setOf(TokenType.SEMICOLON)) //expressionStatement?
+                val (expression, currentPosition1) = expressionParser.parse(tokens, startingPosition + 1, setOf(TokenType.SEMICOLON)) //TODO expressionStatement?
                 //semi
                 val returnNode = ReturnNode(expression)
                 Pair(returnNode, currentPosition1 + 1)
             }
             TokenType.TYPE -> {
-                //type
-                val variableDeclarations = mutableListOf<VariableDeclarationNode>()
-                var currentPosition1 = startingPosition + 1
-                do {
-                    //parse variables
-                    val (variableDeclaration, currentPosition2) = variableDeclarationParser.parse(tokens, currentPosition1)
-                    variableDeclarations.add(variableDeclaration)
-                    currentPosition1 = currentPosition2
-                    //comma
-                    val isComma = tokens[currentPosition2].type == TokenType.COMMA
-                    if (isComma) {
-                        currentPosition1++
-                    }
-
-                } while(isComma)
-                //semi
-                val variableDeclarationNode = VariableDeclarationListNode(tokens[startingPosition].value, variableDeclarations)
-                return Pair(variableDeclarationNode, currentPosition1 + 1)
+                variableDeclarationListParser.parse(tokens, startingPosition)
             }
             TokenType.WHILE -> {
                 //while

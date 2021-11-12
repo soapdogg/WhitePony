@@ -5,9 +5,11 @@ import compiler.core.TokenType
 import compiler.core.VariableDeclarationNode
 import compiler.parser.impl.internal.IArrayParser
 import compiler.parser.impl.internal.IAssignParser
+import compiler.parser.impl.internal.ITokenTypeAsserter
 import compiler.parser.impl.internal.IVariableDeclarationParser
 
 internal class VariableDeclarationParser(
+    private val tokenTypeAsserter: ITokenTypeAsserter,
     private val arrayParser: IArrayParser,
     private val assignParser: IAssignParser
 ): IVariableDeclarationParser {
@@ -15,25 +17,26 @@ internal class VariableDeclarationParser(
         tokens: List<Token>,
         startingPosition: Int
     ): Pair<VariableDeclarationNode, Int> {
-        //assertIdentifier
-        val id = tokens[startingPosition].value
-        val (arrayNode, currentPosition) = if (tokens[startingPosition + 1].type == TokenType.LEFT_BRACKET) {
-            arrayParser.parse(tokens, startingPosition + 1)
+        val identifierToken = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.IDENTIFIER)
+        val positionAfterIdentifier = startingPosition + 1
+
+        val (arrayNode, positionAfterArray) = if (tokens[positionAfterIdentifier].type == TokenType.LEFT_BRACKET) {
+            arrayParser.parse(tokens, positionAfterIdentifier)
         } else {
-            Pair(null, startingPosition + 1)
+            Pair(null, positionAfterIdentifier)
         }
 
-        val (assignNode, currentPosition1) = if(tokens[currentPosition].type == TokenType.BINARY_ASSIGN) {
-            assignParser.parse(tokens, currentPosition)
+        val (assignNode, positionAfterAssign) = if(tokens[positionAfterArray].type == TokenType.BINARY_ASSIGN) {
+            assignParser.parse(tokens, positionAfterArray)
         } else {
-            Pair(null, currentPosition)
+            Pair(null, positionAfterArray)
         }
 
         val variableDeclarationNode = VariableDeclarationNode(
-            id,
+            identifierToken.value,
             arrayNode,
             assignNode
         )
-        return Pair(variableDeclarationNode, currentPosition1)
+        return Pair(variableDeclarationNode, positionAfterAssign)
     }
 }
