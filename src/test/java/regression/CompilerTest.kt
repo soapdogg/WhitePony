@@ -1,27 +1,39 @@
 package regression
 
+import compiler.Compiler
+import compiler.parser.ParserSingleton
 import compiler.tokenizer.TokenizerSingleton
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor
 import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
 
-class TokenizerTest {
+class CompilerTest {
 
     private val tokenizer = TokenizerSingleton.INSTANCE.tokenizer
+    private val parser = ParserSingleton.INSTANCE.parser
+    private val compiler = Compiler(
+        tokenizer,
+        parser
+    )
 
     @ParameterizedTest
     @MethodSource(
         "inputData",
     )
-    fun tokenizeTest(arguments: ArgumentsAccessor) {
+    fun regressionTest(arguments: ArgumentsAccessor) {
         val pair = arguments.get(0) as Pair<*, *>
         val input = pair.first as String
         val expectedSize = pair.second as Int
         val result = tokenizer.tokenize(input)
 
         Assertions.assertEquals(expectedSize, result.size)
+
+        Assertions.assertDoesNotThrow {
+            compiler.compile(input)
+        }
     }
 
     companion object {
@@ -305,9 +317,9 @@ class TokenizerTest {
 
                         i = 54;
                         do{
-                        x += z * y;
-                        y++;
-                        ++i;
+                            x += z * y;
+                            y++;
+                            ++i;
                         }	
         	            while(i  < 100);
                     }

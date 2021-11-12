@@ -103,10 +103,13 @@ internal class StatementParser(
                     currentPosition1 = currentPosition2
                     //comma
                     val isComma = tokens[currentPosition2].type == TokenType.COMMA
+                    if (isComma) {
+                        currentPosition1++
+                    }
 
                 } while(isComma)
                 //semi
-                val variableDeclarationNode = VariableDeclarationListNode()
+                val variableDeclarationNode = VariableDeclarationListNode(tokens[startingPosition].value, variableDeclarations)
                 return Pair(variableDeclarationNode, currentPosition1 + 1)
             }
             TokenType.WHILE -> {
