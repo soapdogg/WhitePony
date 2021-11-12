@@ -1,21 +1,17 @@
 package compiler.parser.impl
 
 import compiler.core.*
-import compiler.parser.impl.internal.IDeclarationChildParser
 import compiler.parser.impl.internal.IFunctionDeclarationParser
-import compiler.parser.impl.internal.ITokenTypeAsserter
 import compiler.parser.impl.internal.IVariableDeclarationListParser
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 
 class DeclarationStatementParserTest {
-    private val tokenTypeAsserter = Mockito.mock(ITokenTypeAsserter::class.java)
     private val functionDeclarationParser = Mockito.mock(IFunctionDeclarationParser::class.java)
     private val variableDeclarationListParser = Mockito.mock(IVariableDeclarationListParser::class.java)
 
     private val declarationStatementParser = DeclarationStatementParser(
-        tokenTypeAsserter,
         functionDeclarationParser,
         variableDeclarationListParser
     )
@@ -42,7 +38,7 @@ class DeclarationStatementParserTest {
 
         val (actualDeclarationStatement, actualPosition) = declarationStatementParser.parse(tokens, startingPosition)
 
-        Assertions.assertEquals(functionDeclarationNode, actualDeclarationStatement.declarationChild)
+        Assertions.assertEquals(functionDeclarationNode, actualDeclarationStatement)
         Assertions.assertEquals(currentPosition, actualPosition)
     }
 
@@ -54,18 +50,6 @@ class DeclarationStatementParserTest {
         val tokens = listOf<Token>(token0, token1, token2)
         val startingPosition = 0
 
-        val typeToken = Mockito.mock(Token::class.java)
-        Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.TYPE)).thenReturn(typeToken)
-
-        val identifierToken = Mockito.mock(Token::class.java)
-        Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, startingPosition + 1, TokenType.IDENTIFIER)).thenReturn(identifierToken)
-
-        val typeValue = "typeValue"
-        Mockito.`when`(typeToken.value).thenReturn(typeValue)
-
-        val identifierValue = "identifierValue"
-        Mockito.`when`(identifierToken.value).thenReturn(identifierValue)
-
         val tokenType = TokenType.LEFT_BRACE
         Mockito.`when`(token2.type).thenReturn(tokenType)
 
@@ -75,14 +59,12 @@ class DeclarationStatementParserTest {
             variableDeclarationListParser.parse(
                 tokens,
                 startingPosition,
-                typeValue,
-                identifierValue
             )
         ).thenReturn(Pair(variableDeclarationListNode, currentPosition))
 
         val (actualDeclarationStatement, actualPosition) = declarationStatementParser.parse(tokens, startingPosition)
 
-        Assertions.assertEquals(variableDeclarationListNode, actualDeclarationStatement.declarationChild)
+        Assertions.assertEquals(variableDeclarationListNode, actualDeclarationStatement)
         Assertions.assertEquals(currentPosition, actualPosition)
     }
 }

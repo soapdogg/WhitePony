@@ -1,4 +1,4 @@
 package compiler.core
 
-class VariableDeclarationListNode : IDeclarationChildNode, IStatementNode {
+class VariableDeclarationListNode : IDeclarationStatementNode, IStatementNode {
 }

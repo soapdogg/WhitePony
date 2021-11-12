@@ -1,6 +1,6 @@
 package compiler.parser.impl
 
-import compiler.core.DeclarationStatementNode
+import compiler.core.IDeclarationStatementNode
 import compiler.core.ProgramRootNode
 import compiler.core.Token
 import compiler.parser.IParser
@@ -11,7 +11,7 @@ internal class Parser(
 ) : IParser {
 
     override fun parse(tokens: List<Token>): ProgramRootNode {
-        val declarationStatementNodes = mutableListOf<DeclarationStatementNode>()
+        val declarationStatementNodes = mutableListOf<IDeclarationStatementNode>()
         var startingPosition = 0
         while (startingPosition < tokens.size) {
             val (declarationStatement, s) = declarationStatementParser.parse(tokens, startingPosition)
