@@ -13,7 +13,7 @@ import org.mockito.Mockito
 enum class ParserSingleton {
     INSTANCE;
 
-    private val tokenTypeAsserter = Mockito.mock(ITokenTypeAsserter::class.java)
+    private val tokenTypeAsserter = TokenTypeAsserter()
 
     private val expressionParser = FakeExpressionParser()
     private val arrayParser = ArrayParser(expressionParser)
