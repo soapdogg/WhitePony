@@ -8,6 +8,6 @@ internal interface IExpressionParser {
     fun parse(
         tokens: List<Token>,
         startingPosition: Int,
-        tokenTypeToLookFor: TokenType //TODO this is temp -- used to validate statement parsing logic correctness
+        tokenTypesToLookFor: Set<TokenType> //TODO this is temp -- used to validate statement parsing logic correctness
     ): Pair<IExpressionNode, Int>
 }

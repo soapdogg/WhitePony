@@ -12,11 +12,11 @@ internal class FakeExpressionParser(
     override fun parse(
         tokens: List<Token>,
         startingPosition: Int,
-        tokenTypeToLookFor: TokenType
+        tokenTypesToLookFor: Set<TokenType>
     ): Pair<IExpressionNode, Int> {
         var result = ""
         var curr = startingPosition
-        while (tokens[curr].type != tokenTypeToLookFor) {
+        while (!tokenTypesToLookFor.contains(tokens[curr].type)) {
             result += tokens[curr].value
             curr++
         }

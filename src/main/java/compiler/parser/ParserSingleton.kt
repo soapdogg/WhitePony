@@ -16,8 +16,8 @@ enum class ParserSingleton {
     private val tokenTypeAsserter = Mockito.mock(ITokenTypeAsserter::class.java)
 
     private val expressionParser = FakeExpressionParser()
-    private val arrayParser = Mockito.mock(IArrayParser::class.java)
-    private val assignParser = Mockito.mock(IAssignParser::class.java)
+    private val arrayParser = ArrayParser(expressionParser)
+    private val assignParser = AssignParser(expressionParser)
     private val variableDeclarationParser = VariableDeclarationParser(
         arrayParser,
         assignParser
