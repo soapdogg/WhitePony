@@ -16,19 +16,19 @@ internal class FunctionDeclarationParser(
     override fun parse(
         tokens: List<Token>,
         startingPosition: Int,
-        type: String,
-        identifierValue: String
     ): Pair<FunctionDeclarationNode, Int> {
-        tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.LEFT_PARENTHESES)
-        tokenTypeAsserter.assertTokenType(tokens, startingPosition + 1, TokenType.RIGHT_PARENTHESES)
-        tokenTypeAsserter.assertTokenType(tokens, startingPosition + 2, TokenType.LEFT_BRACE)
+        val typeToken = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.TYPE)
+        val identifierToken = tokenTypeAsserter.assertTokenType(tokens, startingPosition + 1, TokenType.IDENTIFIER)
+        tokenTypeAsserter.assertTokenType(tokens, startingPosition + 2, TokenType.LEFT_PARENTHESES)
+        tokenTypeAsserter.assertTokenType(tokens, startingPosition + 3, TokenType.RIGHT_PARENTHESES)
+        tokenTypeAsserter.assertTokenType(tokens, startingPosition + 4, TokenType.LEFT_BRACE)
         val (basicBlockNode, currentPosition) = statementParser.parse(
             tokens,
-            startingPosition + 2,
+            startingPosition + 4,
         )
         val functionDeclarationNode = FunctionDeclarationNode(
-            identifierValue,
-            type,
+            identifierToken.value,
+            typeToken.value,
             basicBlockNode as BasicBlockNode
         )
         return Pair(functionDeclarationNode, currentPosition)

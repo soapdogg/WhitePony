@@ -28,20 +28,8 @@ class DeclarationStatementParserTest {
         val tokens = listOf<Token>(token0, token1, token2)
         val startingPosition = 0
 
-        val typeToken = Mockito.mock(Token::class.java)
-        Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.TYPE)).thenReturn(typeToken)
-
-        val identifierToken = Mockito.mock(Token::class.java)
-        Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, startingPosition + 1, TokenType.IDENTIFIER)).thenReturn(identifierToken)
-
         val tokenType = TokenType.LEFT_PARENTHESES
         Mockito.`when`(token2.type).thenReturn(tokenType)
-
-        val typeValue = "typeValue"
-        Mockito.`when`(typeToken.value).thenReturn(typeValue)
-
-        val identifierValue = "identifierValue"
-        Mockito.`when`(identifierToken.value).thenReturn(identifierValue)
 
         val currentPosition = 1
         val functionDeclarationNode = Mockito.mock(FunctionDeclarationNode::class.java)
@@ -49,8 +37,6 @@ class DeclarationStatementParserTest {
             functionDeclarationParser.parse(
                 tokens,
                 startingPosition,
-                typeValue,
-                identifierValue
             )
         ).thenReturn(Pair(functionDeclarationNode, currentPosition))
 

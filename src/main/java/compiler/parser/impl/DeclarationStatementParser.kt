@@ -26,8 +26,6 @@ internal class DeclarationStatementParser(
             functionDeclarationParser.parse(
                 tokens,
                 startingPosition,
-                typeToken.value,
-                identifierToken.value
             )
         } else {
             variableDeclarationListParser.parse(

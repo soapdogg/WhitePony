@@ -22,31 +22,39 @@ class FunctionDeclarationParserTest {
     fun parseTest() {
         val tokens = listOf<Token>()
         val startingPosition = 0
+
+        val typeToken = Mockito.mock(Token::class.java)
+        Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.TYPE)).thenReturn(typeToken)
+
         val type = "type"
+        Mockito.`when`(typeToken.value).thenReturn(type)
+
+        val identifierToken = Mockito.mock(Token::class.java)
+        Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, startingPosition + 1, TokenType.IDENTIFIER)).thenReturn(identifierToken)
+
         val identifierValue = "value"
+        Mockito.`when`(identifierToken.value).thenReturn(identifierValue)
 
         val basicBlockNode = Mockito.mock(BasicBlockNode::class.java)
         val currentPosition = 3
         Mockito.`when`(
             statementParser.parse(
                 tokens,
-                startingPosition + 2
+                startingPosition + 4
             )
         ).thenReturn(Pair(basicBlockNode, currentPosition))
 
         val (actualFunctionNode, actualCurrentPosition) = functionDeclarationParser.parse(
             tokens,
             startingPosition,
-            type,
-            identifierValue
         )
 
         Assertions.assertEquals(identifierValue, actualFunctionNode.functionName)
         Assertions.assertEquals(type, actualFunctionNode.type)
         Assertions.assertEquals(basicBlockNode, actualFunctionNode.basicBlockNode)
         Assertions.assertEquals(currentPosition, actualCurrentPosition)
-        Mockito.verify(tokenTypeAsserter).assertTokenType(tokens, startingPosition, TokenType.LEFT_PARENTHESES)
-        Mockito.verify(tokenTypeAsserter).assertTokenType(tokens, startingPosition + 1, TokenType.RIGHT_PARENTHESES)
-        Mockito.verify(tokenTypeAsserter).assertTokenType(tokens, startingPosition + 2, TokenType.LEFT_BRACE)
+        Mockito.verify(tokenTypeAsserter).assertTokenType(tokens, startingPosition + 2, TokenType.LEFT_PARENTHESES)
+        Mockito.verify(tokenTypeAsserter).assertTokenType(tokens, startingPosition + 3, TokenType.RIGHT_PARENTHESES)
+        Mockito.verify(tokenTypeAsserter).assertTokenType(tokens, startingPosition + 4, TokenType.LEFT_BRACE)
     }
 }
