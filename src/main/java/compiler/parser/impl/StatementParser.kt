@@ -3,10 +3,11 @@ package compiler.parser.impl
 import compiler.core.*
 import compiler.parser.impl.internal.IExpressionParser
 import compiler.parser.impl.internal.IStatementParser
-import org.mockito.Mockito
+import compiler.parser.impl.internal.IVariableDeclarationParser
 
-class StatementParser(
-    private val expressionParser: IExpressionParser
+internal class StatementParser(
+    private val expressionParser: IExpressionParser,
+    private val variableDeclarationParser: IVariableDeclarationParser
 ) : IStatementParser {
     override fun parse(
         tokens: List<Token>,
@@ -93,11 +94,20 @@ class StatementParser(
             }
             TokenType.TYPE -> {
                 //type
-                //identifier
+                val variableDeclarations = mutableListOf<VariableDeclarationNode>()
+                var currentPosition1 = startingPosition + 1
                 do {
                     //parse variables
-                } while(false)
-                return Pair(Mockito.mock(IStatementNode::class.java), 0)
+                    val (variableDeclaration, currentPosition2) = variableDeclarationParser.parse(tokens, currentPosition1)
+                    variableDeclarations.add(variableDeclaration)
+                    currentPosition1 = currentPosition2
+                    //comma
+                    val isComma = tokens[currentPosition2].type == TokenType.COMMA
+
+                } while(isComma)
+                //semi
+                val variableDeclarationNode = VariableDeclarationListNode()
+                return Pair(variableDeclarationNode, currentPosition1 + 1)
             }
             TokenType.WHILE -> {
                 //while
