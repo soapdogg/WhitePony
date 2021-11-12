@@ -1,6 +1,5 @@
 package compiler.parser
 
-import compiler.parser.impl.DeclarationChildParser
 import compiler.parser.impl.DeclarationStatementParser
 import compiler.parser.impl.FunctionDeclarationParser
 import compiler.parser.impl.Parser
@@ -21,16 +20,12 @@ enum class ParserSingleton {
         statementParser
     )
 
-    private val variableDeclarationParser = Mockito.mock(IVariableDeclarationListParser::class.java)
-
-    private val declarationChildParser = DeclarationChildParser(
-        functionDeclarationParser,
-        variableDeclarationParser
-    )
+    private val variableDeclarationListParser = Mockito.mock(IVariableDeclarationListParser::class.java)
 
     private val declarationStatementParser = DeclarationStatementParser(
         tokenTypeAsserter,
-        declarationChildParser
+        functionDeclarationParser,
+        variableDeclarationListParser
     )
 
     val parser: IParser = Parser(declarationStatementParser)
