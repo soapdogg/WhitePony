@@ -3,7 +3,7 @@ package compiler.parser.impl
 import compiler.core.BasicBlockNode
 import compiler.core.Token
 import compiler.core.TokenType
-import compiler.parser.impl.internal.IBasicBlockParser
+import compiler.parser.impl.internal.IStatementParser
 import compiler.parser.impl.internal.ITokenTypeAsserter
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -11,11 +11,11 @@ import org.mockito.Mockito
 
 class FunctionDeclarationParserTest {
     private val tokenTypeAsserter = Mockito.mock(ITokenTypeAsserter::class.java)
-    private val basicBlockParser = Mockito.mock(IBasicBlockParser::class.java)
+    private val statementParser = Mockito.mock(IStatementParser::class.java)
 
     private val functionDeclarationParser = FunctionDeclarationParser(
         tokenTypeAsserter,
-        basicBlockParser
+        statementParser
     )
 
     @Test
@@ -28,7 +28,7 @@ class FunctionDeclarationParserTest {
         val basicBlockNode = Mockito.mock(BasicBlockNode::class.java)
         val currentPosition = 3
         Mockito.`when`(
-            basicBlockParser.parse(
+            statementParser.parse(
                 tokens,
                 startingPosition + 2
             )
@@ -47,5 +47,6 @@ class FunctionDeclarationParserTest {
         Assertions.assertEquals(currentPosition, actualCurrentPosition)
         Mockito.verify(tokenTypeAsserter).assertTokenType(tokens, startingPosition, TokenType.LEFT_PARENTHESES)
         Mockito.verify(tokenTypeAsserter).assertTokenType(tokens, startingPosition + 1, TokenType.RIGHT_PARENTHESES)
+        Mockito.verify(tokenTypeAsserter).assertTokenType(tokens, startingPosition + 2, TokenType.LEFT_BRACE)
     }
 }
