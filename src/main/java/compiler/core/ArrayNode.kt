@@ -1,5 +1,5 @@
 package compiler.core
 
 data class ArrayNode(
-    val indexExpressionNode: IExpressionNode
+    val indexExpressionNode: IExpressionNode?
 )
