@@ -9,7 +9,7 @@ import compiler.parser.impl.internal.ITokenTypeAsserter
 
 internal class AssignParser(
     private val tokenTypeAsserter: ITokenTypeAsserter,
-    private val expressionParser: IExpressionParser //TODO expressionStatementParser?
+    private val expressionParser: IExpressionParser
 ): IAssignParser {
     override fun parse(
         tokens: List<Token>,

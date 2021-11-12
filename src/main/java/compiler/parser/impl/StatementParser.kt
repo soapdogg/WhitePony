@@ -2,13 +2,14 @@ package compiler.parser.impl
 
 import compiler.core.*
 import compiler.parser.impl.internal.IExpressionParser
+import compiler.parser.impl.internal.IExpressionStatementParser
 import compiler.parser.impl.internal.IStatementParser
 import compiler.parser.impl.internal.IVariableDeclarationListParser
-import compiler.parser.impl.internal.IVariableDeclarationParser
 
 internal class StatementParser(
     private val expressionParser: IExpressionParser,
     private val variableDeclarationListParser: IVariableDeclarationListParser,
+    private val expressionStatementParser: IExpressionStatementParser
 ) : IStatementParser {
     override fun parse(
         tokens: List<Token>,
@@ -106,10 +107,7 @@ internal class StatementParser(
                 Pair(whileNode, currentPosition2)
             }
             else -> {
-                val (expression, currentPosition1) = expressionParser.parse(tokens, startingPosition, setOf(TokenType.SEMICOLON))
-                //Semi
-                val expressionStatementNode = ExpressionStatementNode(expression)
-                Pair(expressionStatementNode, currentPosition1 + 1)
+                expressionStatementParser.parse(tokens, startingPosition)
             }
         }
 
