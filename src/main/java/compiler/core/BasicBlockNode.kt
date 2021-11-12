@@ -1,4 +1,5 @@
 package compiler.core
 
-class BasicBlockNode {
-}
+data class BasicBlockNode (
+    val statements: List<IStatementNode>
+): IStatementNode
