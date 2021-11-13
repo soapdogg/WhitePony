@@ -79,17 +79,17 @@ internal class StatementParser(
                 }
             }
             TokenType.LEFT_BRACE -> {
-                //LBrace
+                val (_, positionAfterLeftBrace) = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.LEFT_BRACE)
                 val statements = mutableListOf<IStatementNode>()
-                var currentPosition1 = startingPosition + 1
-                while (tokens[currentPosition1].type != TokenType.RIGHT_BRACE) {
-                    val (statement, cur) = parse(tokens, currentPosition1)
+                var statementPosition = positionAfterLeftBrace
+                while (tokens[statementPosition].type != TokenType.RIGHT_BRACE) {
+                    val (statement, positionAfterStatement) = parse(tokens, statementPosition)
                     statements.add(statement)
-                    currentPosition1 = cur
+                    statementPosition = positionAfterStatement
                 }
-                //RBrace
+                val (_, positionAfterRightBrace) = tokenTypeAsserter.assertTokenType(tokens, statementPosition, TokenType.RIGHT_BRACE)
                 val basicBlockNode = BasicBlockNode(statements)
-                Pair(basicBlockNode, currentPosition1 + 1)
+                Pair(basicBlockNode, positionAfterRightBrace)
             }
             TokenType.RETURN -> {
                 returnStatementParser.parse(tokens, startingPosition)
