@@ -23,18 +23,18 @@ internal class StatementParser(
 
         return when (tokenType) {
             TokenType.DO -> {
-                //do
-                val (body, currentPosition1) = parse(tokens, startingPosition + 1)
-                //while
-                //LParent
-                val (expression, currentPosition2) = expressionParser.parse(tokens, currentPosition1 + 2, setOf(TokenType.RIGHT_PARENTHESES))
-                //RParent
-                //Semicolon
+                val (_, positionAfterDo) = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.DO)
+                val (body, positionAfterBody) = parse(tokens, positionAfterDo)
+                val (_, positionAfterWhile) = tokenTypeAsserter.assertTokenType(tokens, positionAfterBody, TokenType.WHILE)
+                val (_, positionAfterLeftParentheses) = tokenTypeAsserter.assertTokenType(tokens, positionAfterWhile, TokenType.LEFT_PARENTHESES)
+                val (expression, positionAfterExpression) = expressionParser.parse(tokens, positionAfterLeftParentheses, setOf(TokenType.RIGHT_PARENTHESES))
+                val (_, positionAfterRightParentheses) = tokenTypeAsserter.assertTokenType(tokens, positionAfterExpression, TokenType.RIGHT_PARENTHESES)
+                val (_, positionAfterSemicolon) = tokenTypeAsserter.assertTokenType(tokens, positionAfterRightParentheses, TokenType.SEMICOLON)
                 val doStatement = DoWhileNode(
                     expression,
                     body
                 )
-                Pair(doStatement, currentPosition2 + 2)
+                Pair(doStatement, positionAfterSemicolon)
             }
             TokenType.FOR -> {
                 //for
