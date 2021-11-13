@@ -37,22 +37,22 @@ internal class StatementParser(
                 Pair(doStatement, positionAfterSemicolon)
             }
             TokenType.FOR -> {
-                //for
-                //LParent
-                val (initExpression, currentPosition1) = expressionParser.parse(tokens, startingPosition + 2, setOf(TokenType.SEMICOLON))
-                //Semi
-                val (testExpression, currentPosition2) = expressionParser.parse(tokens, currentPosition1 + 1, setOf(TokenType.SEMICOLON))
-                //Semi
-                val (incrementExpression, currentPosition3) = expressionParser.parse(tokens, currentPosition2 + 1, setOf(TokenType.RIGHT_PARENTHESES))
-                //RParent
-                val (body, currentPosition4) = parse(tokens, currentPosition3 + 1)
+                val (_, positionAfterFor) = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.FOR)
+                val (_, positionAfterLeftParentheses) = tokenTypeAsserter.assertTokenType(tokens, positionAfterFor, TokenType.LEFT_PARENTHESES)
+                val (initExpression, positionAfterInitExpression) = expressionParser.parse(tokens, positionAfterLeftParentheses, setOf(TokenType.SEMICOLON))
+                val (_, positionAfterFirstSemi) = tokenTypeAsserter.assertTokenType(tokens, positionAfterInitExpression, TokenType.SEMICOLON)
+                val (testExpression, positionAfterTestExpression) = expressionParser.parse(tokens, positionAfterFirstSemi, setOf(TokenType.SEMICOLON))
+                val (_, positionAfterSecondSemi) = tokenTypeAsserter.assertTokenType(tokens, positionAfterTestExpression, TokenType.SEMICOLON)
+                val (incrementExpression, positionAfterIncrementExpression) = expressionParser.parse(tokens, positionAfterSecondSemi, setOf(TokenType.RIGHT_PARENTHESES))
+                val (_, positionAfterRightParentheses) = tokenTypeAsserter.assertTokenType(tokens,  positionAfterIncrementExpression, TokenType.RIGHT_PARENTHESES)
+                val (body, positionAfterBody) = parse(tokens,  positionAfterRightParentheses)
                 val forNode = ForNode(
                     initExpression,
                     testExpression,
                     incrementExpression,
                     body
                 )
-                return Pair(forNode, currentPosition4)
+                return Pair(forNode, positionAfterBody)
             }
             TokenType.IF -> {
                 //if
