@@ -16,22 +16,22 @@ internal class VariableDeclarationListParser(
         tokens: List<Token>,
         startingPosition: Int,
     ): Pair<VariableDeclarationListNode, Int> {
-        val (typeToken, positionAfterType) = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.TYPE)
+        val (typeToken, _) = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.TYPE)
+
         val variableDeclarations = mutableListOf<VariableDeclarationNode>()
-        var currentPosition1 = positionAfterType
+        var variableDeclarationPosition = startingPosition
         do {
-            //parse variables
-            val (variableDeclaration, currentPosition2) = variableDeclarationParser.parse(tokens, currentPosition1)
+            variableDeclarationPosition++
+
+            val (variableDeclaration, positionAfterVariableDeclaration) = variableDeclarationParser.parse(tokens, variableDeclarationPosition)
             variableDeclarations.add(variableDeclaration)
-            currentPosition1 = currentPosition2
-            //comma
-            val isComma = tokens[currentPosition2].type == TokenType.COMMA
-            if (isComma) {
-                currentPosition1++
-            }
-        } while(isComma)
-        //semi
-        val variableDeclarationNode = VariableDeclarationListNode(typeToken.value, variableDeclarations)
-        return Pair(variableDeclarationNode, currentPosition1 + 1)
+            variableDeclarationPosition = positionAfterVariableDeclaration
+
+            val hasAnotherVariableDeclaration = tokens[positionAfterVariableDeclaration].type == TokenType.COMMA
+        } while(hasAnotherVariableDeclaration)
+
+        val (_, positionAfterSemicolon) = tokenTypeAsserter.assertTokenType(tokens, variableDeclarationPosition, TokenType.SEMICOLON)
+        val variableDeclarationListNode = VariableDeclarationListNode(typeToken.value, variableDeclarations)
+        return Pair(variableDeclarationListNode, positionAfterSemicolon)
     }
 }
