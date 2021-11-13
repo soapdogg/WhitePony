@@ -55,27 +55,27 @@ internal class StatementParser(
                 return Pair(forNode, positionAfterBody)
             }
             TokenType.IF -> {
-                //if
-                //LParent
-                val (booleanExpression, currentPosition1) = expressionParser.parse(tokens, startingPosition + 2, setOf(TokenType.RIGHT_PARENTHESES))
-                //RParent
-                val (ifBody, currentPosition2) = parse(tokens, currentPosition1 + 1)
-                if (tokens[currentPosition2].type == TokenType.ELSE) {
-                    //else
-                    val (elseBody, currentPosition3) = parse(tokens, currentPosition2 + 1)
+                val (_, positionAfterIf) = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.IF)
+                val (_, positionAfterLeftParentheses) = tokenTypeAsserter.assertTokenType(tokens, positionAfterIf, TokenType.LEFT_PARENTHESES)
+                val (booleanExpression, positionAfterBooleanExpression) = expressionParser.parse(tokens, positionAfterLeftParentheses, setOf(TokenType.RIGHT_PARENTHESES))
+                val (_, positionAfterRightParentheses) = tokenTypeAsserter.assertTokenType(tokens, positionAfterBooleanExpression, TokenType.RIGHT_PARENTHESES)
+                val (ifBody, positionAfterIfBody) = parse(tokens, positionAfterRightParentheses)
+                if (tokens[positionAfterIfBody].type == TokenType.ELSE) {
+                    val (_, positionAfterElse) = tokenTypeAsserter.assertTokenType(tokens, positionAfterIfBody, TokenType.ELSE)
+                    val (elseBody, positionAfterElseBody) = parse(tokens, positionAfterElse)
                     val ifNode = IfNode(
                         booleanExpression,
                         ifBody,
                         elseBody
                     )
-                    Pair(ifNode, currentPosition3)
+                    Pair(ifNode, positionAfterElseBody)
                 } else {
                     val ifNode = IfNode(
                         booleanExpression,
                         ifBody,
                         null
                     )
-                    Pair(ifNode, currentPosition2)
+                    Pair(ifNode, positionAfterIfBody)
                 }
             }
             TokenType.LEFT_BRACE -> {
