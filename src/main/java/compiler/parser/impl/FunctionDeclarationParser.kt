@@ -17,20 +17,20 @@ internal class FunctionDeclarationParser(
         tokens: List<Token>,
         startingPosition: Int,
     ): Pair<FunctionDeclarationNode, Int> {
-        val typeToken = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.TYPE)
-        val identifierToken = tokenTypeAsserter.assertTokenType(tokens, startingPosition + 1, TokenType.IDENTIFIER)
-        tokenTypeAsserter.assertTokenType(tokens, startingPosition + 2, TokenType.LEFT_PARENTHESES)
-        tokenTypeAsserter.assertTokenType(tokens, startingPosition + 3, TokenType.RIGHT_PARENTHESES)
-        tokenTypeAsserter.assertTokenType(tokens, startingPosition + 4, TokenType.LEFT_BRACE)
-        val (basicBlockNode, currentPosition) = statementParser.parse(
+        val (typeToken, positionAfterType) = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.TYPE)
+        val (identifierToken, positionAfterIdentifier) = tokenTypeAsserter.assertTokenType(tokens, positionAfterType, TokenType.IDENTIFIER)
+        val (_, positionAfterLeftParentheses) = tokenTypeAsserter.assertTokenType(tokens, positionAfterIdentifier, TokenType.LEFT_PARENTHESES)
+        val (_, positionAfterRightParentheses) = tokenTypeAsserter.assertTokenType(tokens, positionAfterLeftParentheses, TokenType.RIGHT_PARENTHESES)
+        tokenTypeAsserter.assertTokenType(tokens, positionAfterRightParentheses, TokenType.LEFT_BRACE)
+        val (basicBlockNode, finalPosition) = statementParser.parse(
             tokens,
-            startingPosition + 4,
+            positionAfterRightParentheses,
         )
         val functionDeclarationNode = FunctionDeclarationNode(
             identifierToken.value,
             typeToken.value,
             basicBlockNode as BasicBlockNode
         )
-        return Pair(functionDeclarationNode, currentPosition)
+        return Pair(functionDeclarationNode, finalPosition)
     }
 }

@@ -11,11 +11,11 @@ internal class TokenTypeAsserter(
         tokens: List<Token>,
         position: Int,
         expectedType: TokenType
-    ): Token {
+    ): Pair<Token, Int> {
         val token = tokens[position]
         if (token.type != expectedType) {
             throw Exception("Unexpected TokenType!")
         }
-        return token
+        return Pair(token, position + 1)
     }
 }

@@ -16,9 +16,9 @@ internal class VariableDeclarationListParser(
         tokens: List<Token>,
         startingPosition: Int,
     ): Pair<VariableDeclarationListNode, Int> {
-        val typeToken = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.TYPE)
+        val (typeToken, positionAfterType) = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.TYPE)
         val variableDeclarations = mutableListOf<VariableDeclarationNode>()
-        var currentPosition1 = startingPosition + 1
+        var currentPosition1 = positionAfterType
         do {
             //parse variables
             val (variableDeclaration, currentPosition2) = variableDeclarationParser.parse(tokens, currentPosition1)

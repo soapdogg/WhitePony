@@ -24,27 +24,35 @@ class FunctionDeclarationParserTest {
         val startingPosition = 0
 
         val typeToken = Mockito.mock(Token::class.java)
-        Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.TYPE)).thenReturn(typeToken)
+        val positionAfterType = startingPosition + 1
+        Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.TYPE)).thenReturn(Pair(typeToken, positionAfterType))
 
         val type = "type"
         Mockito.`when`(typeToken.value).thenReturn(type)
 
         val identifierToken = Mockito.mock(Token::class.java)
-        Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, startingPosition + 1, TokenType.IDENTIFIER)).thenReturn(identifierToken)
+        val positionAfterIdentifier = positionAfterType + 1
+        Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, positionAfterType, TokenType.IDENTIFIER)).thenReturn(Pair(identifierToken, positionAfterIdentifier))
+
+        val positionAfterLeftParentheses = positionAfterIdentifier + 1
+        Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, positionAfterIdentifier, TokenType.LEFT_PARENTHESES)).thenReturn(Pair(Mockito.mock(Token::class.java), positionAfterLeftParentheses))
+
+        val positionAfterRightParentheses = positionAfterLeftParentheses + 1
+        Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, positionAfterLeftParentheses, TokenType.RIGHT_PARENTHESES)).thenReturn(Pair(Mockito.mock(Token::class.java), positionAfterRightParentheses))
 
         val identifierValue = "value"
         Mockito.`when`(identifierToken.value).thenReturn(identifierValue)
 
         val basicBlockNode = Mockito.mock(BasicBlockNode::class.java)
-        val currentPosition = 3
+        val finalPosition = 10
         Mockito.`when`(
             statementParser.parse(
                 tokens,
-                startingPosition + 4
+                positionAfterRightParentheses
             )
-        ).thenReturn(Pair(basicBlockNode, currentPosition))
+        ).thenReturn(Pair(basicBlockNode, finalPosition))
 
-        val (actualFunctionNode, actualCurrentPosition) = functionDeclarationParser.parse(
+        val (actualFunctionNode, actualFinalPosition) = functionDeclarationParser.parse(
             tokens,
             startingPosition,
         )
@@ -52,7 +60,7 @@ class FunctionDeclarationParserTest {
         Assertions.assertEquals(identifierValue, actualFunctionNode.functionName)
         Assertions.assertEquals(type, actualFunctionNode.type)
         Assertions.assertEquals(basicBlockNode, actualFunctionNode.basicBlockNode)
-        Assertions.assertEquals(currentPosition, actualCurrentPosition)
+        Assertions.assertEquals(finalPosition, actualFinalPosition)
         Mockito.verify(tokenTypeAsserter).assertTokenType(tokens, startingPosition + 2, TokenType.LEFT_PARENTHESES)
         Mockito.verify(tokenTypeAsserter).assertTokenType(tokens, startingPosition + 3, TokenType.RIGHT_PARENTHESES)
         Mockito.verify(tokenTypeAsserter).assertTokenType(tokens, startingPosition + 4, TokenType.LEFT_BRACE)

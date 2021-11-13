@@ -4,5 +4,5 @@ import compiler.core.Token
 import compiler.core.TokenType
 
 internal interface ITokenTypeAsserter {
-    fun assertTokenType(tokens: List<Token>, position: Int, expectedType: TokenType): Token
+    fun assertTokenType(tokens: List<Token>, position: Int, expectedType: TokenType): Pair<Token, Int>
 }

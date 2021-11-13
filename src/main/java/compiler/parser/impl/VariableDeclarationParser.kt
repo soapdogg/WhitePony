@@ -17,8 +17,7 @@ internal class VariableDeclarationParser(
         tokens: List<Token>,
         startingPosition: Int
     ): Pair<VariableDeclarationNode, Int> {
-        val identifierToken = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.IDENTIFIER)
-        val positionAfterIdentifier = startingPosition + 1
+        val (identifierToken, positionAfterIdentifier) = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.IDENTIFIER)
 
         val (arrayNode, positionAfterArray) = if (tokens[positionAfterIdentifier].type == TokenType.LEFT_BRACKET) {
             arrayParser.parse(tokens, positionAfterIdentifier)

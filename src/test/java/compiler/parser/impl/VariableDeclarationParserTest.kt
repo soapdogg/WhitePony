@@ -37,10 +37,9 @@ class VariableDeclarationParserTest {
             assignToken,
         )
         val startingPosition = 0
-
-        Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.IDENTIFIER)).thenReturn(identifierToken)
-
         val positionAfterIdentifier = startingPosition + 1
+        Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.IDENTIFIER)).thenReturn(Pair(identifierToken, positionAfterIdentifier))
+
         val arrayNode = Mockito.mock(ArrayNode::class.java)
         val positionAfterArray = positionAfterIdentifier + 2
         Mockito.`when`(arrayParser.parse(tokens, positionAfterIdentifier)).thenReturn(Pair(arrayNode, positionAfterArray))
@@ -69,7 +68,7 @@ class VariableDeclarationParserTest {
         )
         val startingPosition = 0
         val positionAfterIdentifier = startingPosition + 1
-        Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.IDENTIFIER)).thenReturn(identifierToken)
+        Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.IDENTIFIER)).thenReturn(Pair(identifierToken, positionAfterIdentifier))
 
         val id = "id"
         Mockito.`when`(identifierToken.value).thenReturn(id)
