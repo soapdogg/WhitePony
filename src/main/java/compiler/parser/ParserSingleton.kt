@@ -4,11 +4,6 @@ import compiler.parser.impl.*
 import compiler.parser.impl.DeclarationStatementParser
 import compiler.parser.impl.FunctionDeclarationParser
 import compiler.parser.impl.Parser
-import compiler.parser.impl.internal.IArrayParser
-import compiler.parser.impl.internal.IAssignParser
-import compiler.parser.impl.internal.ITokenTypeAsserter
-import compiler.parser.impl.internal.IVariableDeclarationParser
-import org.mockito.Mockito
 
 enum class ParserSingleton {
     INSTANCE;
@@ -45,7 +40,7 @@ enum class ParserSingleton {
         expressionStatementParser
     )
 
-    private val statementParser = StatementParser(
+    private val statementParser = StatementParserRecursive(
         tokenTypeAsserter,
         expressionParser,
         variableDeclarationListParser,
