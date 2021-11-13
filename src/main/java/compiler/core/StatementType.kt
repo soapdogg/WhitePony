@@ -1,0 +1,12 @@
+package compiler.core
+
+enum class StatementType {
+    DO_STATEMENT,
+    FOR_STATEMENT,
+    IF_STATEMENT,
+    BLOCK_STATEMENT,
+    RETURN_STATEMENT,
+    VARIABLE_LIST_STATEMENT,
+    WHILE_STATEMENT,
+    EXPRESSION_STATEMENT
+}
