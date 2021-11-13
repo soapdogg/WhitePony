@@ -9,6 +9,7 @@ import compiler.parser.impl.internal.IStatementParser
 import compiler.parser.impl.internal.IVariableDeclarationListParser
 
 internal class StatementParser(
+    private val tokenTypeAsserter: ITokenTypeAsserter,
     private val expressionParser: IExpressionParser,
     private val variableDeclarationListParser: IVariableDeclarationListParser,
     private val returnStatementParser: IReturnStatementParser,
@@ -97,13 +98,13 @@ internal class StatementParser(
                 variableDeclarationListParser.parse(tokens, startingPosition)
             }
             TokenType.WHILE -> {
-                //while
-                //LParent
-                val (expression, currentPosition1) = expressionParser.parse(tokens, startingPosition + 2, setOf(TokenType.RIGHT_PARENTHESES))
-                //RParent
-                val (body, currentPosition2) = parse(tokens, currentPosition1 + 1)
+                val (_, positionAfterWhile) = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.WHILE)
+                val (_, positionAfterLeftParentheses) = tokenTypeAsserter.assertTokenType(tokens, positionAfterWhile, TokenType.LEFT_PARENTHESES)
+                val (expression, positionAfterExpression) = expressionParser.parse(tokens, positionAfterLeftParentheses, setOf(TokenType.RIGHT_PARENTHESES))
+                val (_, positionAfterRightParentheses) = tokenTypeAsserter.assertTokenType(tokens, positionAfterExpression, TokenType.RIGHT_PARENTHESES)
+                val (body, positionAfterBody) = parse(tokens, positionAfterRightParentheses)
                 val whileNode = WhileNode(expression, body)
-                Pair(whileNode, currentPosition2)
+                Pair(whileNode, positionAfterBody)
             }
             else -> {
                 expressionStatementParser.parse(tokens, startingPosition)

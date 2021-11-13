@@ -46,6 +46,7 @@ enum class ParserSingleton {
     )
 
     private val statementParser = StatementParser(
+        tokenTypeAsserter,
         expressionParser,
         variableDeclarationListParser,
         returnStatementParser,
