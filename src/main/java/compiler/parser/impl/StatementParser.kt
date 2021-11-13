@@ -1,14 +1,17 @@
 package compiler.parser.impl
 
 import compiler.core.*
+import compiler.parser.impl.internal.*
 import compiler.parser.impl.internal.IExpressionParser
 import compiler.parser.impl.internal.IExpressionStatementParser
+import compiler.parser.impl.internal.IReturnStatementParser
 import compiler.parser.impl.internal.IStatementParser
 import compiler.parser.impl.internal.IVariableDeclarationListParser
 
 internal class StatementParser(
     private val expressionParser: IExpressionParser,
     private val variableDeclarationListParser: IVariableDeclarationListParser,
+    private val returnStatementParser: IReturnStatementParser,
     private val expressionStatementParser: IExpressionStatementParser
 ) : IStatementParser {
     override fun parse(
@@ -88,11 +91,7 @@ internal class StatementParser(
                 Pair(basicBlockNode, currentPosition1 + 1)
             }
             TokenType.RETURN -> {
-                //return
-                val (expression, currentPosition1) = expressionParser.parse(tokens, startingPosition + 1, setOf(TokenType.SEMICOLON)) //TODO expressionStatement?
-                //semi
-                val returnNode = ReturnNode(expression)
-                Pair(returnNode, currentPosition1 + 1)
+                returnStatementParser.parse(tokens, startingPosition)
             }
             TokenType.TYPE -> {
                 variableDeclarationListParser.parse(tokens, startingPosition)

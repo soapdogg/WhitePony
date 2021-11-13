@@ -40,10 +40,16 @@ enum class ParserSingleton {
         expressionParser
     )
 
+    private val returnStatementParser = ReturnStatementParser(
+        tokenTypeAsserter,
+        expressionStatementParser
+    )
+
     private val statementParser = StatementParser(
         expressionParser,
         variableDeclarationListParser,
-        expressionStatementParser,
+        returnStatementParser,
+        expressionStatementParser
     )
 
     private val functionDeclarationParser = FunctionDeclarationParser(

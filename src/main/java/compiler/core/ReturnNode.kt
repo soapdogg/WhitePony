@@ -1,5 +1,5 @@
 package compiler.core
 
 data class ReturnNode (
-    val expression: IExpressionNode
+    val expressionStatement: ExpressionStatementNode
 ): IStatementNode
