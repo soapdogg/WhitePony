@@ -40,7 +40,13 @@ enum class ParserSingleton {
         expressionStatementParser
     )
 
-    private val statementParserIterative = StatementParserIterative()
+    private val statementParserIterative = StatementParserIterative(
+        tokenTypeAsserter,
+        expressionParser,
+        returnStatementParser,
+        variableDeclarationListParser,
+        expressionStatementParser
+    )
 
     private val statementParserRecursive = StatementParserRecursive(
         tokenTypeAsserter,
