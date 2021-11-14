@@ -150,6 +150,16 @@ internal class StatementParserIterative(
                     )
                     latestStatement = forStatement
                 }
+                top.getType() == StatementType.IF_STATEMENT -> {
+                    val ifStackItem = top as IfParseStackItem
+                    val ifStatement = IfNode(
+                        ifStackItem.booleanExpression,
+                        localStatement,
+                        null
+                    )
+                    latestStatement = ifStatement
+                    shouldExtract = false
+                }
                 top.getType() == StatementType.BLOCK_STATEMENT -> {
                     val blockStackItem = top as BlockParseStackItem
                     val statements = blockStackItem.statements + listOf(localStatement)

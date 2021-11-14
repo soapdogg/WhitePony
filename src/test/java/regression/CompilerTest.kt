@@ -64,8 +64,8 @@ class CompilerTest {
                 Pair(Program16, 42),
 //                Pair(Program17, 37),
 //                Pair(Program18, 42),
-//                Pair(Program19, 39),
-//                Pair(Program20, 39),
+                Pair(Program19, 39),
+                Pair(Program20, 39),
 //                Pair(Program21, 152),
 //                Pair(Program22, 367)
             )
