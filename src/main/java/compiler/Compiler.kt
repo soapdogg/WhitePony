@@ -1,5 +1,6 @@
 package compiler
 
+import compiler.core.ProgramRootNode
 import compiler.parser.IParser
 import compiler.tokenizer.ITokenizer
 
@@ -7,10 +8,10 @@ class Compiler(
     private val tokenizer: ITokenizer,
     private val parser: IParser
 ) {
-    fun compile(program: String): String {
+    fun compile(program: String): ProgramRootNode {
         val tokens = tokenizer.tokenize(program)
         val parseTree = parser.parse(tokens)
 
-        return parseTree.toString()
+        return parseTree
     }
 }
