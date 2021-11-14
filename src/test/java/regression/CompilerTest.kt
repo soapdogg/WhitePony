@@ -46,13 +46,13 @@ class CompilerTest {
         @JvmStatic
         fun inputData(): Stream<Pair<String, Int>> {
             return Stream.of(
-                //Pair(Program1, 34),
+                Pair(Program1, 34),
                 Pair(Program2, 37),
                 Pair(Program3, 34),
                 Pair(Program4, 28),
                 Pair(Program5, 36),
                 Pair(Program6, 44),
-                //Pair(Program7, 71),
+                Pair(Program7, 71),
                 Pair(Program8, 30),
 //                Pair(Program9, 100),
                 Pair(Program10, 22),

@@ -27,6 +27,7 @@ internal class StatementParserIterative(
 
         var currentPosition = startingPosition + 1
         var latestStatement: IStatementNode? = null
+        var shouldExtract = true
         while(
             statementStack.isNotEmpty()
         ) {
@@ -80,29 +81,42 @@ internal class StatementParserIterative(
                     continue
                 }
                 tokenType == TokenType.LEFT_BRACE -> {
-                    val (_, positionAfterLeftBrace) = tokenTypeAsserter.assertTokenType(tokens, currentPosition, TokenType.LEFT_BRACE)
+                    val (_, positionAfterLeftBrace) = tokenTypeAsserter.assertTokenType(
+                        tokens,
+                        currentPosition,
+                        TokenType.LEFT_BRACE
+                    )
                     val statements = mutableListOf<IStatementNode>()
-                    var statementPosition = positionAfterLeftBrace
-                    currentPosition = statementPosition
+                    currentPosition = positionAfterLeftBrace
                     val stackItem = BlockParseStackItem(statements)
                     statementStack.push(stackItem)
                     continue
                 }
-                tokenType == TokenType.RETURN -> {
-                    val(returnStatement, positionAfterReturn) = returnStatementParser.parse(tokens, currentPosition)
-                    latestStatement = returnStatement
-                    currentPosition = positionAfterReturn
+            }
+
+            val localStatement = if(shouldExtract){
+                when{
+                    tokenType == TokenType.RETURN -> {
+                        val(returnStatement, positionAfterReturn) = returnStatementParser.parse(tokens, currentPosition)
+                        currentPosition = positionAfterReturn
+                        returnStatement
+                    }
+                    tokenType == TokenType.TYPE -> {
+                        val(variableDeclarationListStatement, positionAfterVariableDeclarationList) = variableDeclarationListParser.parse(tokens, currentPosition)
+                        currentPosition = positionAfterVariableDeclarationList
+                        variableDeclarationListStatement
+                    }
+                    tokenType == TokenType.IDENTIFIER || tokenType == TokenType.PRE_POST  -> {
+                        val(expressionStatement, positionAfterExpressionStatement) = expressionStatementParser.parse(tokens, currentPosition)
+                        currentPosition = positionAfterExpressionStatement
+                        expressionStatement
+                    }
+                    else -> {
+                        latestStatement!!
+                    }
                 }
-                tokenType == TokenType.TYPE -> {
-                    val(variableDeclarationListStatement, positionAfterVariableDeclarationList) = variableDeclarationListParser.parse(tokens, currentPosition)
-                    latestStatement = variableDeclarationListStatement
-                    currentPosition = positionAfterVariableDeclarationList
-                }
-                tokenType == TokenType.IDENTIFIER || tokenType == TokenType.PRE_POST  -> {
-                    val(expressionStatement, positionAfterExpressionStatement) = expressionStatementParser.parse(tokens, currentPosition)
-                    latestStatement = expressionStatement
-                    currentPosition = positionAfterExpressionStatement
-                }
+            } else {
+                latestStatement!!
             }
 
             val top = statementStack.pop()
@@ -116,14 +130,14 @@ internal class StatementParserIterative(
                     val (_, positionAfterSemicolon) = tokenTypeAsserter.assertTokenType(tokens, positionAfterRightParentheses, TokenType.SEMICOLON)
                     val doStatement = DoWhileNode(
                         expression,
-                        latestStatement!!
+                        localStatement
                     )
                     latestStatement = doStatement
                     currentPosition = positionAfterSemicolon
                 }
                 top.getType() == StatementType.WHILE_STATEMENT -> {
                     val whileStackItem = top as WhileParseStackItem
-                    val whileStatement = WhileNode(whileStackItem.expression, latestStatement!!)
+                    val whileStatement = WhileNode(whileStackItem.expression, localStatement)
                     latestStatement = whileStatement
                 }
                 top.getType() == StatementType.FOR_STATEMENT -> {
@@ -132,13 +146,13 @@ internal class StatementParserIterative(
                         forStackItem.initExpression,
                         forStackItem.testExpression,
                         forStackItem.incrementExpression,
-                        latestStatement!!
+                        localStatement
                     )
                     latestStatement = forStatement
                 }
                 top.getType() == StatementType.BLOCK_STATEMENT -> {
                     val blockStackItem = top as BlockParseStackItem
-                    val statements = blockStackItem.statements + listOf(latestStatement!!)
+                    val statements = blockStackItem.statements + listOf(localStatement)
                     if (tokens[currentPosition].type == TokenType.RIGHT_BRACE) {
                         val (_, positionAfterRightBrace) = tokenTypeAsserter.assertTokenType(tokens, currentPosition, TokenType.RIGHT_BRACE)
                         val blockStatement = BasicBlockNode(
@@ -146,9 +160,11 @@ internal class StatementParserIterative(
                         )
                         latestStatement = blockStatement
                         currentPosition = positionAfterRightBrace
+                        shouldExtract = false
                     } else {
                         val blockStackItem2 = BlockParseStackItem(statements)
                         statementStack.push(blockStackItem2)
+                        shouldExtract = true
                     }
                 }
             }
