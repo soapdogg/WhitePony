@@ -1,6 +1,6 @@
 package compiler.parser.impl
 
-import compiler.core.IDeclarationStatementNode
+import compiler.core.IParsedDeclarationStatementNode
 import compiler.core.Token
 import compiler.core.TokenType
 import compiler.parser.impl.internal.IDeclarationStatementParser
@@ -12,7 +12,7 @@ internal class DeclarationStatementParser(
     private val variableDeclarationListParser: IVariableDeclarationListParser,
 ) : IDeclarationStatementParser{
 
-    override fun parse(tokens: List<Token>, startingPosition: Int): Pair<IDeclarationStatementNode, Int> {
+    override fun parse(tokens: List<Token>, startingPosition: Int): Pair<IParsedDeclarationStatementNode, Int> {
         val decidingToken = tokens[startingPosition + 2]
 
         return if (decidingToken.type == TokenType.LEFT_PARENTHESES) {

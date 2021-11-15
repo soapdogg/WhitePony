@@ -1,6 +1,6 @@
 package compiler.parser.impl
 
-import compiler.core.IDeclarationStatementNode
+import compiler.core.IParsedDeclarationStatementNode
 import compiler.core.Token
 import compiler.parser.impl.internal.IDeclarationStatementParser
 import org.junit.jupiter.api.Assertions
@@ -17,7 +17,7 @@ class ParserTest {
         val token = Mockito.mock(Token::class.java)
         val tokens = listOf(token)
 
-        val declarationStatementNode = Mockito.mock(IDeclarationStatementNode::class.java)
+        val declarationStatementNode = Mockito.mock(IParsedDeclarationStatementNode::class.java)
         Mockito.`when`(declarationStatementParser.parse(tokens, 0)).thenReturn(Pair(declarationStatementNode, tokens.size))
 
         val actual = parser.parse(tokens)
