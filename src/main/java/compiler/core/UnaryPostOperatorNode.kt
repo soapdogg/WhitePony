@@ -1,6 +1,6 @@
 package compiler.core
 
 data class UnaryPostOperatorNode(
-    val expression: IExpressionNode,
+    val expression: IParsedExpressionNode,
     val operator: String
-): IExpressionNode
+): IParsedExpressionNode

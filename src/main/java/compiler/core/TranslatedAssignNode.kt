@@ -1,4 +1,5 @@
 package compiler.core
 
-class TranslatedAssignNode {
-}
+data class TranslatedAssignNode(
+    val expressionNode: ITranslatedExpressionNode
+)

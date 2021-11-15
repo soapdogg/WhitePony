@@ -1,5 +1,5 @@
 package compiler.core
 
 data class ParsedAssignNode(
-    val expressionNode: IExpressionNode
+    val expressionNode: IParsedExpressionNode
 )

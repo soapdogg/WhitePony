@@ -1,6 +1,6 @@
 package compiler.core
 
 data class DoWhileNode(
-    val expression: IExpressionNode,
+    val expression: IParsedExpressionNode,
     val body: IStatementNode
 ): IStatementNode

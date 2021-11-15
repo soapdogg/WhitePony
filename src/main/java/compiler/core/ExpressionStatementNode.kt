@@ -1,5 +1,5 @@
 package compiler.core
 
 data class ExpressionStatementNode (
-    val expressionNode: IExpressionNode
+    val expressionNode: IParsedExpressionNode
 ):IStatementNode

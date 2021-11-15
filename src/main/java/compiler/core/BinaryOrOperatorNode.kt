@@ -1,6 +1,6 @@
 package compiler.core
 
 data class BinaryOrOperatorNode(
-    val leftExpression: IExpressionNode,
-    val rightExpression: IExpressionNode
-): IExpressionNode
+    val leftExpression: IParsedExpressionNode,
+    val rightExpression: IParsedExpressionNode
+): IParsedExpressionNode

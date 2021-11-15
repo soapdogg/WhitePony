@@ -1,6 +1,6 @@
 package compiler.core
 
 data class IfNode (
-    val booleanExpression: IExpressionNode,
+    val booleanExpression: IParsedExpressionNode,
     val ifBody: IStatementNode,
 ): IStatementNode

@@ -1,6 +1,6 @@
 package compiler.parser.impl
 
-import compiler.core.IExpressionNode
+import compiler.core.IParsedExpressionNode
 import compiler.core.Token
 import compiler.core.TokenType
 import compiler.parser.impl.internal.IExpressionParser
@@ -23,7 +23,7 @@ class ExpressionStatementParserTest {
     fun parseTest() {
         val tokens = listOf<Token>()
         val startingPosition = 0
-        val expressionNode = Mockito.mock(IExpressionNode::class.java)
+        val expressionNode = Mockito.mock(IParsedExpressionNode::class.java)
         val positionAfterExpression = startingPosition + 1
         Mockito.`when`(
             expressionParser.parse(

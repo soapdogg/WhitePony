@@ -1,6 +1,6 @@
 package compiler.core
 
 data class WhileNode(
-    val expression: IExpressionNode,
+    val expression: IParsedExpressionNode,
     val body: IStatementNode
 ): IStatementNode
