@@ -10,7 +10,7 @@ enum class ParserSingleton {
 
     private val tokenTypeAsserter = TokenTypeAsserter()
 
-    private val expressionParser = ExpressionParser()
+    private val expressionParser = ExpressionParserRecursive()
     private val arrayParser = ArrayParser(
         tokenTypeAsserter,
         expressionParser

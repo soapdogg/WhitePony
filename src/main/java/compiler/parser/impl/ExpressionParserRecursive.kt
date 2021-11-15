@@ -5,7 +5,7 @@ import compiler.core.UnaryPreOperatorNode
 import compiler.core.*
 import compiler.parser.impl.internal.IExpressionParser
 
-class ExpressionParser: IExpressionParser {
+internal class ExpressionParserRecursive: IExpressionParser {
     override fun parse(
         tokens: List<Token>,
         startingPosition: Int,

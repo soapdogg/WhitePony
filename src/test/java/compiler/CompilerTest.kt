@@ -1,6 +1,6 @@
 package compiler
 
-import compiler.core.ProgramRootNode
+import compiler.core.ParsedProgramRootNode
 import compiler.core.Token
 import compiler.parser.IParser
 import compiler.tokenizer.ITokenizer
@@ -25,7 +25,7 @@ class CompilerTest {
         val tokens = listOf<Token>()
         Mockito.`when`(tokenizer.tokenize(program)).thenReturn(tokens)
 
-        val parseTree = Mockito.mock(ProgramRootNode::class.java)
+        val parseTree = Mockito.mock(ParsedProgramRootNode::class.java)
         Mockito.`when`(parser.parse(tokens)).thenReturn(parseTree)
 
         val actual = compiler.compile(program)

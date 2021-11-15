@@ -1,5 +1,5 @@
 package compiler.core
 
-data class ProgramRootNode(
+data class ParsedProgramRootNode(
     val declarationStatements: List<IDeclarationStatementNode>
 )
