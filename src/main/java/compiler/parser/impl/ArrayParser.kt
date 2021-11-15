@@ -1,6 +1,6 @@
 package compiler.parser.impl
 
-import compiler.core.ArrayNode
+import compiler.core.ParsedArrayNode
 import compiler.core.Token
 import compiler.core.TokenType
 import compiler.parser.impl.internal.IArrayParser
@@ -14,7 +14,7 @@ internal class ArrayParser(
     override fun parse(
         tokens: List<Token>,
         startingPosition: Int
-    ): Pair<ArrayNode, Int> {
+    ): Pair<ParsedArrayNode, Int> {
         tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.LEFT_BRACKET)
         val positionAfterLeftBracket = startingPosition + 1
         val hasIndex = tokens[positionAfterLeftBracket].type != TokenType.RIGHT_BRACKET
@@ -25,7 +25,7 @@ internal class ArrayParser(
         }
         tokenTypeAsserter.assertTokenType(tokens, positionAfterExpression, TokenType.RIGHT_BRACKET)
         val positionAfterRightBracket = positionAfterExpression + 1
-        val arrayNode = ArrayNode(expressionNode)
+        val arrayNode = ParsedArrayNode(expressionNode)
         return Pair(arrayNode, positionAfterRightBracket)
     }
 }

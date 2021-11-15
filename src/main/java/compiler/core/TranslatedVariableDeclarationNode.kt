@@ -1,4 +1,7 @@
 package compiler.core
 
-class TranslatedVariableDeclarationNode {
-}
+data class TranslatedVariableDeclarationNode(
+    val id: String,
+    val arrayNode: TranslatedArrayNode?,
+    val assignNode: TranslatedAssignNode?
+)

@@ -1,5 +1,5 @@
 package compiler.core
 
-data class ArrayNode(
+data class ParsedArrayNode(
     val indexExpressionNode: IExpressionNode?
 )
