@@ -20,23 +20,23 @@ internal class StatementParserIterative(
         startingPosition: Int
     ): Pair<IStatementNode, Int> {
 
-        val statementStack = Stack<IParseStackItem>()
+        val programStack = Stack<IParseStackItem>()
         val stackItem = BlockParseStackItem(listOf())
-        statementStack.push(stackItem)
+        programStack.push(stackItem)
 
 
         var currentPosition = startingPosition + 1
-        var latestStatement: IStatementNode? = null
+        var latestStatement = Stack<IStatementNode>()
         var shouldExtract = true
         while(
-            statementStack.isNotEmpty()
+            programStack.isNotEmpty()
         ) {
             val tokenType = tokens[currentPosition].type
             when {
                 tokenType == TokenType.DO -> {
                     val (_, positionAfterDo) = tokenTypeAsserter.assertTokenType(tokens, currentPosition, TokenType.DO)
                     currentPosition = positionAfterDo
-                    statementStack.push(DoParseStackItem())
+                    programStack.push(DoParseStackItem())
                     continue
                 }
                 tokenType == TokenType.WHILE -> {
@@ -46,7 +46,7 @@ internal class StatementParserIterative(
                     val (_, positionAfterRightParentheses) = tokenTypeAsserter.assertTokenType(tokens, positionAfterExpression, TokenType.RIGHT_PARENTHESES)
                     currentPosition = positionAfterRightParentheses
                     val stackItem = WhileParseStackItem(expression)
-                    statementStack.push(stackItem)
+                    programStack.push(stackItem)
                     continue
                 }
                 tokenType == TokenType.FOR -> {
@@ -60,7 +60,7 @@ internal class StatementParserIterative(
                     val (_, positionAfterRightParentheses) = tokenTypeAsserter.assertTokenType(tokens,  positionAfterIncrementExpression, TokenType.RIGHT_PARENTHESES)
                     currentPosition = positionAfterRightParentheses
                     val stackItem = ForParseStackItem(initExpression, testExpression, incrementExpression)
-                    statementStack.push(stackItem)
+                    programStack.push(stackItem)
                     continue
                 }
                 tokenType == TokenType.IF -> {
@@ -70,14 +70,7 @@ internal class StatementParserIterative(
                     val (_, positionAfterRightParentheses) = tokenTypeAsserter.assertTokenType(tokens, positionAfterBooleanExpression, TokenType.RIGHT_PARENTHESES)
                     currentPosition = positionAfterRightParentheses
                     val stackItem = IfParseStackItem(booleanExpression)
-                    statementStack.push(stackItem)
-                    continue
-                }
-                tokenType == TokenType.ELSE -> {
-                    val (_, positionAfterElse) = tokenTypeAsserter.assertTokenType(tokens, currentPosition, TokenType.ELSE)
-                    currentPosition = positionAfterElse
-                    val stackItem = ElseParseStackItem()
-                    statementStack.push(stackItem)
+                    programStack.push(stackItem)
                     continue
                 }
                 tokenType == TokenType.LEFT_BRACE -> {
@@ -89,37 +82,37 @@ internal class StatementParserIterative(
                     val statements = mutableListOf<IStatementNode>()
                     currentPosition = positionAfterLeftBrace
                     val stackItem = BlockParseStackItem(statements)
-                    statementStack.push(stackItem)
+                    programStack.push(stackItem)
                     continue
                 }
             }
 
             val localStatement = if(shouldExtract){
-                when{
-                    tokenType == TokenType.RETURN -> {
+                when (tokenType) {
+                    TokenType.RETURN -> {
                         val(returnStatement, positionAfterReturn) = returnStatementParser.parse(tokens, currentPosition)
                         currentPosition = positionAfterReturn
                         returnStatement
                     }
-                    tokenType == TokenType.TYPE -> {
+                    TokenType.TYPE -> {
                         val(variableDeclarationListStatement, positionAfterVariableDeclarationList) = variableDeclarationListParser.parse(tokens, currentPosition)
                         currentPosition = positionAfterVariableDeclarationList
                         variableDeclarationListStatement
                     }
-                    tokenType == TokenType.IDENTIFIER || tokenType == TokenType.PRE_POST  -> {
+                    TokenType.IDENTIFIER, TokenType.PRE_POST -> {
                         val(expressionStatement, positionAfterExpressionStatement) = expressionStatementParser.parse(tokens, currentPosition)
                         currentPosition = positionAfterExpressionStatement
                         expressionStatement
                     }
                     else -> {
-                        latestStatement!!
+                        latestStatement.pop()
                     }
                 }
             } else {
-                latestStatement!!
+                latestStatement.pop()
             }
 
-            val top = statementStack.pop()
+            val top = programStack.pop()
 
             when {
                 top.getType() == StatementType.DO_STATEMENT -> {
@@ -132,13 +125,13 @@ internal class StatementParserIterative(
                         expression,
                         localStatement
                     )
-                    latestStatement = doStatement
+                    latestStatement.push(doStatement)
                     currentPosition = positionAfterSemicolon
                 }
                 top.getType() == StatementType.WHILE_STATEMENT -> {
                     val whileStackItem = top as WhileParseStackItem
                     val whileStatement = WhileNode(whileStackItem.expression, localStatement)
-                    latestStatement = whileStatement
+                    latestStatement.push(whileStatement)
                 }
                 top.getType() == StatementType.FOR_STATEMENT -> {
                     val forStackItem = top as ForParseStackItem
@@ -148,7 +141,7 @@ internal class StatementParserIterative(
                         forStackItem.incrementExpression,
                         localStatement
                     )
-                    latestStatement = forStatement
+                    latestStatement.push(forStatement)
                 }
                 top.getType() == StatementType.IF_STATEMENT -> {
                     val ifStackItem = top as IfParseStackItem
@@ -157,7 +150,7 @@ internal class StatementParserIterative(
                         localStatement,
                         null
                     )
-                    latestStatement = ifStatement
+                    latestStatement.push(ifStatement)
                     shouldExtract = false
                 }
                 top.getType() == StatementType.BLOCK_STATEMENT -> {
@@ -168,19 +161,19 @@ internal class StatementParserIterative(
                         val blockStatement = BasicBlockNode(
                             statements
                         )
-                        latestStatement = blockStatement
+                        latestStatement.push(blockStatement)
                         currentPosition = positionAfterRightBrace
                         shouldExtract = false
                     } else {
                         val blockStackItem2 = BlockParseStackItem(statements)
-                        statementStack.push(blockStackItem2)
+                        programStack.push(blockStackItem2)
                         shouldExtract = true
                     }
                 }
             }
         }
 
-        return Pair(latestStatement!!, tokens.size)
+        return Pair(latestStatement.pop(), tokens.size)
     }
 
 }
