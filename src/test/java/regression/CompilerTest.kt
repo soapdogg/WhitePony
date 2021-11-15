@@ -4,6 +4,7 @@ import compiler.Compiler
 import compiler.parser.ParserSingleton
 import compiler.tokenizer.TokenizerSingleton
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor
 import org.junit.jupiter.params.provider.MethodSource
@@ -36,9 +37,16 @@ class CompilerTest {
 
         Assertions.assertEquals(expectedSize, result.size)
 
-
-        val iterativeRootNode = iterativeCompiler.compile(input)
         val recursiveRootNode = recursiveCompiler.compile(input)
+        val iterativeRootNode = iterativeCompiler.compile(input)
+        Assertions.assertEquals(iterativeRootNode, recursiveRootNode)
+    }
+
+    @Test
+    fun regressionIndividualTest() {
+
+        val recursiveRootNode = recursiveCompiler.compile(Program2)
+        val iterativeRootNode = iterativeCompiler.compile(Program2)
         Assertions.assertEquals(iterativeRootNode, recursiveRootNode)
     }
 
@@ -46,7 +54,7 @@ class CompilerTest {
         @JvmStatic
         fun inputData(): Stream<Pair<String, Int>> {
             return Stream.of(
-                Pair(Program1, 34),
+                //Pair(Program1, 34),
                 Pair(Program2, 37),
                 Pair(Program3, 34),
                 Pair(Program4, 28),
@@ -62,12 +70,12 @@ class CompilerTest {
                 Pair(Program14, 37),
                 Pair(Program15, 44),
                 Pair(Program16, 42),
-//                Pair(Program17, 37),
+                Pair(Program17, 37),
 //                Pair(Program18, 42),
                 Pair(Program19, 39),
                 Pair(Program20, 39),
 //                Pair(Program21, 152),
-//                Pair(Program22, 367)
+                Pair(Program22, 367)
             )
         }
 

@@ -60,23 +60,20 @@ internal class StatementParserRecursive(
                 val (booleanExpression, positionAfterBooleanExpression) = expressionParser.parse(tokens, positionAfterLeftParentheses, setOf(TokenType.RIGHT_PARENTHESES))
                 val (_, positionAfterRightParentheses) = tokenTypeAsserter.assertTokenType(tokens, positionAfterBooleanExpression, TokenType.RIGHT_PARENTHESES)
                 val (ifBody, positionAfterIfBody) = parse(tokens, positionAfterRightParentheses)
-                if (tokens[positionAfterIfBody].type == TokenType.ELSE) {
-                    val (_, positionAfterElse) = tokenTypeAsserter.assertTokenType(tokens, positionAfterIfBody, TokenType.ELSE)
-                    val (elseBody, positionAfterElseBody) = parse(tokens, positionAfterElse)
-                    val ifNode = IfNode(
-                        booleanExpression,
-                        ifBody,
-                        elseBody
-                    )
-                    Pair(ifNode, positionAfterElseBody)
-                } else {
-                    val ifNode = IfNode(
-                        booleanExpression,
-                        ifBody,
-                        null
-                    )
-                    Pair(ifNode, positionAfterIfBody)
-                }
+
+                val ifNode = IfNode(
+                    booleanExpression,
+                    ifBody,
+                )
+                Pair(ifNode, positionAfterIfBody)
+            }
+            TokenType.ELSE -> {
+                val (_, positionAfterElse) = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.ELSE)
+                val (elseBody, positionAfterElseBody) = parse(tokens, positionAfterElse)
+                val elseNode = ElseNode(
+                    elseBody
+                )
+                Pair(elseNode, positionAfterElseBody)
             }
             TokenType.LEFT_BRACE -> {
                 val (_, positionAfterLeftBrace) = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.LEFT_BRACE)
