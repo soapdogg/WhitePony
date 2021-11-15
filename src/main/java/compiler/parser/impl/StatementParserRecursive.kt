@@ -18,7 +18,7 @@ internal class StatementParserRecursive(
     override fun parse(
         tokens: List<Token>,
         startingPosition: Int
-    ): Pair<IStatementNode, Int> {
+    ): Pair<IParsedStatementNode, Int> {
         val tokenType = tokens[startingPosition].type
 
         return when (tokenType) {
@@ -73,7 +73,7 @@ internal class StatementParserRecursive(
             }
             TokenType.LEFT_BRACE -> {
                 val (_, positionAfterLeftBrace) = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.LEFT_BRACE)
-                val statements = mutableListOf<IStatementNode>()
+                val statements = mutableListOf<IParsedStatementNode>()
                 var statementPosition = positionAfterLeftBrace
                 while (tokens[statementPosition].type != TokenType.RIGHT_BRACE) {
                     val (statement, positionAfterStatement) = parse(tokens, statementPosition)
@@ -81,7 +81,7 @@ internal class StatementParserRecursive(
                     statementPosition = positionAfterStatement
                 }
                 val (_, positionAfterRightBrace) = tokenTypeAsserter.assertTokenType(tokens, statementPosition, TokenType.RIGHT_BRACE)
-                val basicBlockNode = BasicBlockNode(statements)
+                val basicBlockNode = ParsedBasicBlockNode(statements)
                 Pair(basicBlockNode, positionAfterRightBrace)
             }
             TokenType.RETURN -> {

@@ -1,4 +1,7 @@
 package compiler.core
 
-class TranslatedFunctionDeclarationNode : ITranslatedDeclarationStatementNode{
-}
+data class TranslatedFunctionDeclarationNode(
+    val type: String,
+    val functionName: String,
+    val basicBlockNode: TranslatedBasicBlockNode
+) : ITranslatedDeclarationStatementNode

@@ -1,6 +1,6 @@
 package compiler.parser.impl
 
-import compiler.core.BasicBlockNode
+import compiler.core.ParsedBasicBlockNode
 import compiler.core.ParsedFunctionDeclarationNode
 import compiler.core.Token
 import compiler.core.TokenType
@@ -29,7 +29,7 @@ internal class FunctionDeclarationParser(
         val functionDeclarationNode = ParsedFunctionDeclarationNode(
             identifierToken.value,
             typeToken.value,
-            basicBlockNode as BasicBlockNode
+            basicBlockNode as ParsedBasicBlockNode
         )
         return Pair(functionDeclarationNode, finalPosition)
     }

@@ -1,6 +1,6 @@
 package compiler.parser.impl
 
-import compiler.core.BasicBlockNode
+import compiler.core.ParsedBasicBlockNode
 import compiler.core.Token
 import compiler.core.TokenType
 import compiler.parser.impl.internal.IStatementParser
@@ -43,7 +43,7 @@ class FunctionDeclarationParserTest {
         val identifierValue = "value"
         Mockito.`when`(identifierToken.value).thenReturn(identifierValue)
 
-        val basicBlockNode = Mockito.mock(BasicBlockNode::class.java)
+        val basicBlockNode = Mockito.mock(ParsedBasicBlockNode::class.java)
         val finalPosition = 10
         Mockito.`when`(
             statementParser.parse(
