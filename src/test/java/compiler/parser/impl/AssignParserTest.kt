@@ -31,7 +31,6 @@ class AssignParserTest {
             expressionParser.parse(
                 tokens,
                 positionAfterAssign,
-                setOf(TokenType.COMMA, TokenType.SEMICOLON)
             )
         ).thenReturn(Pair(expressionNode, positionAfterExpression))
 

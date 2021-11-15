@@ -36,7 +36,6 @@ class ArrayParserTest {
             expressionParser.parse(
                 tokens,
                 expressionPosition,
-                setOf(TokenType.RIGHT_BRACKET)
             )
         ).thenReturn(Pair(expressionNode, rightBracketPosition))
         val finalPosition = rightBracketPosition + 1

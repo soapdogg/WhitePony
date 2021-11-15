@@ -15,7 +15,7 @@ internal class ExpressionStatementParser(
         tokens: List<Token>,
         startingPosition: Int
     ): Pair<ExpressionStatementNode, Int> {
-        val (expressionNode, positionAfterExpression) = expressionParser.parse(tokens, startingPosition, setOf(TokenType.SEMICOLON))
+        val (expressionNode, positionAfterExpression) = expressionParser.parse(tokens, startingPosition)
         tokenTypeAsserter.assertTokenType(tokens, positionAfterExpression, TokenType.SEMICOLON)
         val positionAfterSemicolon = positionAfterExpression + 1
         val expressionStatementNode = ExpressionStatementNode(expressionNode)

@@ -29,7 +29,6 @@ class ExpressionStatementParserTest {
             expressionParser.parse(
                 tokens,
                 startingPosition,
-                setOf(TokenType.SEMICOLON)
             )
         ).thenReturn(Pair(expressionNode, positionAfterExpression))
         val positionAfterSemicolon = positionAfterExpression + 1

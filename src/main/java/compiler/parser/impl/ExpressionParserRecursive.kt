@@ -9,7 +9,6 @@ internal class ExpressionParserRecursive: IExpressionParser {
     override fun parse(
         tokens: List<Token>,
         startingPosition: Int,
-        tokenTypesToLookFor: Set<TokenType>
     ): Pair<IExpressionNode, Int> {
         return parseAssignmentOperator(tokens, startingPosition)
     }
@@ -254,7 +253,7 @@ internal class ExpressionParserRecursive: IExpressionParser {
         var result: IExpressionNode = variableExpression
         if (tokens[currentPosition].type == TokenType.LEFT_BRACKET) {
             currentPosition++
-            val (insideExpression, positionAfterInnerExpression) = parse(tokens, currentPosition, setOf())
+            val (insideExpression, positionAfterInnerExpression) = parse(tokens, currentPosition)
             currentPosition = positionAfterInnerExpression + 1
             result = BinaryArrayOperatorNode(variableExpression, insideExpression)
         }
@@ -270,7 +269,7 @@ internal class ExpressionParserRecursive: IExpressionParser {
         tokens: List<Token>,
         startingPosition: Int
     ): Pair<IExpressionNode, Int> {
-        val (innerExpression, positionAfterInnerExpression) = parse(tokens, startingPosition + 1, setOf())
+        val (innerExpression, positionAfterInnerExpression) = parse(tokens, startingPosition + 1)
         return Pair(innerExpression, positionAfterInnerExpression + 1)
     }
 }

@@ -17,7 +17,7 @@ internal class AssignParser(
     ): Pair<ParsedAssignNode, Int> {
         tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.BINARY_ASSIGN)
         val positionAfterAssign = startingPosition + 1
-        val (expressionNode, positionAfterExpression) = expressionParser.parse(tokens, positionAfterAssign, setOf(TokenType.COMMA, TokenType.SEMICOLON))
+        val (expressionNode, positionAfterExpression) = expressionParser.parse(tokens, positionAfterAssign)
         val assignNode = ParsedAssignNode(expressionNode)
         return Pair(assignNode, positionAfterExpression)
     }

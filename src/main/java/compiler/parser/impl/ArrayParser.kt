@@ -19,7 +19,7 @@ internal class ArrayParser(
         val positionAfterLeftBracket = startingPosition + 1
         val hasIndex = tokens[positionAfterLeftBracket].type != TokenType.RIGHT_BRACKET
         val (expressionNode, positionAfterExpression) = if (hasIndex) {
-            expressionParser.parse(tokens, positionAfterLeftBracket, setOf(TokenType.RIGHT_BRACKET))
+            expressionParser.parse(tokens, positionAfterLeftBracket)
         } else {
             Pair(null, positionAfterLeftBracket)
         }
