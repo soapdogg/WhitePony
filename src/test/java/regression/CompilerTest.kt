@@ -13,12 +13,6 @@ import java.util.stream.Stream
 class CompilerTest {
 
     private val tokenizer = TokenizerSingleton.INSTANCE.tokenizer
-    private val iterativeParser = ParserSingleton.INSTANCE.iterativeParser
-    private val iterativeCompiler = Compiler(
-        tokenizer,
-        iterativeParser
-    )
-
     private val recursiveParser = ParserSingleton.INSTANCE.recursiveParser
     private val recursiveCompiler = Compiler(
         tokenizer,
@@ -37,17 +31,17 @@ class CompilerTest {
 
         Assertions.assertEquals(expectedSize, result.size)
 
-        val recursiveRootNode = recursiveCompiler.compile(input)
-        val iterativeRootNode = iterativeCompiler.compile(input)
-        Assertions.assertEquals(iterativeRootNode, recursiveRootNode)
+        Assertions.assertDoesNotThrow {
+            recursiveCompiler.compile(input)
+        }
     }
 
     @Test
     fun regressionIndividualTest() {
 
-        val recursiveRootNode = recursiveCompiler.compile(Program2)
-        val iterativeRootNode = iterativeCompiler.compile(Program2)
-        Assertions.assertEquals(iterativeRootNode, recursiveRootNode)
+        Assertions.assertDoesNotThrow {
+            recursiveCompiler.compile(Program12)
+        }
     }
 
     companion object {
@@ -75,7 +69,7 @@ class CompilerTest {
                 Pair(Program19, 39),
                 Pair(Program20, 39),
 //                Pair(Program21, 152),
-                Pair(Program22, 367)
+//                Pair(Program22, 367)
             )
         }
 

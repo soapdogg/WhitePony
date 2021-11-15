@@ -40,14 +40,6 @@ enum class ParserSingleton {
         expressionStatementParser
     )
 
-    private val statementParserIterative = StatementParserIterative(
-        tokenTypeAsserter,
-        expressionParser,
-        returnStatementParser,
-        variableDeclarationListParser,
-        expressionStatementParser
-    )
-
     private val statementParserRecursive = StatementParserRecursive(
         tokenTypeAsserter,
         expressionParser,
@@ -56,22 +48,11 @@ enum class ParserSingleton {
         expressionStatementParser
     )
 
-    private val iterativeFunctionDeclarationParser = FunctionDeclarationParser(
-        tokenTypeAsserter,
-        statementParserIterative
-    )
-
     private val recursiveFunctionDeclarationParser = FunctionDeclarationParser(
         tokenTypeAsserter,
         statementParserRecursive
     )
 
-
-
-    private val iterativeDeclarationStatementParser = DeclarationStatementParser(
-        iterativeFunctionDeclarationParser,
-        variableDeclarationListParser
-    )
 
     private val recursiveDeclarationStatementParser = DeclarationStatementParser(
         recursiveFunctionDeclarationParser,
@@ -79,6 +60,5 @@ enum class ParserSingleton {
     )
 
 
-    val iterativeParser: IParser = Parser(iterativeDeclarationStatementParser)
     val recursiveParser: IParser = Parser(recursiveDeclarationStatementParser)
 }

@@ -29,6 +29,6 @@ class CompilerTest {
         Mockito.`when`(parser.parse(tokens)).thenReturn(parseTree)
 
         val actual = compiler.compile(program)
-        Assertions.assertEquals(parseTree.toString(), actual)
+        Assertions.assertEquals(parseTree, actual)
     }
 }
