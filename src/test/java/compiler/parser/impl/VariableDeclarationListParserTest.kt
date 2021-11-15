@@ -2,7 +2,7 @@ package compiler.parser.impl
 
 import compiler.core.Token
 import compiler.core.TokenType
-import compiler.core.VariableDeclarationNode
+import compiler.core.ParsedVariableDeclarationNode
 import compiler.parser.impl.internal.ITokenTypeAsserter
 import compiler.parser.impl.internal.IVariableDeclarationParser
 import org.junit.jupiter.api.Assertions
@@ -39,12 +39,12 @@ class VariableDeclarationListParserTest {
         val positionAfterType = startingPosition + 1
         Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.TYPE)).thenReturn(Pair(typeToken, positionAfterType))
 
-        val variableDeclaration1 = Mockito.mock(VariableDeclarationNode::class.java)
+        val variableDeclaration1 = Mockito.mock(ParsedVariableDeclarationNode::class.java)
         val positionAfterDeclaration1 = positionAfterType + 1
         Mockito.`when`(variableDeclarationParser.parse(tokens, positionAfterType)).thenReturn(Pair(variableDeclaration1, positionAfterDeclaration1))
 
         val positionAfterComma = positionAfterDeclaration1 + 1
-        val variableDeclaration2 = Mockito.mock(VariableDeclarationNode::class.java)
+        val variableDeclaration2 = Mockito.mock(ParsedVariableDeclarationNode::class.java)
         val positionAfterDeclaration2 = positionAfterComma + 1
         Mockito.`when`(variableDeclarationParser.parse(tokens, positionAfterComma)).thenReturn(Pair(variableDeclaration2, positionAfterDeclaration2))
 

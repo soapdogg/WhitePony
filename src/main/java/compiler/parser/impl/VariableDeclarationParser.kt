@@ -2,7 +2,7 @@ package compiler.parser.impl
 
 import compiler.core.Token
 import compiler.core.TokenType
-import compiler.core.VariableDeclarationNode
+import compiler.core.ParsedVariableDeclarationNode
 import compiler.parser.impl.internal.IArrayParser
 import compiler.parser.impl.internal.IAssignParser
 import compiler.parser.impl.internal.ITokenTypeAsserter
@@ -16,7 +16,7 @@ internal class VariableDeclarationParser(
     override fun parse(
         tokens: List<Token>,
         startingPosition: Int
-    ): Pair<VariableDeclarationNode, Int> {
+    ): Pair<ParsedVariableDeclarationNode, Int> {
         val (identifierToken, positionAfterIdentifier) = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.IDENTIFIER)
 
         val (arrayNode, positionAfterArray) = if (tokens[positionAfterIdentifier].type == TokenType.LEFT_BRACKET) {
@@ -31,7 +31,7 @@ internal class VariableDeclarationParser(
             Pair(null, positionAfterArray)
         }
 
-        val variableDeclarationNode = VariableDeclarationNode(
+        val variableDeclarationNode = ParsedVariableDeclarationNode(
             identifierToken.value,
             arrayNode,
             assignNode

@@ -1,4 +1,6 @@
 package compiler.core
 
-class TranslatedVariableDeclarationListNode(): ITranslatedDeclarationStatementNode {
-}
+data class TranslatedVariableDeclarationListNode(
+    val type: String,
+    val variableDeclarations: List<TranslatedVariableDeclarationNode>
+): ITranslatedDeclarationStatementNode

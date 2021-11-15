@@ -1,6 +1,6 @@
 package compiler.core
 
-data class VariableDeclarationNode (
+data class ParsedVariableDeclarationNode (
     val id: String,
     val arrayNode: ArrayNode?,
     val assignNode: AssignNode?

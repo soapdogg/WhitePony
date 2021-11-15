@@ -2,5 +2,5 @@ package compiler.core
 
 data class ParsedVariableDeclarationListNode(
     val type: String,
-    val variableDeclarations: List<VariableDeclarationNode>
+    val variableDeclarations: List<ParsedVariableDeclarationNode>
 ) : IParsedDeclarationStatementNode, IStatementNode
