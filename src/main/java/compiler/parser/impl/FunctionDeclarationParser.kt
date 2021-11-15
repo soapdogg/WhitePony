@@ -1,7 +1,7 @@
 package compiler.parser.impl
 
 import compiler.core.BasicBlockNode
-import compiler.core.FunctionDeclarationNode
+import compiler.core.ParsedFunctionDeclarationNode
 import compiler.core.Token
 import compiler.core.TokenType
 import compiler.parser.impl.internal.IFunctionDeclarationParser
@@ -16,7 +16,7 @@ internal class FunctionDeclarationParser(
     override fun parse(
         tokens: List<Token>,
         startingPosition: Int,
-    ): Pair<FunctionDeclarationNode, Int> {
+    ): Pair<ParsedFunctionDeclarationNode, Int> {
         val (typeToken, positionAfterType) = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.TYPE)
         val (identifierToken, positionAfterIdentifier) = tokenTypeAsserter.assertTokenType(tokens, positionAfterType, TokenType.IDENTIFIER)
         val (_, positionAfterLeftParentheses) = tokenTypeAsserter.assertTokenType(tokens, positionAfterIdentifier, TokenType.LEFT_PARENTHESES)
@@ -26,7 +26,7 @@ internal class FunctionDeclarationParser(
             tokens,
             positionAfterRightParentheses,
         )
-        val functionDeclarationNode = FunctionDeclarationNode(
+        val functionDeclarationNode = ParsedFunctionDeclarationNode(
             identifierToken.value,
             typeToken.value,
             basicBlockNode as BasicBlockNode

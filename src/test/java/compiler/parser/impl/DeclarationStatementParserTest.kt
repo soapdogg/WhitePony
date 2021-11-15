@@ -28,7 +28,7 @@ class DeclarationStatementParserTest {
         Mockito.`when`(token2.type).thenReturn(tokenType)
 
         val currentPosition = 1
-        val functionDeclarationNode = Mockito.mock(FunctionDeclarationNode::class.java)
+        val functionDeclarationNode = Mockito.mock(ParsedFunctionDeclarationNode::class.java)
         Mockito.`when`(
             functionDeclarationParser.parse(
                 tokens,
@@ -54,7 +54,7 @@ class DeclarationStatementParserTest {
         Mockito.`when`(token2.type).thenReturn(tokenType)
 
         val currentPosition = 1
-        val variableDeclarationListNode = Mockito.mock(VariableDeclarationListNode::class.java)
+        val variableDeclarationListNode = Mockito.mock(ParsedVariableDeclarationListNode::class.java)
         Mockito.`when`(
             variableDeclarationListParser.parse(
                 tokens,

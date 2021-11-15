@@ -1,6 +1,6 @@
 package compiler.core
 
-data class FunctionDeclarationNode(
+data class ParsedFunctionDeclarationNode(
     val functionName: String,
     val type: String,
     val basicBlockNode: BasicBlockNode
