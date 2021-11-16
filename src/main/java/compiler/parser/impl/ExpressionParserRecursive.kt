@@ -1,7 +1,7 @@
 package compiler.parser.impl
 
-import compiler.core.ConstantNode
-import compiler.core.UnaryPreOperatorNode
+import compiler.core.ParsedConstantNode
+import compiler.core.ParsedUnaryPreOperatorNode
 import compiler.core.*
 import compiler.parser.impl.internal.IExpressionParser
 
@@ -26,9 +26,9 @@ internal class ExpressionParserRecursive: IExpressionParser {
             val positionAfterAssign = positionAfterLogicalOr + 1
             val (rightExpression, positionAfterRightExpression) = parseAssignmentOperator(tokens, positionAfterAssign)
             val resultNode =  if (binaryAssignToken.type == TokenType.BINARY_ASSIGN) {
-                BinaryAssignNode(leftExpression, rightExpression)
+                ParsedBinaryAssignNode(leftExpression, rightExpression)
             } else {
-                BinaryAssignOperatorNode(leftExpression, rightExpression, binaryAssignToken.value.replace("=", ""))
+                ParsedBinaryAssignOperatorNode(leftExpression, rightExpression, binaryAssignToken.value.replace("=", ""))
             }
             return Pair(resultNode, positionAfterRightExpression)
         }
@@ -45,7 +45,7 @@ internal class ExpressionParserRecursive: IExpressionParser {
         while(tokens[currentPosition].type == TokenType.BINARY_OR) {
             currentPosition++
             val (rightExpression, positionAfterLogicalAnd) = parseLogicalAnd(tokens, currentPosition)
-            result = BinaryOrOperatorNode(result, rightExpression)
+            result = ParsedBinaryOrOperatorNode(result, rightExpression)
             currentPosition = positionAfterLogicalAnd
         }
         return Pair(result, currentPosition)
@@ -61,7 +61,7 @@ internal class ExpressionParserRecursive: IExpressionParser {
         while(tokens[currentPosition].type == TokenType.BINARY_AND) {
             currentPosition++
             val(rightExpression, positionAfterBitwiseOr) = parseBitwiseOr(tokens, currentPosition)
-            result = BinaryAndOperatorNode(result, rightExpression)
+            result = ParsedBinaryAndOperatorNode(result, rightExpression)
             currentPosition = positionAfterBitwiseOr
         }
         return Pair(result, currentPosition)
@@ -77,7 +77,7 @@ internal class ExpressionParserRecursive: IExpressionParser {
         while(tokens[currentPosition].value == "|") {
             currentPosition++
             val(rightExpression, positionAfterBitwiseXor) = parseBitwiseXor(tokens, currentPosition)
-            result = BinaryOperatorNode(result, rightExpression, "|")
+            result = ParsedBinaryOperatorNode(result, rightExpression, "|")
             currentPosition = positionAfterBitwiseXor
         }
         return Pair(result, currentPosition)
@@ -93,7 +93,7 @@ internal class ExpressionParserRecursive: IExpressionParser {
         while(tokens[currentPosition].value == "^") {
             currentPosition++
             val(rightExpression, positionAfterBitwiseAnd) = parseBitwiseAnd(tokens, currentPosition)
-            result = BinaryOperatorNode(result, rightExpression, "^")
+            result = ParsedBinaryOperatorNode(result, rightExpression, "^")
             currentPosition = positionAfterBitwiseAnd
         }
         return Pair(result, currentPosition)
@@ -109,7 +109,7 @@ internal class ExpressionParserRecursive: IExpressionParser {
         while(tokens[currentPosition].value == "&") {
             currentPosition++
             val(rightExpression, positionAfterRelationalEquals) = parseRelationalEquals(tokens, currentPosition)
-            result = BinaryOperatorNode(result, rightExpression, "&")
+            result = ParsedBinaryOperatorNode(result, rightExpression, "&")
             currentPosition = positionAfterRelationalEquals
         }
         return Pair(result, currentPosition)
@@ -126,7 +126,7 @@ internal class ExpressionParserRecursive: IExpressionParser {
             val relationalEqualsToken = tokens[currentPosition]
             currentPosition++
             val(rightExpression, positionAfterRelationalOperator) = parseRelationalOperator(tokens, currentPosition)
-            result = BinaryRelationalOperatorNode(result, rightExpression, relationalEqualsToken.value)
+            result = ParsedBinaryRelationalOperatorNode(result, rightExpression, relationalEqualsToken.value)
             currentPosition = positionAfterRelationalOperator
         }
         return Pair(result, currentPosition)
@@ -143,7 +143,7 @@ internal class ExpressionParserRecursive: IExpressionParser {
             val relationalOperatorToken = tokens[currentPosition]
             currentPosition++
             val(rightExpression, positionAfterShift) = parseShift(tokens, currentPosition)
-            result = BinaryRelationalOperatorNode(result, rightExpression, relationalOperatorToken.value)
+            result = ParsedBinaryRelationalOperatorNode(result, rightExpression, relationalOperatorToken.value)
             currentPosition = positionAfterShift
         }
         return Pair(result, currentPosition)
@@ -160,7 +160,7 @@ internal class ExpressionParserRecursive: IExpressionParser {
             val shiftToken = tokens[currentPosition]
             currentPosition++
             val(rightExpression, positionAfterTerm) = parseTerm(tokens, currentPosition)
-            result = BinaryOperatorNode(result, rightExpression, shiftToken.value)
+            result = ParsedBinaryOperatorNode(result, rightExpression, shiftToken.value)
             currentPosition = positionAfterTerm
         }
         return Pair(result, currentPosition)
@@ -177,7 +177,7 @@ internal class ExpressionParserRecursive: IExpressionParser {
             val termToken = tokens[currentPosition]
             currentPosition++
             val(rightExpression, positionAfterFactor) = parseFactor(tokens, currentPosition)
-            result = BinaryOperatorNode(result, rightExpression, termToken.value)
+            result = ParsedBinaryOperatorNode(result, rightExpression, termToken.value)
             currentPosition = positionAfterFactor
         }
         return Pair(result, currentPosition)
@@ -194,7 +194,7 @@ internal class ExpressionParserRecursive: IExpressionParser {
             val termToken = tokens[currentPosition]
             currentPosition++
             val(rightExpression, positionAfterUnary) = parseUnary(tokens, currentPosition)
-            result = BinaryOperatorNode(result, rightExpression, termToken.value)
+            result = ParsedBinaryOperatorNode(result, rightExpression, termToken.value)
             currentPosition = positionAfterUnary
         }
         return Pair(result, currentPosition)
@@ -209,11 +209,11 @@ internal class ExpressionParserRecursive: IExpressionParser {
             val positionAfterUnary = startingPosition + 1
             val (rightExpression, positionAfterRightExpression) = parseUnary(tokens, positionAfterUnary)
             val resultExpression = if (unaryToken.type == TokenType.PLUS_MINUS || unaryToken.type == TokenType.BIT_NEGATION) {
-                UnaryOperatorNode(rightExpression, unaryToken.value)
+                ParsedUnaryOperatorNode(rightExpression, unaryToken.value)
             } else if (unaryToken.type == TokenType.UNARY_NOT) {
-                UnaryNotOperatorNode(rightExpression)
+                ParsedUnaryNotOperatorNode(rightExpression)
             } else {
-                UnaryPreOperatorNode(rightExpression, unaryToken.value[0].toString())
+                ParsedUnaryPreOperatorNode(rightExpression, unaryToken.value[0].toString())
             }
             return Pair(resultExpression, positionAfterRightExpression)
         }
@@ -238,7 +238,7 @@ internal class ExpressionParserRecursive: IExpressionParser {
         startingPosition: Int
     ): Pair<IParsedExpressionNode, Int> {
         val constantToken = tokens[startingPosition]
-        val constantNode = ConstantNode(constantToken.value, constantToken.type == TokenType.INTEGER)
+        val constantNode = ParsedConstantNode(constantToken.value, constantToken.type == TokenType.INTEGER)
         return Pair(constantNode, startingPosition + 1)
     }
 
@@ -248,19 +248,19 @@ internal class ExpressionParserRecursive: IExpressionParser {
     ): Pair<IParsedExpressionNode, Int> {
         val identifierToken = tokens[startingPosition]
         var currentPosition = startingPosition + 1
-        val variableExpression = VariableExpressionNode(identifierToken.value)
+        val variableExpression = ParsedVariableExpressionNode(identifierToken.value)
 
         var result: IParsedExpressionNode = variableExpression
         if (tokens[currentPosition].type == TokenType.LEFT_BRACKET) {
             currentPosition++
             val (insideExpression, positionAfterInnerExpression) = parse(tokens, currentPosition)
             currentPosition = positionAfterInnerExpression + 1
-            result = BinaryArrayOperatorNode(variableExpression, insideExpression)
+            result = ParsedBinaryArrayOperatorNode(variableExpression, insideExpression)
         }
         if (tokens[currentPosition].type == TokenType.PRE_POST) {
             val prePostToken = tokens[currentPosition]
             currentPosition++
-            result = UnaryPostOperatorNode(result, prePostToken.value[0].toString())
+            result = ParsedUnaryPostOperatorNode(result, prePostToken.value[0].toString())
         }
         return Pair(result, currentPosition)
     }
@@ -270,6 +270,6 @@ internal class ExpressionParserRecursive: IExpressionParser {
         startingPosition: Int
     ): Pair<IParsedExpressionNode, Int> {
         val (innerExpression, positionAfterInnerExpression) = parse(tokens, startingPosition + 1)
-        return Pair(innerExpression, positionAfterInnerExpression + 1)
+        return Pair(ParsedInnerExpression(innerExpression), positionAfterInnerExpression + 1)
     }
 }

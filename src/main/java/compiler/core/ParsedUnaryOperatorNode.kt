@@ -1,6 +1,6 @@
 package compiler.core
 
-data class UnaryPreOperatorNode(
+data class ParsedUnaryOperatorNode(
     val expression: IParsedExpressionNode,
     val operator: String
 ): IParsedExpressionNode

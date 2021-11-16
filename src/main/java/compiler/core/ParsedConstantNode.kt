@@ -1,6 +1,6 @@
 package compiler.core
 
-data class ConstantNode(
+data class ParsedConstantNode(
     val value: String,
     val isInt: Boolean
 ): IParsedExpressionNode

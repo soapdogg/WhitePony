@@ -1,6 +1,6 @@
 package compiler.core
 
-data class BinaryAssignOperatorNode(
+data class ParsedBinaryOperatorNode(
     val leftExpression: IParsedExpressionNode,
     val rightExpression: IParsedExpressionNode,
     val operator: String

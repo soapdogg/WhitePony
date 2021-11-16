@@ -1,5 +1,5 @@
 package compiler.core
 
-data class UnaryNotOperatorNode(
+data class ParsedInnerExpression(
     val expression: IParsedExpressionNode
 ): IParsedExpressionNode
