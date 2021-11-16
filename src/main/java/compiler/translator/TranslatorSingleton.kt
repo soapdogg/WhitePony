@@ -1,5 +1,6 @@
 package compiler.translator
 
+import compiler.translator.impl.*
 import compiler.translator.impl.ArrayTranslator
 import compiler.translator.impl.AssignTranslator
 import compiler.translator.impl.DeclarationStatementTranslator
@@ -10,13 +11,11 @@ import compiler.translator.impl.StatementTranslatorRecursive
 import compiler.translator.impl.Translator
 import compiler.translator.impl.VariableDeclarationListTranslator
 import compiler.translator.impl.VariableDeclarationTranslator
-import compiler.translator.impl.internal.IExpressionTranslator
-import org.mockito.Mockito
 
 enum class TranslatorSingleton {
     INSTANCE;
 
-    private val expressionTranslator = Mockito.mock(IExpressionTranslator::class.java)
+    private val expressionTranslator = FakeExpressionTranslator()
 
     private val arrayTranslator = ArrayTranslator(expressionTranslator)
     private val assignTranslator = AssignTranslator(expressionTranslator)

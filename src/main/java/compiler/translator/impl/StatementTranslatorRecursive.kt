@@ -44,6 +44,7 @@ internal class StatementTranslatorRecursive(
             }
             is ParsedWhileNode -> {
                 val translatedExpression = expressionTranslator.translate(statementNode.expression)
+                //GetNextLabel
                 val translatedBody = translate(statementNode.body)
                 TranslatedWhileNode(
                     translatedExpression,
@@ -51,6 +52,8 @@ internal class StatementTranslatorRecursive(
                 )
             }
             is ParsedIfNode -> {
+                //GetNextLabelFalse
+                //GetNextLabelTrue
                 val translatedExpression = expressionTranslator.translate(statementNode.booleanExpression)
                 val translatedBody = translate(statementNode.ifBody)
                 TranslatedIfNode(
@@ -59,6 +62,7 @@ internal class StatementTranslatorRecursive(
                 )
             }
             is ParsedElseNode -> {
+                //GetNextLabel
                 val translatedBody = translate(statementNode.elseBody)
                 TranslatedElseNode(
                     translatedBody

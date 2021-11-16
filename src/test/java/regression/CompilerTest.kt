@@ -3,6 +3,7 @@ package regression
 import compiler.Compiler
 import compiler.parser.ParserSingleton
 import compiler.tokenizer.TokenizerSingleton
+import compiler.translator.TranslatorSingleton
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -14,9 +15,11 @@ class CompilerTest {
 
     private val tokenizer = TokenizerSingleton.INSTANCE.tokenizer
     private val recursiveParser = ParserSingleton.INSTANCE.recursiveParser
+    private val translator = TranslatorSingleton.INSTANCE.translator
     private val recursiveCompiler = Compiler(
         tokenizer,
-        recursiveParser
+        recursiveParser,
+        translator
     )
 
     @ParameterizedTest

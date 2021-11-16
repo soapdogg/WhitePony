@@ -2,8 +2,10 @@ package compiler
 
 import compiler.core.ParsedProgramRootNode
 import compiler.core.Token
+import compiler.core.TranslatedProgramRootNode
 import compiler.parser.IParser
 import compiler.tokenizer.ITokenizer
+import compiler.translator.ITranslator
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -12,10 +14,12 @@ class CompilerTest {
 
     private val tokenizer = Mockito.mock(ITokenizer::class.java)
     private val parser = Mockito.mock(IParser::class.java)
+    private val translator = Mockito.mock(ITranslator::class.java)
 
     private val compiler = Compiler(
         tokenizer,
-        parser
+        parser,
+        translator
     )
 
     @Test
@@ -28,7 +32,10 @@ class CompilerTest {
         val parseTree = Mockito.mock(ParsedProgramRootNode::class.java)
         Mockito.`when`(parser.parse(tokens)).thenReturn(parseTree)
 
+        val translatedTree = Mockito.mock(TranslatedProgramRootNode::class.java)
+        Mockito.`when`(translator.translate(parseTree)).thenReturn(translatedTree)
+
         val actual = compiler.compile(program)
-        Assertions.assertEquals(parseTree, actual)
+        Assertions.assertEquals(translatedTree, actual)
     }
 }
