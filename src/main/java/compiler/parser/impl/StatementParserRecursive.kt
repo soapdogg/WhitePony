@@ -28,7 +28,7 @@ internal class StatementParserRecursive(
                 val (_, positionAfterWhile) = tokenTypeAsserter.assertTokenType(tokens, positionAfterBody, TokenType.WHILE)
                 val (expression, positionAfterExpression) = expressionParser.parse(tokens, positionAfterWhile)
                 val (_, positionAfterSemicolon) = tokenTypeAsserter.assertTokenType(tokens, positionAfterExpression, TokenType.SEMICOLON)
-                val doStatement = DoWhileNode(
+                val doStatement = ParsedDoWhileNode(
                     expression,
                     body
                 )
@@ -44,7 +44,7 @@ internal class StatementParserRecursive(
                 val (incrementExpression, positionAfterIncrementExpression) = expressionParser.parse(tokens, positionAfterSecondSemi)
                 val (_, positionAfterRightParentheses) = tokenTypeAsserter.assertTokenType(tokens,  positionAfterIncrementExpression, TokenType.RIGHT_PARENTHESES)
                 val (body, positionAfterBody) = parse(tokens,  positionAfterRightParentheses)
-                val forNode = ForNode(
+                val forNode = ParsedForNode(
                     initExpression,
                     testExpression,
                     incrementExpression,
@@ -57,7 +57,7 @@ internal class StatementParserRecursive(
                 val (booleanExpression, positionAfterBooleanExpression) = expressionParser.parse(tokens, positionAfterIf)
                 val (ifBody, positionAfterIfBody) = parse(tokens, positionAfterBooleanExpression)
 
-                val ifNode = IfNode(
+                val ifNode = ParsedIfNode(
                     booleanExpression,
                     ifBody,
                 )
@@ -66,7 +66,7 @@ internal class StatementParserRecursive(
             TokenType.ELSE -> {
                 val (_, positionAfterElse) = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.ELSE)
                 val (elseBody, positionAfterElseBody) = parse(tokens, positionAfterElse)
-                val elseNode = ElseNode(
+                val elseNode = ParsedElseNode(
                     elseBody
                 )
                 Pair(elseNode, positionAfterElseBody)
@@ -94,7 +94,7 @@ internal class StatementParserRecursive(
                 val (_, positionAfterWhile) = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.WHILE)
                 val (expression, positionAfterExpression) = expressionParser.parse(tokens, positionAfterWhile)
                 val (body, positionAfterBody) = parse(tokens, positionAfterExpression)
-                val whileNode = WhileNode(expression, body)
+                val whileNode = ParsedWhileNode(expression, body)
                 Pair(whileNode, positionAfterBody)
             }
             else -> {

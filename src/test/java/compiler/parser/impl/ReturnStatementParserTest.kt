@@ -1,6 +1,6 @@
 package compiler.parser.impl
 
-import compiler.core.ExpressionStatementNode
+import compiler.core.ParsedExpressionStatementNode
 import compiler.core.Token
 import compiler.core.TokenType
 import compiler.parser.impl.internal.IExpressionStatementParser
@@ -25,7 +25,7 @@ class ReturnStatementParserTest {
         val startingPosition = 0
 
         val positionAfterReturn = startingPosition + 1
-        val expressionStatementNode = Mockito.mock(ExpressionStatementNode::class.java)
+        val expressionStatementNode = Mockito.mock(ParsedExpressionStatementNode::class.java)
         val positionAfterExpressionStatement = positionAfterReturn + 1
         Mockito.`when`(expressionStatementParser.parse(tokens, positionAfterReturn)).thenReturn(Pair(expressionStatementNode, positionAfterExpressionStatement))
 

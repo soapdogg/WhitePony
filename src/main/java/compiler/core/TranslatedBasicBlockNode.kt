@@ -1,4 +1,5 @@
 package compiler.core
 
-class TranslatedBasicBlockNode: ITranslatedStatementNode {
-}
+data class TranslatedBasicBlockNode(
+    val statements: List<ITranslatedStatementNode>
+): ITranslatedStatementNode

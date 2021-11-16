@@ -1,5 +1,5 @@
 package compiler.core
 
-data class ElseNode(
+data class ParsedElseNode(
     val elseBody: IParsedStatementNode
 ): IParsedStatementNode

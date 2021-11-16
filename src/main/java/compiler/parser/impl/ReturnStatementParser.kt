@@ -1,6 +1,6 @@
 package compiler.parser.impl
 
-import compiler.core.ReturnNode
+import compiler.core.ParsedReturnNode
 import compiler.core.Token
 import compiler.core.TokenType
 import compiler.parser.impl.internal.IExpressionStatementParser
@@ -14,11 +14,11 @@ internal class ReturnStatementParser(
     override fun parse(
         tokens: List<Token>,
         startingPosition: Int
-    ): Pair<ReturnNode, Int> {
+    ): Pair<ParsedReturnNode, Int> {
         tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.RETURN)
         val positionAfterReturn = startingPosition + 1
         val (expressionStatementNode, positionAfterExpressionStatement) = expressionStatementParser.parse(tokens, positionAfterReturn)
-        val returnNode = ReturnNode(expressionStatementNode)
+        val returnNode = ParsedReturnNode(expressionStatementNode)
         return Pair(returnNode, positionAfterExpressionStatement)
     }
 }

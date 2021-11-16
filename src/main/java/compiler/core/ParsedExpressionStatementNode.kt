@@ -1,5 +1,5 @@
 package compiler.core
 
-data class ExpressionStatementNode (
+data class ParsedExpressionStatementNode (
     val expressionNode: IParsedExpressionNode
 ):IParsedStatementNode

@@ -1,6 +1,6 @@
 package compiler.core
 
-data class DoWhileNode(
+data class ParsedWhileNode(
     val expression: IParsedExpressionNode,
     val body: IParsedStatementNode
 ): IParsedStatementNode
