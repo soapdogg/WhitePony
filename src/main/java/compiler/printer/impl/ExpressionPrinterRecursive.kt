@@ -8,40 +8,91 @@ class ExpressionPrinterRecursive : IExpressionPrinter {
     override fun printParsedNode(node: IParsedExpressionNode): String {
         return when(node) {
             is ParsedBinaryArrayOperatorNode -> {
-                printParsedNode(node.variableExpression) + PrinterConstants.LEFT_BRACKET + printParsedNode(node.insideExpression) + PrinterConstants.RIGHT_BRACKET
+                val leftExpressionString = printParsedNode(node.variableExpression)
+                val rightExpressionString = printParsedNode(node.insideExpression)
+                leftExpressionString +
+                        PrinterConstants.LEFT_BRACKET +
+                        rightExpressionString +
+                        PrinterConstants.RIGHT_BRACKET
             }
             is ParsedBinaryAssignNode -> {
-                printParsedNode(node.leftExpression) + PrinterConstants.SPACE + PrinterConstants.EQUALS + PrinterConstants.SPACE + printParsedNode(node.rightExpression)
+                val leftExpressionString = printParsedNode(node.leftExpression)
+                val rightExpressionString = printParsedNode(node.rightExpression)
+                leftExpressionString +
+                        PrinterConstants.SPACE +
+                        PrinterConstants.EQUALS +
+                        PrinterConstants.SPACE +
+                        rightExpressionString
             }
             is ParsedBinaryAssignOperatorNode -> {
-                printParsedNode(node.leftExpression) + PrinterConstants.SPACE + node.operator + PrinterConstants.EQUALS + PrinterConstants.SPACE + printParsedNode(node.rightExpression)
+                val leftExpressionString = printParsedNode(node.leftExpression)
+                val rightExpressionString = printParsedNode(node.rightExpression)
+                leftExpressionString +
+                        PrinterConstants.SPACE +
+                        node.operator +
+                        PrinterConstants.EQUALS +
+                        PrinterConstants.SPACE +
+                        rightExpressionString
             }
             is ParsedBinaryOperatorNode -> {
-                printParsedNode(node.leftExpression) + PrinterConstants.SPACE + node.operator +  PrinterConstants.SPACE + printParsedNode(node.rightExpression)
+                val leftExpressionString = printParsedNode(node.leftExpression)
+                val rightExpressionString = printParsedNode(node.rightExpression)
+                leftExpressionString +
+                        PrinterConstants.SPACE +
+                        node.operator +
+                        PrinterConstants.SPACE +
+                        rightExpressionString
             }
             is ParsedBinaryAndOperatorNode -> {
-                printParsedNode(node.leftExpression) + PrinterConstants.SPACE + PrinterConstants.AMPERSAND + PrinterConstants.AMPERSAND + PrinterConstants.SPACE + printParsedNode(node.rightExpression)
+                val leftExpressionString = printParsedNode(node.leftExpression)
+                val rightExpressionString = printParsedNode(node.rightExpression)
+                leftExpressionString +
+                        PrinterConstants.SPACE +
+                        PrinterConstants.AMPERSAND +
+                        PrinterConstants.AMPERSAND +
+                        PrinterConstants.SPACE +
+                        rightExpressionString
             }
             is ParsedBinaryOrOperatorNode -> {
-                printParsedNode(node.leftExpression) + PrinterConstants.SPACE + PrinterConstants.VERTICAL_BAR + PrinterConstants.VERTICAL_BAR + PrinterConstants.SPACE + printParsedNode(node.rightExpression)
+                val leftExpressionString = printParsedNode(node.leftExpression)
+                val rightExpressionString = printParsedNode(node.rightExpression)
+                leftExpressionString +
+                        PrinterConstants.SPACE +
+                        PrinterConstants.VERTICAL_BAR +
+                        PrinterConstants.VERTICAL_BAR +
+                        PrinterConstants.SPACE +
+                        rightExpressionString
             }
             is ParsedBinaryRelationalOperatorNode -> {
-                printParsedNode(node.leftExpression) + PrinterConstants.SPACE + node.operator + PrinterConstants.SPACE + printParsedNode(node.rightExpression)
+                val leftExpressionString = printParsedNode(node.leftExpression)
+                val rightExpressionString = printParsedNode(node.rightExpression)
+                leftExpressionString +
+                        PrinterConstants.SPACE +
+                        node.operator +
+                        PrinterConstants.SPACE +
+                        rightExpressionString
             }
             is ParsedInnerExpression -> {
-                PrinterConstants.LEFT_PARENTHESES + printParsedNode(node.expression) + PrinterConstants.RIGHT_PARENTHESES
+                val expressionString = printParsedNode(node.expression)
+                PrinterConstants.LEFT_PARENTHESES +
+                        expressionString +
+                        PrinterConstants.RIGHT_PARENTHESES
             }
             is ParsedUnaryOperatorNode -> {
-                node.operator + printParsedNode(node.expression)
+                val expressionString = printParsedNode(node.expression)
+                node.operator + expressionString
             }
             is ParsedUnaryNotOperatorNode -> {
-                PrinterConstants.EXCLAMATION_POINT + printParsedNode(node.expression)
+                val expressionString = printParsedNode(node.expression)
+                PrinterConstants.EXCLAMATION_POINT + expressionString
             }
             is ParsedUnaryPreOperatorNode -> {
-                node.operator + node.operator + printParsedNode(node.expression)
+                val expressionString = printParsedNode(node.expression)
+                node.operator + node.operator + expressionString
             }
             is ParsedUnaryPostOperatorNode -> {
-                printParsedNode(node.expression) + node.operator + node.operator
+                val expressionString = printParsedNode(node.expression)
+                expressionString + node.operator + node.operator
             }
             is ParsedConstantNode -> {
                 node.value
@@ -50,7 +101,7 @@ class ExpressionPrinterRecursive : IExpressionPrinter {
                 node.variableValue
             }
             else -> {
-                node.toString()
+                PrinterConstants.EMPTY
             }
         }
     }
