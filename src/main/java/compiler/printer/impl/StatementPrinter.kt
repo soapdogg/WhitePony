@@ -2,55 +2,39 @@ package compiler.printer.impl
 
 import compiler.core.*
 import compiler.core.constants.PrinterConstants
+import compiler.printer.impl.internal.*
 import compiler.printer.impl.internal.IExpressionPrinter
 import compiler.printer.impl.internal.IExpressionStatementPrinter
 import compiler.printer.impl.internal.IReturnStatementPrinter
 import compiler.printer.impl.internal.IStatementPrinter
+import compiler.printer.impl.internal.IStatementPrinterStackItemGenerator
 import compiler.printer.impl.internal.IVariableDeclarationListPrinter
 
-internal class StatementPrinterIterative(
+internal class StatementPrinter(
+    private val statementPrinterStackItemGenerator: IStatementPrinterStackItemGenerator,
     private val variableDeclarationListPrinter: IVariableDeclarationListPrinter,
     private val returnStatementPrinter: IReturnStatementPrinter,
     private val expressionStatementPrinter: IExpressionStatementPrinter,
     private val expressionPrinter: IExpressionPrinter
 ): IStatementPrinter {
     override fun printParsedNode(node: IParsedStatementNode, numberOfTabs: Int): String {
-        val stack = Stack<StackItem>()
+        val stack = Stack<StatementPrinterStackItem>()
         val resultStack = Stack<String>()
-        stack.push(StackItem(node, numberOfTabs, 1))
+        stack.push(StatementPrinterStackItem(node, numberOfTabs, 1))
+
         while(stack.isNotEmpty()) {
             val top = stack.pop()
             val node = top.node
-            val numberOfTabs = top.numberOfTabs
-            val location = top.location
 
-            when(location) {
-                1 -> {
-                    stack.push(StackItem(node, numberOfTabs, 2))
-                    when(node) {
-                        is ParsedBasicBlockNode -> {
-                            node.statements.forEach {
-                                stack.push(StackItem(it, numberOfTabs + 1, 1))
-                            }
-                        }
-                        is ParsedDoWhileNode -> {
-                            stack.push(StackItem(node.body, numberOfTabs, 1))
-                        }
-                        is ParsedWhileNode -> {
-                            stack.push(StackItem(node.body, numberOfTabs, 1))
-                        }
-                        is ParsedForNode -> {
-                            stack.push(StackItem(node.body, numberOfTabs, 1))
-                        }
-                        is ParsedIfNode -> {
-                            stack.push(StackItem(node.ifBody, numberOfTabs, 1))
-                        }
-                        is ParsedElseNode -> {
-                            stack.push(StackItem(node.elseBody, numberOfTabs, 1))
-                        }
-                    }
+            when(top.location) {
+                PrinterConstants.LOCATION_1 -> {
+                    val stackItems = statementPrinterStackItemGenerator.generateStatementPrinterStackItems(
+                        top.node,
+                        top.numberOfTabs
+                    )
+                    stackItems.forEach { stack.push(it) }
                 }
-                2 -> {
+                PrinterConstants.LOCATION_2 -> {
                     when (node) {
                         is ParsedBasicBlockNode -> {
                             val statementStrings = mutableListOf<String>()
@@ -58,11 +42,11 @@ internal class StatementPrinterIterative(
                                 statementStrings.add(resultStack.pop())
                             }
                             var tabs = PrinterConstants.EMPTY
-                            for(i in 0 until numberOfTabs + 1) {
+                            for(i in 0 until top.numberOfTabs + 1) {
                                 tabs += PrinterConstants.TAB
                             }
                             var closingTabs = PrinterConstants.EMPTY
-                            for (i in 0 until numberOfTabs) {
+                            for (i in 0 until top.numberOfTabs) {
                                 closingTabs += PrinterConstants.TAB
                             }
                             val tabbedStatementStrings = statementStrings.joinToString(PrinterConstants.NEW_LINE + tabs,  PrinterConstants.NEW_LINE + tabs,  PrinterConstants.NEW_LINE + closingTabs)
