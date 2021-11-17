@@ -17,7 +17,6 @@ internal class StatementPrinter(
 
         while(stack.isNotEmpty()) {
             val top = stack.pop()
-            val node = top.node
 
             when(top.location) {
                 PrinterConstants.LOCATION_1 -> {
@@ -29,7 +28,7 @@ internal class StatementPrinter(
                 }
                 PrinterConstants.LOCATION_2 -> {
                     val statementStrings = mutableListOf<String>()
-                    for(i in 0 until node.getNumberOfStatements()) {
+                    for(i in 0 until top.node.getNumberOfStatements()) {
                         statementStrings.add(resultStack.pop())
                     }
 
