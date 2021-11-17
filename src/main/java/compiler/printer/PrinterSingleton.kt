@@ -31,12 +31,6 @@ enum class PrinterSingleton {
         expressionStatementPrinter,
         expressionPrinter
     )
-    private val statementPrinterRecursive = StatementPrinterRecursive(
-        variableDeclarationListPrinter,
-        returnStatementPrinter,
-        expressionStatementPrinter,
-        expressionPrinter
-    )
     private val functionDeclarationPrinter = FunctionDeclarationPrinter(statementPrinterIterative)
 
     private val declarationStatementPrinter = DeclarationStatementPrinter(
