@@ -5,4 +5,8 @@ data class ParsedForNode(
     val testExpression: IParsedExpressionNode,
     val incrementExpression: IParsedExpressionNode,
     val body: IParsedStatementNode
-): IParsedStatementNode
+): IParsedStatementNode {
+    override fun getNumberOfStatements(): Int {
+        return 1
+    }
+}
