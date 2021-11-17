@@ -10,6 +10,8 @@ internal class VariableDeclarationPrinter(
     private val assignNode: IAssignPrinter
 ): IVariableDeclarationPrinter {
     override fun printParsedNode(node: ParsedVariableDeclarationNode): String {
-        return node.id + arrayPrinter.printParsedNode(node.arrayNode) + assignNode.printParsedNode(node.assignNode)
+        val arrayString = if (node.arrayNode == null) "" else arrayPrinter.printParsedNode(node.arrayNode)
+        val assignString = if (node.assignNode == null) "" else assignNode.printParsedNode(node.assignNode)
+        return node.id + arrayString + assignString
     }
 }
