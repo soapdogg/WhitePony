@@ -17,62 +17,74 @@ internal class StatementPrinterRecursive(
     override fun printParsedNode(node: IParsedStatementNode, numberOfTabs: Int): String {
          return when (node) {
              is ParsedBasicBlockNode -> {
+                 val statementStrings = node.statements.map {
+                     printParsedNode(it, numberOfTabs + 1)
+                 }
                  var tabs = PrinterConstants.EMPTY
                  for(i in 0 until numberOfTabs + 1) {
                      tabs += PrinterConstants.TAB
-                 }
-                 val statements = node.statements.map {
-                     tabs + printParsedNode(it, numberOfTabs + 1)
                  }
                  var closingTabs = PrinterConstants.EMPTY
                  for (i in 0 until numberOfTabs) {
                      closingTabs += PrinterConstants.TAB
                  }
+
+                 val tabbedStatementStrings =statementStrings.joinToString(PrinterConstants.NEW_LINE + tabs,  PrinterConstants.NEW_LINE + tabs,  PrinterConstants.NEW_LINE + closingTabs)
                  return PrinterConstants.LEFT_BRACE +
-                         statements.joinToString(PrinterConstants.NEW_LINE, PrinterConstants.NEW_LINE,  PrinterConstants.NEW_LINE) +
-                         closingTabs +
+                         tabbedStatementStrings +
                          PrinterConstants.RIGHT_BRACE
              }
              is ParsedDoWhileNode -> {
+                 val bodyString = printParsedNode(node.body, numberOfTabs)
+                 val expressionString = expressionPrinter.printParsedNode(node.expression)
                  return PrinterConstants.DO +
                          PrinterConstants.SPACE +
-                         printParsedNode(node.body, numberOfTabs) +
+                         bodyString +
                          PrinterConstants.SPACE +
                          PrinterConstants.WHILE +
                          PrinterConstants.SPACE +
-                         expressionPrinter.printParsedNode(node.expression) +
+                         expressionString +
                          PrinterConstants.SEMICOLON
              }
              is ParsedWhileNode -> {
+                 val bodyString = printParsedNode(node.body, numberOfTabs)
+                 val expressionString = expressionPrinter.printParsedNode(node.expression)
                  return PrinterConstants.WHILE +
                          PrinterConstants.SPACE +
-                         expressionPrinter.printParsedNode(node.expression) +
+                         expressionString +
                          PrinterConstants.SPACE +
-                         printParsedNode(node.body, numberOfTabs)
+                         bodyString
              }
              is ParsedForNode -> {
+                 val bodyString = printParsedNode(node.body, numberOfTabs)
+                 val initExpressionString = expressionPrinter.printParsedNode(node.initExpression)
+                 val testExpressionString = expressionPrinter.printParsedNode(node.testExpression)
+                 val incrementExpressionString = expressionPrinter.printParsedNode(node.incrementExpression)
                  return PrinterConstants.FOR +
                          PrinterConstants.SPACE +
                          PrinterConstants.LEFT_PARENTHESES +
-                         expressionPrinter.printParsedNode(node.initExpression) +
+                         initExpressionString +
                          PrinterConstants.SEMICOLON +
                          PrinterConstants.SPACE +
-                         expressionPrinter.printParsedNode(node.testExpression) +
+                         testExpressionString +
                          PrinterConstants.SEMICOLON +
                          PrinterConstants.SPACE +
-                         expressionPrinter.printParsedNode(node.incrementExpression) +
+                         incrementExpressionString +
                          PrinterConstants.RIGHT_PARENTHESES +
                          PrinterConstants.SPACE +
-                         printParsedNode(node.body, numberOfTabs)
+                         bodyString
              }
              is ParsedIfNode -> {
+                 val ifBodyString = printParsedNode(node.ifBody, numberOfTabs)
+                 val booleanExpressionString = expressionPrinter.printParsedNode(node.booleanExpression)
                  return PrinterConstants.IF +
-                         expressionPrinter.printParsedNode(node.booleanExpression) +
+                         booleanExpressionString +
                          PrinterConstants.SPACE +
-                         printParsedNode(node.ifBody, numberOfTabs)
+                         ifBodyString
              }
              is ParsedElseNode -> {
-                 return PrinterConstants.ELSE + PrinterConstants.SPACE + printParsedNode(node.elseBody, numberOfTabs)
+                 val elseBodyString = printParsedNode(node.elseBody, numberOfTabs)
+                 return PrinterConstants.ELSE + PrinterConstants.SPACE + elseBodyString
              }
              is ParsedVariableDeclarationListNode -> {
                  return variableDeclarationListPrinter.printParsedNode(node)
