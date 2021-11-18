@@ -1,5 +1,5 @@
 package compiler.core
 
 data class ParsedInnerExpression(
-    val expression: IParsedExpressionNode
-): IParsedExpressionNode
+    override val expression: IParsedExpressionNode
+): IParsedUnaryExpressionNode

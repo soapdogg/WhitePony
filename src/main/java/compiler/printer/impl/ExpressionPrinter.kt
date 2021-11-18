@@ -14,28 +14,7 @@ internal class ExpressionPrinter: IExpressionPrinter {
             val top = stack.pop()
 
             when(top.node) {
-                is ParsedBinaryArrayOperatorNode -> {
-                    when(top.location) {
-                        PrinterConstants.LOCATION_1 -> {
-                            stack.push(ExpressionPrinterStackItem(top.node, PrinterConstants.LOCATION_2))
-                            stack.push(ExpressionPrinterStackItem(top.node.variableExpression, PrinterConstants.LOCATION_1))
-                        }
-                        PrinterConstants.LOCATION_2 -> {
-                            stack.push(ExpressionPrinterStackItem(top.node, PrinterConstants.LOCATION_3))
-                            stack.push(ExpressionPrinterStackItem(top.node.insideExpression, PrinterConstants.LOCATION_1))
-                        }
-                        PrinterConstants.LOCATION_3 -> {
-                            val rightExpressionString = resultStack.pop()
-                            val leftExpressionString = resultStack.pop()
-                            val result = leftExpressionString +
-                                    PrinterConstants.LEFT_BRACKET +
-                                    rightExpressionString +
-                                    PrinterConstants.RIGHT_BRACKET
-                            resultStack.push(result)
-                        }
-                    }
-                }
-                is ParsedBinaryAssignNode -> {
+                is IParsedBinaryExpressionNode -> {
                     when(top.location) {
                         PrinterConstants.LOCATION_1 -> {
                             stack.push(ExpressionPrinterStackItem(top.node, PrinterConstants.LOCATION_2))
@@ -46,203 +25,121 @@ internal class ExpressionPrinter: IExpressionPrinter {
                             stack.push(ExpressionPrinterStackItem(top.node.rightExpression, PrinterConstants.LOCATION_1))
                         }
                         PrinterConstants.LOCATION_3 -> {
-                            val rightExpressionString = resultStack.pop()
-                            val leftExpressionString = resultStack.pop()
-                            val result = leftExpressionString +
-                                    PrinterConstants.SPACE +
-                                    PrinterConstants.EQUALS +
-                                    PrinterConstants.SPACE +
-                                    rightExpressionString
-                            resultStack.push(result)
-                        }
-                    }
-                }
-                is ParsedBinaryAssignOperatorNode -> {
-                    when(top.location) {
-                        PrinterConstants.LOCATION_1 -> {
-                            stack.push(ExpressionPrinterStackItem(top.node, PrinterConstants.LOCATION_2))
-                            stack.push(ExpressionPrinterStackItem(top.node.leftExpression, PrinterConstants.LOCATION_1))
-                        }
-                        PrinterConstants.LOCATION_2 -> {
-                            stack.push(ExpressionPrinterStackItem(top.node, PrinterConstants.LOCATION_3))
-                            stack.push(ExpressionPrinterStackItem(top.node.rightExpression, PrinterConstants.LOCATION_1))
-                        }
-                        PrinterConstants.LOCATION_3 -> {
-                            val rightExpressionString = resultStack.pop()
-                            val leftExpressionString = resultStack.pop()
-                            val result = leftExpressionString +
-                                    PrinterConstants.SPACE +
-                                    top.node.operator +
-                                    PrinterConstants.EQUALS +
-                                    PrinterConstants.SPACE +
-                                    rightExpressionString
-                            resultStack.push(result)
-                        }
-                    }
-                }
-                is ParsedBinaryOperatorNode -> {
-                    when(top.location) {
-                        PrinterConstants.LOCATION_1 -> {
-                            stack.push(ExpressionPrinterStackItem(top.node, PrinterConstants.LOCATION_2))
-                            stack.push(ExpressionPrinterStackItem(top.node.leftExpression, PrinterConstants.LOCATION_1))
-                        }
-                        PrinterConstants.LOCATION_2 -> {
-                            stack.push(ExpressionPrinterStackItem(top.node, PrinterConstants.LOCATION_3))
-                            stack.push(ExpressionPrinterStackItem(top.node.rightExpression, PrinterConstants.LOCATION_1))
-                        }
-                        PrinterConstants.LOCATION_3 -> {
-                            val rightExpressionString = resultStack.pop()
-                            val leftExpressionString = resultStack.pop()
-                            val result = leftExpressionString +
-                                    PrinterConstants.SPACE +
-                                    top.node.operator +
-                                    PrinterConstants.SPACE +
-                                    rightExpressionString
-                            resultStack.push(result)
-                        }
-                    }
-                }
-                is ParsedBinaryAndOperatorNode -> {
-                    when(top.location) {
-                        PrinterConstants.LOCATION_1 -> {
-                            stack.push(ExpressionPrinterStackItem(top.node, PrinterConstants.LOCATION_2))
-                            stack.push(ExpressionPrinterStackItem(top.node.leftExpression, PrinterConstants.LOCATION_1))
-                        }
-                        PrinterConstants.LOCATION_2 -> {
-                            stack.push(ExpressionPrinterStackItem(top.node, PrinterConstants.LOCATION_3))
-                            stack.push(ExpressionPrinterStackItem(top.node.rightExpression, PrinterConstants.LOCATION_1))
-                        }
-                        PrinterConstants.LOCATION_3 -> {
-                            val rightExpressionString = resultStack.pop()
-                            val leftExpressionString = resultStack.pop()
-                            val result = leftExpressionString +
-                                    PrinterConstants.SPACE +
-                                    PrinterConstants.AMPERSAND +
-                                    PrinterConstants.AMPERSAND +
-                                    PrinterConstants.SPACE +
-                                    rightExpressionString
-                            resultStack.push(result)
-                        }
-                    }
-                }
-                is ParsedBinaryOrOperatorNode -> {
-                    when(top.location) {
-                        PrinterConstants.LOCATION_1 -> {
-                            stack.push(ExpressionPrinterStackItem(top.node, PrinterConstants.LOCATION_2))
-                            stack.push(ExpressionPrinterStackItem(top.node.leftExpression, PrinterConstants.LOCATION_1))
-                        }
-                        PrinterConstants.LOCATION_2 -> {
-                            stack.push(ExpressionPrinterStackItem(top.node, PrinterConstants.LOCATION_3))
-                            stack.push(ExpressionPrinterStackItem(top.node.rightExpression, PrinterConstants.LOCATION_1))
-                        }
-                        PrinterConstants.LOCATION_3 -> {
-                            val rightExpressionString = resultStack.pop()
-                            val leftExpressionString = resultStack.pop()
-                            val result = leftExpressionString +
-                                    PrinterConstants.SPACE +
-                                    PrinterConstants.VERTICAL_BAR +
-                                    PrinterConstants.VERTICAL_BAR +
-                                    PrinterConstants.SPACE +
-                                    rightExpressionString
-                            resultStack.push(result)
-                        }
-                    }
-                }
-                is ParsedBinaryRelationalOperatorNode -> {
-                    when(top.location) {
-                        PrinterConstants.LOCATION_1 -> {
-                            stack.push(ExpressionPrinterStackItem(top.node, PrinterConstants.LOCATION_2))
-                            stack.push(ExpressionPrinterStackItem(top.node.leftExpression, PrinterConstants.LOCATION_1))
-                        }
-                        PrinterConstants.LOCATION_2 -> {
-                            stack.push(ExpressionPrinterStackItem(top.node, PrinterConstants.LOCATION_3))
-                            stack.push(ExpressionPrinterStackItem(top.node.rightExpression, PrinterConstants.LOCATION_1))
-                        }
-                        PrinterConstants.LOCATION_3 -> {
-                            val rightExpressionString = resultStack.pop()
-                            val leftExpressionString = resultStack.pop()
+                            val result = when(top.node) {
+                                is ParsedBinaryAssignNode -> {
+                                    val rightExpressionString = resultStack.pop()
+                                    val leftExpressionString = resultStack.pop()
+                                    leftExpressionString +
+                                            PrinterConstants.SPACE +
+                                            PrinterConstants.EQUALS +
+                                            PrinterConstants.SPACE +
+                                            rightExpressionString
+                                }
+                                is ParsedBinaryAssignOperatorNode -> {
+                                    val rightExpressionString = resultStack.pop()
+                                    val leftExpressionString = resultStack.pop()
+                                    leftExpressionString +
+                                            PrinterConstants.SPACE +
+                                            top.node.operator +
+                                            PrinterConstants.EQUALS +
+                                            PrinterConstants.SPACE +
+                                            rightExpressionString
+                                }
+                                is ParsedBinaryAndOperatorNode -> {
+                                    val rightExpressionString = resultStack.pop()
+                                    val leftExpressionString = resultStack.pop()
+                                    leftExpressionString +
+                                            PrinterConstants.SPACE +
+                                            PrinterConstants.AMPERSAND +
+                                            PrinterConstants.AMPERSAND +
+                                            PrinterConstants.SPACE +
+                                            rightExpressionString
+                                }
+                                is ParsedBinaryOrOperatorNode -> {
+                                    val rightExpressionString = resultStack.pop()
+                                    val leftExpressionString = resultStack.pop()
+                                    leftExpressionString +
+                                            PrinterConstants.SPACE +
+                                            PrinterConstants.VERTICAL_BAR +
+                                            PrinterConstants.VERTICAL_BAR +
+                                            PrinterConstants.SPACE +
+                                            rightExpressionString
+                                }
+                                is ParsedBinaryRelationalOperatorNode -> {
+                                    val rightExpressionString = resultStack.pop()
+                                    val leftExpressionString = resultStack.pop()
+                                    leftExpressionString +
+                                            PrinterConstants.SPACE +
+                                            top.node.operator +
+                                            PrinterConstants.SPACE +
+                                            rightExpressionString
+                                }
+                                is ParsedBinaryOperatorNode -> {
+                                    val rightExpressionString = resultStack.pop()
+                                    val leftExpressionString = resultStack.pop()
+                                    leftExpressionString +
+                                            PrinterConstants.SPACE +
+                                            top.node.operator +
+                                            PrinterConstants.SPACE +
+                                            rightExpressionString
+                                }
+                                is ParsedBinaryArrayOperatorNode -> {
+                                    val rightExpressionString = resultStack.pop()
+                                    val leftExpressionString = resultStack.pop()
+                                    leftExpressionString +
+                                            PrinterConstants.LEFT_BRACKET +
+                                            rightExpressionString +
+                                            PrinterConstants.RIGHT_BRACKET
 
-                            val result = leftExpressionString +
-                                    PrinterConstants.SPACE +
-                                    top.node.operator +
-                                    PrinterConstants.SPACE +
-                                    rightExpressionString
+                                }
+                                else -> {
+                                    PrinterConstants.EMPTY
+                                }
+                            }
                             resultStack.push(result)
                         }
                     }
                 }
-                is ParsedInnerExpression -> {
+                is IParsedUnaryExpressionNode -> {
                     when(top.location) {
                         PrinterConstants.LOCATION_1 -> {
                             stack.push(ExpressionPrinterStackItem(top.node, PrinterConstants.LOCATION_2))
                             stack.push(ExpressionPrinterStackItem(top.node.expression, PrinterConstants.LOCATION_1))
                         }
                         PrinterConstants.LOCATION_2 -> {
-                            val expressionString = resultStack.pop()
-                            val result = PrinterConstants.LEFT_PARENTHESES +
-                                    expressionString +
-                                    PrinterConstants.RIGHT_PARENTHESES
+                            val result = when(top.node) {
+                                is ParsedInnerExpression -> {
+                                    val expressionString = resultStack.pop()
+                                    PrinterConstants.LEFT_PARENTHESES +
+                                            expressionString +
+                                            PrinterConstants.RIGHT_PARENTHESES
+                                }
+                                is ParsedUnaryOperatorNode -> {
+                                    val expressionString = resultStack.pop()
+                                    top.node.operator + expressionString
+                                }
+                                is ParsedUnaryNotOperatorNode -> {
+                                    val expressionString = resultStack.pop()
+                                    PrinterConstants.EXCLAMATION_POINT + expressionString
+                                }
+                                is ParsedUnaryPreOperatorNode -> {
+                                    val expressionString = resultStack.pop()
+                                    top.node.operator + top.node.operator + expressionString
+                                }
+                                is ParsedUnaryPostOperatorNode -> {
+                                    val expressionString = resultStack.pop()
+                                    expressionString + top.node.operator + top.node.operator
+                                }
+                                else -> {
+                                    PrinterConstants.EMPTY
+                                }
+                            }
                             resultStack.push(result)
                         }
                     }
                 }
-                is ParsedUnaryOperatorNode -> {
-                    when(top.location) {
-                        PrinterConstants.LOCATION_1 -> {
-                            stack.push(ExpressionPrinterStackItem(top.node, PrinterConstants.LOCATION_2))
-                            stack.push(ExpressionPrinterStackItem(top.node.expression, PrinterConstants.LOCATION_1))
-                        }
-                        PrinterConstants.LOCATION_2 -> {
-                            val expressionString = resultStack.pop()
-                            val result = top.node.operator + expressionString
-                            resultStack.push(result)
-                        }
-                    }
-                }
-                is ParsedUnaryNotOperatorNode -> {
-                    when(top.location) {
-                        PrinterConstants.LOCATION_1 -> {
-                            stack.push(ExpressionPrinterStackItem(top.node, PrinterConstants.LOCATION_2))
-                            stack.push(ExpressionPrinterStackItem(top.node.expression, PrinterConstants.LOCATION_1))
-                        }
-                        PrinterConstants.LOCATION_2 -> {
-                            val expressionString = resultStack.pop()
-                            val result = PrinterConstants.EXCLAMATION_POINT + expressionString
-                            resultStack.push(result)
-                        }
-                    }
-                }
-                is ParsedUnaryPreOperatorNode -> {
-                    when(top.location) {
-                        PrinterConstants.LOCATION_1 -> {
-                            stack.push(ExpressionPrinterStackItem(top.node, PrinterConstants.LOCATION_2))
-                            stack.push(ExpressionPrinterStackItem(top.node.expression, PrinterConstants.LOCATION_1))
-                        }
-                        PrinterConstants.LOCATION_2 -> {
-                            val expressionString = resultStack.pop()
-                            val result = top.node.operator + top.node.operator + expressionString
-                            resultStack.push(result)
-                        }
-                    }
-                }
-                is ParsedUnaryPostOperatorNode -> {
-                    when(top.location) {
-                        PrinterConstants.LOCATION_1 -> {
-                            stack.push(ExpressionPrinterStackItem(top.node, PrinterConstants.LOCATION_2))
-                            stack.push(ExpressionPrinterStackItem(top.node.expression, PrinterConstants.LOCATION_1))
-                        }
-                        PrinterConstants.LOCATION_2 -> {
-                            val expressionString = resultStack.pop()
-                            val result = expressionString + top.node.operator + top.node.operator
-                            resultStack.push(result)
-                        }
-                    }
-                }
-                is ParsedConstantNode -> {
+                is IParsedValueExpressionNode -> {
                     resultStack.push(top.node.value)
-                }
-                is ParsedVariableExpressionNode -> {
-                    resultStack.push(top.node.variableValue)
                 }
             }
         }

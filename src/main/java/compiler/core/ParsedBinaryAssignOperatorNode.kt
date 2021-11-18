@@ -1,7 +1,7 @@
 package compiler.core
 
 data class ParsedBinaryAssignOperatorNode(
-    val leftExpression: IParsedExpressionNode,
-    val rightExpression: IParsedExpressionNode,
+    override val leftExpression: IParsedExpressionNode,
+    override val rightExpression: IParsedExpressionNode,
     val operator: String
-): IParsedExpressionNode
+): IParsedBinaryExpressionNode
