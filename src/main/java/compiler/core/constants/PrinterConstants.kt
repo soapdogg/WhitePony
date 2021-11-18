@@ -26,4 +26,5 @@ object PrinterConstants {
     const val WHILE = "while"
     const val LOCATION_1 = 1
     const val LOCATION_2 = 2
+    const val LOCATION_3 = 3
 }
