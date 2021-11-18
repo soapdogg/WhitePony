@@ -10,42 +10,19 @@ internal class ExpressionParserRecursive: IExpressionParser {
         tokens: List<Token>,
         startingPosition: Int,
     ): Pair<IParsedExpressionNode, Int> {
-        val (leftExpression, positionAfterLogicalOr) = parseLogicalOr(tokens, startingPosition)
-        if(
-            tokens[positionAfterLogicalOr].type == TokenType.BINARY_ASSIGN
-            || tokens[positionAfterLogicalOr].type == TokenType.BINARY_ASSIGN_OP
-        ) {
-            val binaryAssignToken = tokens[positionAfterLogicalOr]
-            val positionAfterAssign = positionAfterLogicalOr + 1
-            val (rightExpression, positionAfterRightExpression) = parse(tokens, positionAfterAssign)
-            val resultNode =  if (binaryAssignToken.type == TokenType.BINARY_ASSIGN) {
-                ParsedBinaryAssignNode(leftExpression, rightExpression)
+        val (leftExpression, positionAfterLogicalAnd) = if(tokens[startingPosition].type == TokenType.PLUS_MINUS || tokens[startingPosition].type == TokenType.PRE_POST || tokens[startingPosition].type == TokenType.BIT_NEGATION || tokens[startingPosition].type == TokenType.UNARY_NOT) {
+            val unaryToken = tokens[startingPosition]
+            val positionAfterUnary = startingPosition + 1
+            val (rightExpression, positionAfterRightExpression) = parse(tokens, positionAfterUnary)
+            val resultExpression = if (unaryToken.type == TokenType.PLUS_MINUS || unaryToken.type == TokenType.BIT_NEGATION) {
+                ParsedUnaryOperatorNode(rightExpression, unaryToken.value)
+            } else if (unaryToken.type == TokenType.UNARY_NOT) {
+                ParsedUnaryNotOperatorNode(rightExpression)
             } else {
-                ParsedBinaryAssignOperatorNode(leftExpression, rightExpression, binaryAssignToken.value.replace("=", ""))
+                ParsedUnaryPreOperatorNode(rightExpression, unaryToken.value[0].toString())
             }
-            return Pair(resultNode, positionAfterRightExpression)
+            Pair(resultExpression, positionAfterRightExpression)
         }
-        return Pair(leftExpression, positionAfterLogicalOr)
-    }
-
-    private fun parseLogicalOr(
-        tokens: List<Token>,
-        startingPosition: Int
-    ): Pair<IParsedExpressionNode, Int> {
-        val (leftExpression, positionAfterLogicalAnd) =
-            if(tokens[startingPosition].type == TokenType.PLUS_MINUS || tokens[startingPosition].type == TokenType.PRE_POST || tokens[startingPosition].type == TokenType.BIT_NEGATION || tokens[startingPosition].type == TokenType.UNARY_NOT) {
-                val unaryToken = tokens[startingPosition]
-                val positionAfterUnary = startingPosition + 1
-                val (rightExpression, positionAfterRightExpression) = parse(tokens, positionAfterUnary)
-                val resultExpression = if (unaryToken.type == TokenType.PLUS_MINUS || unaryToken.type == TokenType.BIT_NEGATION) {
-                    ParsedUnaryOperatorNode(rightExpression, unaryToken.value)
-                } else if (unaryToken.type == TokenType.UNARY_NOT) {
-                    ParsedUnaryNotOperatorNode(rightExpression)
-                } else {
-                    ParsedUnaryPreOperatorNode(rightExpression, unaryToken.value[0].toString())
-                }
-                 Pair(resultExpression, positionAfterRightExpression)
-            }
         else if (tokens[startingPosition].type == TokenType.FLOATING_POINT || tokens[startingPosition].type == TokenType.INTEGER) {
             val constantToken = tokens[startingPosition]
             val constantNode = ParsedConstantNode(constantToken.value, constantToken.type == TokenType.INTEGER)
@@ -150,7 +127,20 @@ internal class ExpressionParserRecursive: IExpressionParser {
             result = ParsedBinaryOperatorNode(result, rightExpression, termToken.value)
             currentPosition = positionAfterFactor
         }
-
+        if(
+            tokens[currentPosition].type == TokenType.BINARY_ASSIGN
+            || tokens[currentPosition].type == TokenType.BINARY_ASSIGN_OP
+        ) {
+            val binaryAssignToken = tokens[currentPosition]
+            val positionAfterAssign = currentPosition + 1
+            val (rightExpression, positionAfterRightExpression) = parse(tokens, positionAfterAssign)
+            val resultNode =  if (binaryAssignToken.type == TokenType.BINARY_ASSIGN) {
+                ParsedBinaryAssignNode(result, rightExpression)
+            } else {
+                ParsedBinaryAssignOperatorNode(result, rightExpression, binaryAssignToken.value.replace("=", ""))
+            }
+            return Pair(resultNode, positionAfterRightExpression)
+        }
         return Pair(result, currentPosition)
     }
 
