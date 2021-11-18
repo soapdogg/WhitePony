@@ -4,7 +4,7 @@ import compiler.core.*
 import compiler.core.constants.PrinterConstants
 import compiler.printer.impl.internal.IExpressionPrinter
 
-internal class ExpressionPrinterIterative: IExpressionPrinter {
+internal class ExpressionPrinter: IExpressionPrinter {
     override fun printParsedNode(node: IParsedExpressionNode): String {
         val stack = Stack<ExpressionPrinterStackItem>()
         val resultStack = Stack<String>()

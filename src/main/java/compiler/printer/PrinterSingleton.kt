@@ -8,10 +8,9 @@ import compiler.printer.impl.Printer
 enum class PrinterSingleton {
     INSTANCE;
 
-    private val expressionPrinterIterative = ExpressionPrinterIterative()
-    private val expressionPrinterRecursive = ExpressionPrinterRecursive()
-    private val arrayPrinter = ArrayPrinter(expressionPrinterIterative)
-    private val assignPrinter = AssignPrinter(expressionPrinterIterative)
+    private val expressionPrinter = ExpressionPrinter()
+    private val arrayPrinter = ArrayPrinter(expressionPrinter)
+    private val assignPrinter = AssignPrinter(expressionPrinter)
     private val variableDeclarationPrinter = VariableDeclarationPrinter(
         arrayPrinter,
         assignPrinter
@@ -20,7 +19,7 @@ enum class PrinterSingleton {
         variableDeclarationPrinter
     )
     private val expressionStatementPrinter = ExpressionStatementPrinter(
-        expressionPrinterIterative
+        expressionPrinter
     )
     private val returnStatementPrinter = ReturnStatementPrinter(
         expressionStatementPrinter
@@ -32,7 +31,7 @@ enum class PrinterSingleton {
         variableDeclarationListPrinter,
         returnStatementPrinter,
         expressionStatementPrinter,
-        expressionPrinterIterative
+        expressionPrinter
     )
 
     private val statementPrinter = StatementPrinter(
