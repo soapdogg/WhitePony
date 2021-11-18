@@ -32,13 +32,53 @@ internal class ExpressionParserRecursive: IExpressionParser {
         tokens: List<Token>,
         startingPosition: Int
     ): Pair<IParsedExpressionNode, Int> {
-        val (leftExpression, positionAfterLogicalAnd) = parseUnary(tokens, startingPosition)
+        val (leftExpression, positionAfterLogicalAnd) =
+            if(tokens[startingPosition].type == TokenType.PLUS_MINUS || tokens[startingPosition].type == TokenType.PRE_POST || tokens[startingPosition].type == TokenType.BIT_NEGATION || tokens[startingPosition].type == TokenType.UNARY_NOT) {
+                val unaryToken = tokens[startingPosition]
+                val positionAfterUnary = startingPosition + 1
+                val (rightExpression, positionAfterRightExpression) = parseLogicalOr(tokens, positionAfterUnary)
+                val resultExpression = if (unaryToken.type == TokenType.PLUS_MINUS || unaryToken.type == TokenType.BIT_NEGATION) {
+                    ParsedUnaryOperatorNode(rightExpression, unaryToken.value)
+                } else if (unaryToken.type == TokenType.UNARY_NOT) {
+                    ParsedUnaryNotOperatorNode(rightExpression)
+                } else {
+                    ParsedUnaryPreOperatorNode(rightExpression, unaryToken.value[0].toString())
+                }
+                 Pair(resultExpression, positionAfterRightExpression)
+            }
+        else if (tokens[startingPosition].type == TokenType.FLOATING_POINT || tokens[startingPosition].type == TokenType.INTEGER) {
+            val constantToken = tokens[startingPosition]
+            val constantNode = ParsedConstantNode(constantToken.value, constantToken.type == TokenType.INTEGER)
+            Pair(constantNode, startingPosition + 1)
+        } else if (tokens[startingPosition].type == TokenType.IDENTIFIER) {
+            val identifierToken = tokens[startingPosition]
+            var currentPosition = startingPosition + 1
+            val variableExpression = ParsedVariableExpressionNode(identifierToken.value)
+
+            var result: IParsedExpressionNode = variableExpression
+            if (tokens[currentPosition].type == TokenType.LEFT_BRACKET) {
+                currentPosition++
+                val (insideExpression, positionAfterInnerExpression) = parse(tokens, currentPosition)
+                currentPosition = positionAfterInnerExpression + 1
+                result = ParsedBinaryArrayOperatorNode(variableExpression, insideExpression)
+            }
+            if (tokens[currentPosition].type == TokenType.PRE_POST) {
+                val prePostToken = tokens[currentPosition]
+                currentPosition++
+                result = ParsedUnaryPostOperatorNode(result, prePostToken.value[0].toString())
+            }
+            Pair(result, currentPosition)
+        } else {
+            val (innerExpression, positionAfterInnerExpression) = parse(tokens, startingPosition + 1)
+            Pair(ParsedInnerExpression(innerExpression), positionAfterInnerExpression + 1)
+        }
+
         var result = leftExpression
         var currentPosition = positionAfterLogicalAnd
 
         while(tokens[currentPosition].type == TokenType.BINARY_OR) {
             currentPosition++
-            val (rightExpression, positionAfterLogicalAnd) = parseUnary(tokens, currentPosition)
+            val (rightExpression, positionAfterLogicalAnd) = parseLogicalOr(tokens, currentPosition)
             result = ParsedBinaryOrOperatorNode(result, rightExpression)
             currentPosition = positionAfterLogicalAnd
         }
@@ -112,52 +152,6 @@ internal class ExpressionParserRecursive: IExpressionParser {
         }
 
         return Pair(result, currentPosition)
-    }
-
-
-    private fun parseUnary(
-        tokens: List<Token>,
-        startingPosition: Int
-    ): Pair<IParsedExpressionNode, Int> {
-        if(tokens[startingPosition].type == TokenType.PLUS_MINUS || tokens[startingPosition].type == TokenType.PRE_POST || tokens[startingPosition].type == TokenType.BIT_NEGATION || tokens[startingPosition].type == TokenType.UNARY_NOT) {
-            val unaryToken = tokens[startingPosition]
-            val positionAfterUnary = startingPosition + 1
-            val (rightExpression, positionAfterRightExpression) = parseUnary(tokens, positionAfterUnary)
-            val resultExpression = if (unaryToken.type == TokenType.PLUS_MINUS || unaryToken.type == TokenType.BIT_NEGATION) {
-                ParsedUnaryOperatorNode(rightExpression, unaryToken.value)
-            } else if (unaryToken.type == TokenType.UNARY_NOT) {
-                ParsedUnaryNotOperatorNode(rightExpression)
-            } else {
-                ParsedUnaryPreOperatorNode(rightExpression, unaryToken.value[0].toString())
-            }
-            return Pair(resultExpression, positionAfterRightExpression)
-        }
-        if (tokens[startingPosition].type == TokenType.FLOATING_POINT || tokens[startingPosition].type == TokenType.INTEGER) {
-            val constantToken = tokens[startingPosition]
-            val constantNode = ParsedConstantNode(constantToken.value, constantToken.type == TokenType.INTEGER)
-            return Pair(constantNode, startingPosition + 1)
-        } else if (tokens[startingPosition].type == TokenType.IDENTIFIER) {
-            val identifierToken = tokens[startingPosition]
-            var currentPosition = startingPosition + 1
-            val variableExpression = ParsedVariableExpressionNode(identifierToken.value)
-
-            var result: IParsedExpressionNode = variableExpression
-            if (tokens[currentPosition].type == TokenType.LEFT_BRACKET) {
-                currentPosition++
-                val (insideExpression, positionAfterInnerExpression) = parse(tokens, currentPosition)
-                currentPosition = positionAfterInnerExpression + 1
-                result = ParsedBinaryArrayOperatorNode(variableExpression, insideExpression)
-            }
-            if (tokens[currentPosition].type == TokenType.PRE_POST) {
-                val prePostToken = tokens[currentPosition]
-                currentPosition++
-                result = ParsedUnaryPostOperatorNode(result, prePostToken.value[0].toString())
-            }
-            return Pair(result, currentPosition)
-        } else {
-            val (innerExpression, positionAfterInnerExpression) = parse(tokens, startingPosition + 1)
-            return Pair(ParsedInnerExpression(innerExpression), positionAfterInnerExpression + 1)
-        }
     }
 
 }
