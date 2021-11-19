@@ -41,6 +41,14 @@ enum class ParserSingleton {
     private val binaryAssignTokenTypes = setOf(TokenType.BINARY_ASSIGN_OP, TokenType.BINARY_ASSIGN)
     private val binaryAssignValues = setOf(TokenizerConstants.AND_ASSIGN_OPERATOR, TokenizerConstants.DIVIDE_ASSIGN_OPERATOR, TokenizerConstants.LEFT_SHIFT_ASSIGN_OPERATOR, TokenizerConstants.MINUS_ASSIGN_OPERATOR, TokenizerConstants.MODULUS_ASSIGN_OPERATOR, TokenizerConstants.MULTIPLY_ASSIGN_OPERATOR, TokenizerConstants.OR_ASSIGN_OPERATOR, TokenizerConstants.PLUS_ASSIGN_OPERATOR, TokenizerConstants.RIGHT_SHIFT_ASSIGN_OPERATOR, TokenizerConstants.XOR_ASSIGN_OPERATOR, TokenizerConstants.ASSIGN_OPERATOR)
 
+    private val unaryExpressionGenerator = UnaryExpressionGenerator()
+
+    private val binaryOrOperatorExpressionGenerator = BinaryOrOperatorExpressionGenerator()
+    private val binaryAndOperatorExpressionGenerator = BinaryAndOperatorExpressionGenerator()
+    private val binaryOperatorExpressionGenerator = BinaryOperatorExpressionGenerator()
+    private val binaryRelationalOperatorExpressionGenerator = BinaryRelationalOperatorGenerator()
+    private val binaryAssignExpressionGenerator = BinaryAssignExpressionGenerator()
+
     private val expressionParser = ExpressionParser(
         expressionStackPusher,
         unaryTokenTypes,
@@ -66,6 +74,12 @@ enum class ParserSingleton {
         termValues,
         binaryAssignTokenTypes,
         binaryAssignValues,
+        unaryExpressionGenerator,
+        binaryOrOperatorExpressionGenerator,
+        binaryAndOperatorExpressionGenerator,
+        binaryOperatorExpressionGenerator,
+        binaryRelationalOperatorExpressionGenerator,
+        binaryAssignExpressionGenerator
     )
     private val arrayParser = ArrayParser(
         tokenTypeAsserter,
