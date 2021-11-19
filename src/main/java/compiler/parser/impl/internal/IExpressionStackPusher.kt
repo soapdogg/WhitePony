@@ -15,16 +15,4 @@ internal interface IExpressionStackPusher {
         location: Int,
         stack: Stack<ExpressionParserStackItem>
     ): Int
-
-    fun pushUnary(
-        tokens: List<Token>,
-        startingPosition: Int,
-        stack: Stack<ExpressionParserStackItem>
-    ): Int
-
-    fun pushBinaryOr(
-        tokens: List<Token>,
-        startingPosition: Int,
-        stack: Stack<ExpressionParserStackItem>
-    ): Int
 }

@@ -28,7 +28,7 @@ enum class TokenizerSingleton {
         TokenType.BINARY_OR,
     )
 
-    private val binaryOperatorRegexPattern = Regex("^(${compiler.core.constants.TokenizerConstants.DIVIDE_OPERATOR}|${compiler.core.constants.TokenizerConstants.LEFT_SHIFT_OPERATOR}|${TokenizerConstants.MODULUS_OPERATOR}|${compiler.core.constants.TokenizerConstants.RIGHT_SHIFT_OPERATOR}|&|\\||\\^|\\*)")
+    private val binaryOperatorRegexPattern = Regex("^(${TokenizerConstants.DIVIDE_OPERATOR}|${TokenizerConstants.LEFT_SHIFT_OPERATOR}|${TokenizerConstants.MODULUS_OPERATOR}|${TokenizerConstants.RIGHT_SHIFT_OPERATOR}|&|\\||\\^|\\*)")
     private val binaryOperatorTokenTypeRegexPattern = TokenTypeRegexPattern(
         binaryOperatorRegexPattern,
         TokenType.BINARY_OPERATOR,

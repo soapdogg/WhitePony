@@ -17,7 +17,19 @@ enum class ParserSingleton {
         tokenTypeAsserter
     )
 
+    private val unaryTokenTypes = setOf(TokenType.PLUS_MINUS, TokenType.PRE_POST, TokenType.BIT_NEGATION, TokenType.UNARY_NOT)
+    private val unaryValues = setOf(TokenizerConstants.PLUS_OPERATOR, TokenizerConstants.MINUS_OPERATOR, TokenizerConstants.INCREMENT, TokenizerConstants.DECREMENT, TokenizerConstants.NEGATION, TokenizerConstants.BIT_NEGATION)
+    private val binaryOrTokenTypes = setOf(TokenType.BINARY_OR)
+    private val binaryOrValues = setOf(TokenizerConstants.OR_OPERATOR)
+    private val binaryAndTokenTypes = setOf(TokenType.BINARY_AND)
+    private val binaryAndValues = setOf(TokenizerConstants.AND_OPERATOR)
     private val binaryOperatorTokenTypes = setOf(TokenType.BINARY_OPERATOR)
+    private val bitwiseOrValues = setOf(TokenizerConstants.BITWISE_OR_OPERATOR)
+    private val bitwiseXorValues = setOf(TokenizerConstants.BITWISE_XOR_OPERATOR)
+    private val bitwiseAndValues = setOf(TokenizerConstants.BITWISE_AND_OPERATOR)
+    private val relationalEqualsValues = setOf(TokenizerConstants.RELATIONAL_EQUALS, TokenizerConstants.RELATIONAL_NOT_EQUALS)
+    private val relationalOperatorValues = setOf(TokenizerConstants.GREATER_THAN_OPERATOR, TokenizerConstants.GREATER_THAN_EQUALS_OPERATOR, TokenizerConstants.LESS_THAN_OPERATOR, TokenizerConstants.LESS_THAN_EQUALS_OPERATOR)
+    private val relationalOperatorTokenTypes = setOf(TokenType.BINARY_RELATIONAL_OPERATOR)
     private val shiftValues = setOf(TokenizerConstants.LEFT_SHIFT_OPERATOR, TokenizerConstants.RIGHT_SHIFT_OPERATOR)
     private val factorValues = setOf(TokenizerConstants.MULTIPLY_OPERATOR, TokenizerConstants.DIVIDE_OPERATOR, TokenizerConstants.MODULUS_OPERATOR)
     private val termTokenTypes = setOf(TokenType.PLUS_MINUS)
@@ -27,7 +39,19 @@ enum class ParserSingleton {
 
     private val expressionParser = ExpressionParser(
         expressionStackPusher,
+        unaryTokenTypes,
+        unaryValues,
+        binaryOrTokenTypes,
+        binaryOrValues,
+        binaryAndTokenTypes,
+        binaryAndValues,
         binaryOperatorTokenTypes,
+        bitwiseOrValues,
+        bitwiseXorValues,
+        bitwiseAndValues,
+        relationalEqualsValues,
+        relationalOperatorValues,
+        relationalOperatorTokenTypes,
         shiftValues,
         factorValues,
         termTokenTypes,

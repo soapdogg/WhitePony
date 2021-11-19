@@ -7,7 +7,19 @@ import compiler.parser.impl.internal.IExpressionParser
 
 internal class ExpressionParser(
     private val expressionStackPusher: IExpressionStackPusher,
+    private val unaryTokenTypes: Set<TokenType>,
+    private val unaryValues: Set<String>,
+    private val binaryOrTokenTypes: Set<TokenType>,
+    private val binaryOrValues: Set<String>,
+    private val binaryAndTokenTypes: Set<TokenType>,
+    private val binaryAndValues: Set<String>,
     private val binaryOperatorTokenTypes: Set<TokenType>,
+    private val bitwiseOrValues: Set<String>,
+    private val bitwiseXorValues: Set<String>,
+    private val bitwiseAndValues: Set<String>,
+    private val relationalEqualsOperatorValues: Set<String>,
+    private val relationalOperatorValues: Set<String>,
+    private val relationalOperatorTokenTypes: Set<TokenType>,
     private val shiftValues: Set<String>,
     private val factorValues: Set<String>,
     private val termTokenTypes: Set<TokenType>,
@@ -33,7 +45,7 @@ internal class ExpressionParser(
                 top.location == ParserConstants.LOCATION_1 -> {
                     when (tokens[tokenPosition].type) {
                         TokenType.PLUS_MINUS, TokenType.PRE_POST, TokenType.BIT_NEGATION, TokenType.UNARY_NOT -> {
-                            tokenPosition = expressionStackPusher.pushUnary(tokens, tokenPosition, stack)
+                            tokenPosition = expressionStackPusher.push(tokens, tokenPosition, unaryTokenTypes, unaryValues, ParserConstants.LOCATION_2, stack)
                         }
                         TokenType.FLOATING_POINT, TokenType.INTEGER -> {
                             val constantToken = tokens[tokenPosition]
@@ -103,46 +115,32 @@ internal class ExpressionParser(
                 }
             }
 
-            if (tokens[tokenPosition].type == TokenType.BINARY_OR) {
-                tokenPosition = expressionStackPusher.pushBinaryOr(tokens, tokenPosition, stack)
+            if (binaryOrValues.contains(tokens[tokenPosition].value)) {
+                tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOrTokenTypes, binaryOrValues, ParserConstants.LOCATION_5, stack)
                 continue
             }
-            if (tokens[tokenPosition].type == TokenType.BINARY_AND) {
-                tokenPosition++
-                stack.push(ExpressionParserStackItem(6, null))
-                stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+            if (binaryAndValues.contains(tokens[tokenPosition].value)) {
+                tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAndTokenTypes, binaryAndValues, ParserConstants.LOCATION_6, stack)
                 continue
             }
-            if (tokens[tokenPosition].value == ParserConstants.BITWISE_OR_OPERATOR) {
-                tokenPosition++
-                stack.push(ExpressionParserStackItem(7, null))
-                stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+            if (bitwiseOrValues.contains(tokens[tokenPosition].value)) {
+                tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, bitwiseOrValues, ParserConstants.LOCATION_7, stack)
                 continue
             }
-            if (tokens[tokenPosition].value == ParserConstants.BITWISE_XOR_OPERATOR) {
-                tokenPosition++
-                stack.push(ExpressionParserStackItem(8, null))
-                stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+            if (bitwiseXorValues.contains(tokens[tokenPosition].value)) {
+                tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, bitwiseXorValues, ParserConstants.LOCATION_8, stack)
                 continue
             }
-            if(tokens[tokenPosition].value == ParserConstants.BITWISE_AND_OPERATOR) {
-                tokenPosition++
-                stack.push(ExpressionParserStackItem(9, null))
-                stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+            if(bitwiseAndValues.contains(tokens[tokenPosition].value)) {
+                tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, bitwiseAndValues, ParserConstants.LOCATION_9, stack)
                 continue
             }
-            if(tokens[tokenPosition].value == ParserConstants.RELATIONAL_EQUALS || tokens[tokenPosition].value == ParserConstants.RELATIONAL_NOT_EQUALS) {
-                val relationalEqualsToken = tokens[tokenPosition]
-                tokenPosition++
-                stack.push(ExpressionParserStackItem(10, relationalEqualsToken))
-                stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+            if(relationalEqualsOperatorValues.contains(tokens[tokenPosition].value)) {
+                tokenPosition = expressionStackPusher.push(tokens, tokenPosition, relationalOperatorTokenTypes, relationalEqualsOperatorValues, ParserConstants.LOCATION_10, stack)
                 continue
             }
-            if(tokens[tokenPosition].value == ParserConstants.GREATER_THAN_OPERATOR || tokens[tokenPosition].value == ParserConstants.GREATER_THAN_EQUALS_OPERATOR ||  tokens[tokenPosition].value == ParserConstants.LESS_THAN_EQUALS_OPERATOR || tokens[tokenPosition].value == ParserConstants.LESS_THAN_OPERATOR ) {
-                val relationalOperatorToken = tokens[tokenPosition]
-                tokenPosition++
-                stack.push(ExpressionParserStackItem(11, relationalOperatorToken))
-                stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+            if(relationalOperatorValues.contains(tokens[tokenPosition].value)) {
+                tokenPosition = expressionStackPusher.push(tokens, tokenPosition, relationalOperatorTokenTypes, relationalOperatorValues, ParserConstants.LOCATION_11, stack)
                 continue
             }
             if(shiftValues.contains(tokens[tokenPosition].value)) {
@@ -169,46 +167,32 @@ internal class ExpressionParser(
                     val binaryOrExpression = ParsedBinaryOrOperatorNode(leftExpression, rightExpression)
                     resultStack.push(binaryOrExpression)
 
-                    if (tokens[tokenPosition].type == TokenType.BINARY_OR) {
-                        tokenPosition = expressionStackPusher.pushBinaryOr(tokens, tokenPosition, stack)
+                    if (binaryOrValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOrTokenTypes, binaryOrValues, ParserConstants.LOCATION_5, stack)
                         continue
                     }
-                    if (tokens[tokenPosition].type == TokenType.BINARY_AND) {
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(6, null))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if (binaryAndTokenTypes.contains(tokens[tokenPosition].type)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAndTokenTypes, binaryAndValues, ParserConstants.LOCATION_6, stack)
                         continue
                     }
-                    if (tokens[tokenPosition].value == ParserConstants.BITWISE_OR_OPERATOR) {
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(7, null))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if (bitwiseOrValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, bitwiseOrValues, ParserConstants.LOCATION_7, stack)
                         continue
                     }
-                    if (tokens[tokenPosition].value == ParserConstants.BITWISE_XOR_OPERATOR) {
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(8, null))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if (bitwiseXorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, bitwiseXorValues, ParserConstants.LOCATION_8, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.BITWISE_AND_OPERATOR) {
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(9, null))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(bitwiseAndValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, bitwiseAndValues, ParserConstants.LOCATION_9, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.RELATIONAL_EQUALS || tokens[tokenPosition].value == ParserConstants.RELATIONAL_NOT_EQUALS) {
-                        val relationalEqualsToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(10, relationalEqualsToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(relationalEqualsOperatorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, relationalOperatorTokenTypes, relationalEqualsOperatorValues, ParserConstants.LOCATION_10, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.GREATER_THAN_OPERATOR || tokens[tokenPosition].value == ParserConstants.GREATER_THAN_EQUALS_OPERATOR ||  tokens[tokenPosition].value == ParserConstants.LESS_THAN_EQUALS_OPERATOR || tokens[tokenPosition].value == ParserConstants.LESS_THAN_OPERATOR ) {
-                        val relationalOperatorToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(11, relationalOperatorToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(relationalOperatorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, relationalOperatorTokenTypes, relationalOperatorValues, ParserConstants.LOCATION_11, stack)
                         continue
                     }
                     if(shiftValues.contains(tokens[tokenPosition].value)) {
@@ -228,48 +212,34 @@ internal class ExpressionParser(
                         continue
                     }
                 }
-                top.location == 6 -> {
+                top.location == ParserConstants.LOCATION_6 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
                     val binaryAndExpression = ParsedBinaryAndOperatorNode(leftExpression, rightExpression)
                     resultStack.push(binaryAndExpression)
 
-                    if (tokens[tokenPosition].type == TokenType.BINARY_AND) {
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(6, null))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if (binaryAndTokenTypes.contains(tokens[tokenPosition].type)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAndTokenTypes, binaryAndValues, ParserConstants.LOCATION_6, stack)
                         continue
                     }
-                    if (tokens[tokenPosition].value == ParserConstants.BITWISE_OR_OPERATOR) {
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(7, null))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if (bitwiseOrValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, bitwiseOrValues, ParserConstants.LOCATION_7, stack)
                         continue
                     }
-                    if (tokens[tokenPosition].value == ParserConstants.BITWISE_XOR_OPERATOR) {
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(8, null))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if (bitwiseXorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, bitwiseXorValues, ParserConstants.LOCATION_8, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.BITWISE_AND_OPERATOR) {
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(9, null))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(bitwiseAndValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, bitwiseAndValues, ParserConstants.LOCATION_9, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.RELATIONAL_EQUALS || tokens[tokenPosition].value == ParserConstants.RELATIONAL_NOT_EQUALS) {
-                        val relationalEqualsToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(10, relationalEqualsToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(relationalEqualsOperatorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, relationalOperatorTokenTypes, relationalEqualsOperatorValues, ParserConstants.LOCATION_10, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.GREATER_THAN_OPERATOR || tokens[tokenPosition].value == ParserConstants.GREATER_THAN_EQUALS_OPERATOR ||  tokens[tokenPosition].value == ParserConstants.LESS_THAN_EQUALS_OPERATOR || tokens[tokenPosition].value == ParserConstants.LESS_THAN_OPERATOR ) {
-                        val relationalOperatorToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(11, relationalOperatorToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(relationalOperatorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, relationalOperatorTokenTypes, relationalOperatorValues, ParserConstants.LOCATION_11, stack)
                         continue
                     }
                     if(shiftValues.contains(tokens[tokenPosition].value)) {
@@ -289,42 +259,30 @@ internal class ExpressionParser(
                         continue
                     }
                 }
-                top.location == 7 -> {
+                top.location == ParserConstants.LOCATION_7 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
-                    val bitwiseOrExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, ParserConstants.BITWISE_OR_OPERATOR)
+                    val bitwiseOrExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token!!.value)
                     resultStack.push(bitwiseOrExpression)
 
-                    if (tokens[tokenPosition].value == ParserConstants.BITWISE_OR_OPERATOR) {
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(7, null))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if (bitwiseOrValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, bitwiseOrValues, ParserConstants.LOCATION_7, stack)
                         continue
                     }
-                    if (tokens[tokenPosition].value == ParserConstants.BITWISE_XOR_OPERATOR) {
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(8, null))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if (bitwiseXorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, bitwiseXorValues, ParserConstants.LOCATION_8, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.BITWISE_AND_OPERATOR) {
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(9, null))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(bitwiseAndValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, bitwiseAndValues, ParserConstants.LOCATION_9, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.RELATIONAL_EQUALS || tokens[tokenPosition].value == ParserConstants.RELATIONAL_NOT_EQUALS) {
-                        val relationalEqualsToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(10, relationalEqualsToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(relationalEqualsOperatorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, relationalOperatorTokenTypes, relationalEqualsOperatorValues, ParserConstants.LOCATION_10, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.GREATER_THAN_OPERATOR || tokens[tokenPosition].value == ParserConstants.GREATER_THAN_EQUALS_OPERATOR ||  tokens[tokenPosition].value == ParserConstants.LESS_THAN_EQUALS_OPERATOR || tokens[tokenPosition].value == ParserConstants.LESS_THAN_OPERATOR ) {
-                        val relationalOperatorToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(11, relationalOperatorToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(relationalOperatorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, relationalOperatorTokenTypes, relationalOperatorValues, ParserConstants.LOCATION_11, stack)
                         continue
                     }
                     if(shiftValues.contains(tokens[tokenPosition].value)) {
@@ -344,36 +302,26 @@ internal class ExpressionParser(
                         continue
                     }
                 }
-                top.location == 8 -> {
+                top.location == ParserConstants.LOCATION_8 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
-                    val bitwiseXorExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, ParserConstants.BITWISE_XOR_OPERATOR)
+                    val bitwiseXorExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token!!.value)
                     resultStack.push(bitwiseXorExpression)
 
-                    if (tokens[tokenPosition].value == ParserConstants.BITWISE_XOR_OPERATOR) {
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(8, null))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if (bitwiseXorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, bitwiseXorValues, ParserConstants.LOCATION_8, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.BITWISE_AND_OPERATOR) {
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(9, null))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(bitwiseAndValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, bitwiseAndValues, ParserConstants.LOCATION_9, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.RELATIONAL_EQUALS || tokens[tokenPosition].value == ParserConstants.RELATIONAL_NOT_EQUALS) {
-                        val relationalEqualsToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(10, relationalEqualsToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(relationalEqualsOperatorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, relationalOperatorTokenTypes, relationalEqualsOperatorValues, ParserConstants.LOCATION_10, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.GREATER_THAN_OPERATOR || tokens[tokenPosition].value == ParserConstants.GREATER_THAN_EQUALS_OPERATOR ||  tokens[tokenPosition].value == ParserConstants.LESS_THAN_EQUALS_OPERATOR || tokens[tokenPosition].value == ParserConstants.LESS_THAN_OPERATOR ) {
-                        val relationalOperatorToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(11, relationalOperatorToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(relationalOperatorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, relationalOperatorTokenTypes, relationalOperatorValues, ParserConstants.LOCATION_11, stack)
                         continue
                     }
                     if(shiftValues.contains(tokens[tokenPosition].value)) {
@@ -393,30 +341,22 @@ internal class ExpressionParser(
                         continue
                     }
                 }
-                top.location == 9 -> {
+                top.location == ParserConstants.LOCATION_9 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
-                    val bitwiseAndExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, ParserConstants.BITWISE_AND_OPERATOR)
+                    val bitwiseAndExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token!!.value)
                     resultStack.push(bitwiseAndExpression)
 
-                    if(tokens[tokenPosition].value == ParserConstants.BITWISE_AND_OPERATOR) {
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(9, null))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(bitwiseAndValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, bitwiseAndValues, ParserConstants.LOCATION_9, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.RELATIONAL_EQUALS || tokens[tokenPosition].value == ParserConstants.RELATIONAL_NOT_EQUALS) {
-                        val relationalEqualsToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(10, relationalEqualsToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(relationalEqualsOperatorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, relationalOperatorTokenTypes, relationalEqualsOperatorValues, ParserConstants.LOCATION_10, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.GREATER_THAN_OPERATOR || tokens[tokenPosition].value == ParserConstants.GREATER_THAN_EQUALS_OPERATOR ||  tokens[tokenPosition].value == ParserConstants.LESS_THAN_EQUALS_OPERATOR || tokens[tokenPosition].value == ParserConstants.LESS_THAN_OPERATOR ) {
-                        val relationalOperatorToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(11, relationalOperatorToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(relationalOperatorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, relationalOperatorTokenTypes, relationalOperatorValues, ParserConstants.LOCATION_11, stack)
                         continue
                     }
                     if(shiftValues.contains(tokens[tokenPosition].value)) {
@@ -436,24 +376,18 @@ internal class ExpressionParser(
                         continue
                     }
                 }
-                top.location == 10 -> {
+                top.location == ParserConstants.LOCATION_10 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
                     val relationalEqualsExpression = ParsedBinaryRelationalOperatorNode(leftExpression, rightExpression, top.token!!.value)
                     resultStack.push(relationalEqualsExpression)
 
-                    if(tokens[tokenPosition].value == ParserConstants.RELATIONAL_EQUALS || tokens[tokenPosition].value == ParserConstants.RELATIONAL_NOT_EQUALS) {
-                        val relationalEqualsToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(10, relationalEqualsToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(relationalEqualsOperatorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, relationalOperatorTokenTypes, relationalEqualsOperatorValues, ParserConstants.LOCATION_10, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.GREATER_THAN_OPERATOR || tokens[tokenPosition].value == ParserConstants.GREATER_THAN_EQUALS_OPERATOR ||  tokens[tokenPosition].value == ParserConstants.LESS_THAN_EQUALS_OPERATOR || tokens[tokenPosition].value == ParserConstants.LESS_THAN_OPERATOR ) {
-                        val relationalOperatorToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(11, relationalOperatorToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(relationalOperatorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, relationalOperatorTokenTypes, relationalOperatorValues, ParserConstants.LOCATION_11, stack)
                         continue
                     }
                     if(shiftValues.contains(tokens[tokenPosition].value)) {
@@ -473,17 +407,14 @@ internal class ExpressionParser(
                         continue
                     }
                 }
-                top.location == 11 -> {
+                top.location == ParserConstants.LOCATION_11 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
                     val relationalOperatorExpression = ParsedBinaryRelationalOperatorNode(leftExpression, rightExpression, top.token!!.value)
                     resultStack.push(relationalOperatorExpression)
 
-                    if(tokens[tokenPosition].value == ParserConstants.GREATER_THAN_OPERATOR || tokens[tokenPosition].value == ParserConstants.GREATER_THAN_EQUALS_OPERATOR ||  tokens[tokenPosition].value == ParserConstants.LESS_THAN_EQUALS_OPERATOR || tokens[tokenPosition].value == ParserConstants.LESS_THAN_OPERATOR ) {
-                        val relationalOperatorToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(11, relationalOperatorToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(relationalOperatorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, relationalOperatorTokenTypes, relationalOperatorValues, ParserConstants.LOCATION_11, stack)
                         continue
                     }
                     if(shiftValues.contains(tokens[tokenPosition].value)) {
