@@ -19,6 +19,10 @@ enum class ParserSingleton {
 
     private val unaryTokenTypes = setOf(TokenType.PLUS_MINUS, TokenType.PRE_POST, TokenType.BIT_NEGATION, TokenType.UNARY_NOT)
     private val unaryValues = setOf(TokenizerConstants.PLUS_OPERATOR, TokenizerConstants.MINUS_OPERATOR, TokenizerConstants.INCREMENT, TokenizerConstants.DECREMENT, TokenizerConstants.NEGATION, TokenizerConstants.BIT_NEGATION)
+    private val arrayExpressionTokenTypes = setOf(TokenType.LEFT_BRACKET)
+    private val arrayExpressionValues = setOf(TokenizerConstants.LEFT_BRACKET)
+    private val innerExpressionTokenTypes = setOf(TokenType.LEFT_PARENTHESES)
+    private val innerExpressionValues = setOf(TokenizerConstants.LEFT_PARENTHESES)
     private val binaryOrTokenTypes = setOf(TokenType.BINARY_OR)
     private val binaryOrValues = setOf(TokenizerConstants.OR_OPERATOR)
     private val binaryAndTokenTypes = setOf(TokenType.BINARY_AND)
@@ -41,6 +45,10 @@ enum class ParserSingleton {
         expressionStackPusher,
         unaryTokenTypes,
         unaryValues,
+        arrayExpressionTokenTypes,
+        arrayExpressionValues,
+        innerExpressionTokenTypes,
+        innerExpressionValues,
         binaryOrTokenTypes,
         binaryOrValues,
         binaryAndTokenTypes,

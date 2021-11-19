@@ -9,6 +9,10 @@ internal class ExpressionParser(
     private val expressionStackPusher: IExpressionStackPusher,
     private val unaryTokenTypes: Set<TokenType>,
     private val unaryValues: Set<String>,
+    private val arrayExpressionTokenTypes: Set<TokenType>,
+    private val arrayExpressionValues: Set<String>,
+    private val innerExpressionTokenTypes: Set<TokenType>,
+    private val innerExpressionValues: Set<String>,
     private val binaryOrTokenTypes: Set<TokenType>,
     private val binaryOrValues: Set<String>,
     private val binaryAndTokenTypes: Set<TokenType>,
@@ -41,8 +45,8 @@ internal class ExpressionParser(
         while(stack.isNotEmpty()) {
             val top = stack.pop()
 
-            when {
-                top.location == ParserConstants.LOCATION_1 -> {
+            when (top.location) {
+                ParserConstants.LOCATION_1 -> {
                     when (tokens[tokenPosition].type) {
                         TokenType.PLUS_MINUS, TokenType.PRE_POST, TokenType.BIT_NEGATION, TokenType.UNARY_NOT -> {
                             tokenPosition = expressionStackPusher.push(tokens, tokenPosition, unaryTokenTypes, unaryValues, ParserConstants.LOCATION_2, stack)
@@ -57,12 +61,10 @@ internal class ExpressionParser(
                             val identifierToken = tokens[tokenPosition]
                             tokenPosition++
                             val variableExpression = ParsedVariableExpressionNode(identifierToken.value)
-
                             var identifierExpression: IParsedExpressionNode = variableExpression
                             if (tokens[tokenPosition].type == TokenType.LEFT_BRACKET) {
-                                tokenPosition++
-                                stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_3, null, variableExpression))
-                                stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                                resultStack.push(variableExpression)
+                                tokenPosition = expressionStackPusher.push(tokens, tokenPosition, arrayExpressionTokenTypes, arrayExpressionValues, ParserConstants.LOCATION_3, stack)
                                 continue
                             }
                             if (tokens[tokenPosition].type == TokenType.PRE_POST) {
@@ -73,13 +75,11 @@ internal class ExpressionParser(
                             resultStack.push(identifierExpression)
                         }
                         else -> {
-                            tokenPosition++
-                            stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_4, null))
-                            stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                            tokenPosition = expressionStackPusher.push(tokens, tokenPosition, innerExpressionTokenTypes, innerExpressionValues, ParserConstants.LOCATION_4, stack)
                         }
                     }
                 }
-                top.location == ParserConstants.LOCATION_2 -> {
+                ParserConstants.LOCATION_2 -> {
                     val unaryToken = top.token
                     val insideExpression = resultStack.pop()
                     val unaryExpression = when (unaryToken!!.type) {
@@ -95,9 +95,9 @@ internal class ExpressionParser(
                     }
                     resultStack.push(unaryExpression)
                 }
-                top.location == ParserConstants.LOCATION_3 -> {
+                ParserConstants.LOCATION_3 -> {
                     val insideExpression = resultStack.pop()
-                    val variableExpression = top.expression as ParsedVariableExpressionNode
+                    val variableExpression = resultStack.pop() as ParsedVariableExpressionNode
                     tokenPosition++
                     var identifierExpression: IParsedExpressionNode = ParsedBinaryArrayOperatorNode(variableExpression, insideExpression)
 
@@ -108,7 +108,7 @@ internal class ExpressionParser(
                     }
                     resultStack.push(identifierExpression)
                 }
-                top.location == ParserConstants.LOCATION_4 ->{
+                ParserConstants.LOCATION_4 -> {
                     val innerExpression = resultStack.pop()
                     tokenPosition++
                     resultStack.push(ParsedInnerExpression(innerExpression))
@@ -160,8 +160,8 @@ internal class ExpressionParser(
                 continue
             }
 
-            when {
-                top.location == ParserConstants.LOCATION_5 -> {
+            when (top.location) {
+                ParserConstants.LOCATION_5 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
                     val binaryOrExpression = ParsedBinaryOrOperatorNode(leftExpression, rightExpression)
@@ -212,7 +212,7 @@ internal class ExpressionParser(
                         continue
                     }
                 }
-                top.location == ParserConstants.LOCATION_6 -> {
+                ParserConstants.LOCATION_6 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
                     val binaryAndExpression = ParsedBinaryAndOperatorNode(leftExpression, rightExpression)
@@ -259,7 +259,7 @@ internal class ExpressionParser(
                         continue
                     }
                 }
-                top.location == ParserConstants.LOCATION_7 -> {
+                ParserConstants.LOCATION_7 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
                     val bitwiseOrExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token!!.value)
@@ -302,7 +302,7 @@ internal class ExpressionParser(
                         continue
                     }
                 }
-                top.location == ParserConstants.LOCATION_8 -> {
+                ParserConstants.LOCATION_8 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
                     val bitwiseXorExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token!!.value)
@@ -341,7 +341,7 @@ internal class ExpressionParser(
                         continue
                     }
                 }
-                top.location == ParserConstants.LOCATION_9 -> {
+                ParserConstants.LOCATION_9 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
                     val bitwiseAndExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token!!.value)
@@ -376,7 +376,7 @@ internal class ExpressionParser(
                         continue
                     }
                 }
-                top.location == ParserConstants.LOCATION_10 -> {
+                ParserConstants.LOCATION_10 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
                     val relationalEqualsExpression = ParsedBinaryRelationalOperatorNode(leftExpression, rightExpression, top.token!!.value)
@@ -407,7 +407,7 @@ internal class ExpressionParser(
                         continue
                     }
                 }
-                top.location == ParserConstants.LOCATION_11 -> {
+                ParserConstants.LOCATION_11 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
                     val relationalOperatorExpression = ParsedBinaryRelationalOperatorNode(leftExpression, rightExpression, top.token!!.value)
@@ -434,7 +434,7 @@ internal class ExpressionParser(
                         continue
                     }
                 }
-                top.location == ParserConstants.LOCATION_12 -> {
+                ParserConstants.LOCATION_12 -> {
 
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
@@ -458,7 +458,7 @@ internal class ExpressionParser(
                         continue
                     }
                 }
-                top.location == ParserConstants.LOCATION_13 -> {
+                ParserConstants.LOCATION_13 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
                     val factorExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token!!.value)
@@ -478,7 +478,7 @@ internal class ExpressionParser(
                         continue
                     }
                 }
-                top.location == ParserConstants.LOCATION_14 -> {
+                ParserConstants.LOCATION_14 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
                     val termExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token!!.value)
@@ -494,7 +494,7 @@ internal class ExpressionParser(
                         continue
                     }
                 }
-                top.location == ParserConstants.LOCATION_15 -> {
+                ParserConstants.LOCATION_15 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
                     val resultNode = if(top.token!!.type == TokenType.BINARY_ASSIGN) {
