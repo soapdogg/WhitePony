@@ -13,9 +13,6 @@ object ParserConstants {
     const val LESS_THAN_OPERATOR = "<"
     const val LESS_THAN_EQUALS_OPERATOR = "<="
 
-    const val MULTIPLY_OPERATOR = "*"
-    const val DIVIDE_OPERATOR = "/"
-    const val MODULUS_OPERATOR = "%"
 
     const val ASSIGN_OPERATOR = "="
     const val EMPTY = ""

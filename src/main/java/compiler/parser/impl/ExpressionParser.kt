@@ -2,12 +2,18 @@ package compiler.parser.impl
 
 import compiler.core.*
 import compiler.core.constants.ParserConstants
-import compiler.core.constants.TokenizerConstants
 import compiler.parser.impl.internal.IExpressionStackPusher
 import compiler.parser.impl.internal.IExpressionParser
 
 internal class ExpressionParser(
-    private val expressionStackPusher: IExpressionStackPusher
+    private val expressionStackPusher: IExpressionStackPusher,
+    private val binaryOperatorTokenTypes: Set<TokenType>,
+    private val shiftValues: Set<String>,
+    private val factorValues: Set<String>,
+    private val termTokenTypes: Set<TokenType>,
+    private val termValues: Set<String>,
+    private val binaryAssignTokenTypes: Set<TokenType>,
+    private val binaryAssignValues: Set<String>
 ): IExpressionParser {
 
     override fun parse(
@@ -139,30 +145,20 @@ internal class ExpressionParser(
                 stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
                 continue
             }
-            if(tokens[tokenPosition].value == TokenizerConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == TokenizerConstants.RIGHT_SHIFT_OPERATOR) {
-                tokenPosition = expressionStackPusher.push(
-                    tokens,
-                    tokenPosition,
-                    setOf(TokenType.BINARY_OPERATOR),
-                    setOf(TokenizerConstants.LEFT_SHIFT_OPERATOR, TokenizerConstants.RIGHT_SHIFT_OPERATOR),
-                    ParserConstants.LOCATION_12,
-                    stack
-                )
+            if(shiftValues.contains(tokens[tokenPosition].value)) {
+                tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, shiftValues, ParserConstants.LOCATION_12, stack)
                 continue
             }
-            if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
-                tokenPosition = expressionStackPusher.pushFactor(tokens, tokenPosition, stack)
+            if(factorValues.contains(tokens[tokenPosition].value)) {
+                tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, factorValues, ParserConstants.LOCATION_13, stack)
                 continue
             }
-            if(tokens[tokenPosition].type == TokenType.PLUS_MINUS) {
-                tokenPosition = expressionStackPusher.pushTerm(tokens, tokenPosition, stack)
+            if(termTokenTypes.contains(tokens[tokenPosition].type)) {
+                tokenPosition = expressionStackPusher.push(tokens, tokenPosition, termTokenTypes, termValues, ParserConstants.LOCATION_14, stack)
                 continue
             }
-            if(
-                tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
-                || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
-            ) {
-                tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
+            if(binaryAssignTokenTypes.contains(tokens[tokenPosition].type)) {
+                tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAssignTokenTypes, binaryAssignValues, ParserConstants.LOCATION_15, stack)
                 continue
             }
 
@@ -215,30 +211,20 @@ internal class ExpressionParser(
                         stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
                         continue
                     }
-                    if(tokens[tokenPosition].value == TokenizerConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == TokenizerConstants.RIGHT_SHIFT_OPERATOR) {
-                        tokenPosition = expressionStackPusher.push(
-                            tokens,
-                            tokenPosition,
-                            setOf(TokenType.BINARY_OPERATOR),
-                            setOf(TokenizerConstants.LEFT_SHIFT_OPERATOR, TokenizerConstants.RIGHT_SHIFT_OPERATOR),
-                            ParserConstants.LOCATION_12,
-                            stack
-                        )
+                    if(shiftValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, shiftValues, ParserConstants.LOCATION_12, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
-                        tokenPosition = expressionStackPusher.pushFactor(tokens, tokenPosition, stack)
+                    if(factorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, factorValues, ParserConstants.LOCATION_13, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].type == TokenType.PLUS_MINUS) {
-                        tokenPosition = expressionStackPusher.pushTerm(tokens, tokenPosition, stack)
+                    if(termTokenTypes.contains(tokens[tokenPosition].type)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, termTokenTypes, termValues, ParserConstants.LOCATION_14, stack)
                         continue
                     }
-                    if(
-                        tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
-                        || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
-                    ) {
-                        tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
+                    if(binaryAssignTokenTypes.contains(tokens[tokenPosition].type)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAssignTokenTypes, binaryAssignValues, ParserConstants.LOCATION_15, stack)
                         continue
                     }
                 }
@@ -286,30 +272,20 @@ internal class ExpressionParser(
                         stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
                         continue
                     }
-                    if(tokens[tokenPosition].value == TokenizerConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == TokenizerConstants.RIGHT_SHIFT_OPERATOR) {
-                        tokenPosition = expressionStackPusher.push(
-                            tokens,
-                            tokenPosition,
-                            setOf(TokenType.BINARY_OPERATOR),
-                            setOf(TokenizerConstants.LEFT_SHIFT_OPERATOR, TokenizerConstants.RIGHT_SHIFT_OPERATOR),
-                            ParserConstants.LOCATION_12,
-                            stack
-                        )
+                    if(shiftValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, shiftValues, ParserConstants.LOCATION_12, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
-                        tokenPosition = expressionStackPusher.pushFactor(tokens, tokenPosition, stack)
+                    if(factorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, factorValues, ParserConstants.LOCATION_13, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].type == TokenType.PLUS_MINUS) {
-                        tokenPosition = expressionStackPusher.pushTerm(tokens, tokenPosition, stack)
+                    if(termTokenTypes.contains(tokens[tokenPosition].type)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, termTokenTypes, termValues, ParserConstants.LOCATION_14, stack)
                         continue
                     }
-                    if(
-                        tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
-                        || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
-                    ) {
-                        tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
+                    if(binaryAssignTokenTypes.contains(tokens[tokenPosition].type)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAssignTokenTypes, binaryAssignValues, ParserConstants.LOCATION_15, stack)
                         continue
                     }
                 }
@@ -351,30 +327,20 @@ internal class ExpressionParser(
                         stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
                         continue
                     }
-                    if(tokens[tokenPosition].value == TokenizerConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == TokenizerConstants.RIGHT_SHIFT_OPERATOR) {
-                        tokenPosition = expressionStackPusher.push(
-                            tokens,
-                            tokenPosition,
-                            setOf(TokenType.BINARY_OPERATOR),
-                            setOf(TokenizerConstants.LEFT_SHIFT_OPERATOR, TokenizerConstants.RIGHT_SHIFT_OPERATOR),
-                            ParserConstants.LOCATION_12,
-                            stack
-                        )
+                    if(shiftValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, shiftValues, ParserConstants.LOCATION_12, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
-                        tokenPosition = expressionStackPusher.pushFactor(tokens, tokenPosition, stack)
+                    if(factorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, factorValues, ParserConstants.LOCATION_13, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].type == TokenType.PLUS_MINUS) {
-                        tokenPosition = expressionStackPusher.pushTerm(tokens, tokenPosition, stack)
+                    if(termTokenTypes.contains(tokens[tokenPosition].type)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, termTokenTypes, termValues, ParserConstants.LOCATION_14, stack)
                         continue
                     }
-                    if(
-                        tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
-                        || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
-                    ) {
-                        tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
+                    if(binaryAssignTokenTypes.contains(tokens[tokenPosition].type)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAssignTokenTypes, binaryAssignValues, ParserConstants.LOCATION_15, stack)
                         continue
                     }
                 }
@@ -410,30 +376,20 @@ internal class ExpressionParser(
                         stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
                         continue
                     }
-                    if(tokens[tokenPosition].value == TokenizerConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == TokenizerConstants.RIGHT_SHIFT_OPERATOR) {
-                        tokenPosition = expressionStackPusher.push(
-                            tokens,
-                            tokenPosition,
-                            setOf(TokenType.BINARY_OPERATOR),
-                            setOf(TokenizerConstants.LEFT_SHIFT_OPERATOR, TokenizerConstants.RIGHT_SHIFT_OPERATOR),
-                            ParserConstants.LOCATION_12,
-                            stack
-                        )
+                    if(shiftValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, shiftValues, ParserConstants.LOCATION_12, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
-                        tokenPosition = expressionStackPusher.pushFactor(tokens, tokenPosition, stack)
+                    if(factorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, factorValues, ParserConstants.LOCATION_13, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].type == TokenType.PLUS_MINUS) {
-                        tokenPosition = expressionStackPusher.pushTerm(tokens, tokenPosition, stack)
+                    if(termTokenTypes.contains(tokens[tokenPosition].type)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, termTokenTypes, termValues, ParserConstants.LOCATION_14, stack)
                         continue
                     }
-                    if(
-                        tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
-                        || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
-                    ) {
-                        tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
+                    if(binaryAssignTokenTypes.contains(tokens[tokenPosition].type)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAssignTokenTypes, binaryAssignValues, ParserConstants.LOCATION_15, stack)
                         continue
                     }
                 }
@@ -463,30 +419,20 @@ internal class ExpressionParser(
                         stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
                         continue
                     }
-                    if(tokens[tokenPosition].value == TokenizerConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == TokenizerConstants.RIGHT_SHIFT_OPERATOR) {
-                        tokenPosition = expressionStackPusher.push(
-                            tokens,
-                            tokenPosition,
-                            setOf(TokenType.BINARY_OPERATOR),
-                            setOf(TokenizerConstants.LEFT_SHIFT_OPERATOR, TokenizerConstants.RIGHT_SHIFT_OPERATOR),
-                            ParserConstants.LOCATION_12,
-                            stack
-                        )
+                    if(shiftValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, shiftValues, ParserConstants.LOCATION_12, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
-                        tokenPosition = expressionStackPusher.pushFactor(tokens, tokenPosition, stack)
+                    if(factorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, factorValues, ParserConstants.LOCATION_13, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].type == TokenType.PLUS_MINUS) {
-                        tokenPosition = expressionStackPusher.pushTerm(tokens, tokenPosition, stack)
+                    if(termTokenTypes.contains(tokens[tokenPosition].type)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, termTokenTypes, termValues, ParserConstants.LOCATION_14, stack)
                         continue
                     }
-                    if(
-                        tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
-                        || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
-                    ) {
-                        tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
+                    if(binaryAssignTokenTypes.contains(tokens[tokenPosition].type)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAssignTokenTypes, binaryAssignValues, ParserConstants.LOCATION_15, stack)
                         continue
                     }
                 }
@@ -510,30 +456,20 @@ internal class ExpressionParser(
                         stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
                         continue
                     }
-                    if(tokens[tokenPosition].value == TokenizerConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == TokenizerConstants.RIGHT_SHIFT_OPERATOR) {
-                        tokenPosition = expressionStackPusher.push(
-                            tokens,
-                            tokenPosition,
-                            setOf(TokenType.BINARY_OPERATOR),
-                            setOf(TokenizerConstants.LEFT_SHIFT_OPERATOR, TokenizerConstants.RIGHT_SHIFT_OPERATOR),
-                            ParserConstants.LOCATION_12,
-                            stack
-                        )
+                    if(shiftValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, shiftValues, ParserConstants.LOCATION_12, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
-                        tokenPosition = expressionStackPusher.pushFactor(tokens, tokenPosition, stack)
+                    if(factorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, factorValues, ParserConstants.LOCATION_13, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].type == TokenType.PLUS_MINUS) {
-                        tokenPosition = expressionStackPusher.pushTerm(tokens, tokenPosition, stack)
+                    if(termTokenTypes.contains(tokens[tokenPosition].type)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, termTokenTypes, termValues, ParserConstants.LOCATION_14, stack)
                         continue
                     }
-                    if(
-                            tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
-                            || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
-                    ) {
-                        tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
+                    if(binaryAssignTokenTypes.contains(tokens[tokenPosition].type)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAssignTokenTypes, binaryAssignValues, ParserConstants.LOCATION_15, stack)
                         continue
                     }
                 }
@@ -550,30 +486,20 @@ internal class ExpressionParser(
                         stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
                         continue
                     }
-                    if(tokens[tokenPosition].value == TokenizerConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == TokenizerConstants.RIGHT_SHIFT_OPERATOR) {
-                        tokenPosition = expressionStackPusher.push(
-                            tokens,
-                            tokenPosition,
-                            setOf(TokenType.BINARY_OPERATOR),
-                            setOf(TokenizerConstants.LEFT_SHIFT_OPERATOR, TokenizerConstants.RIGHT_SHIFT_OPERATOR),
-                            ParserConstants.LOCATION_12,
-                            stack
-                        )
+                    if(shiftValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, shiftValues, ParserConstants.LOCATION_12, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
-                        tokenPosition = expressionStackPusher.pushFactor(tokens, tokenPosition, stack)
+                    if(factorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, factorValues, ParserConstants.LOCATION_13, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].type == TokenType.PLUS_MINUS) {
-                        tokenPosition = expressionStackPusher.pushTerm(tokens, tokenPosition, stack)
+                    if(termTokenTypes.contains(tokens[tokenPosition].type)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, termTokenTypes, termValues, ParserConstants.LOCATION_14, stack)
                         continue
                     }
-                    if(
-                            tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
-                            || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
-                    ) {
-                        tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
+                    if(binaryAssignTokenTypes.contains(tokens[tokenPosition].type)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAssignTokenTypes, binaryAssignValues, ParserConstants.LOCATION_15, stack)
                         continue
                     }
                 }
@@ -584,30 +510,20 @@ internal class ExpressionParser(
                     val shiftExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token!!.value)
                     resultStack.push(shiftExpression)
 
-                    if(tokens[tokenPosition].value == TokenizerConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == TokenizerConstants.RIGHT_SHIFT_OPERATOR) {
-                        tokenPosition = expressionStackPusher.push(
-                            tokens,
-                            tokenPosition,
-                            setOf(TokenType.BINARY_OPERATOR),
-                            setOf(TokenizerConstants.LEFT_SHIFT_OPERATOR, TokenizerConstants.RIGHT_SHIFT_OPERATOR),
-                            ParserConstants.LOCATION_12,
-                            stack
-                        )
+                    if(shiftValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, shiftValues, ParserConstants.LOCATION_12, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
-                        tokenPosition = expressionStackPusher.pushFactor(tokens, tokenPosition, stack)
+                    if(factorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, factorValues, ParserConstants.LOCATION_13, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].type == TokenType.PLUS_MINUS) {
-                        tokenPosition = expressionStackPusher.pushTerm(tokens, tokenPosition, stack)
+                    if(termTokenTypes.contains(tokens[tokenPosition].type)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, termTokenTypes, termValues, ParserConstants.LOCATION_14, stack)
                         continue
                     }
-                    if(
-                            tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
-                            || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
-                    ) {
-                        tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
+                    if(binaryAssignTokenTypes.contains(tokens[tokenPosition].type)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAssignTokenTypes, binaryAssignValues, ParserConstants.LOCATION_15, stack)
                         continue
                     }
                 }
@@ -618,19 +534,16 @@ internal class ExpressionParser(
                     resultStack.push(factorExpression)
 
 
-                    if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
-                        tokenPosition = expressionStackPusher.pushFactor(tokens, tokenPosition, stack)
+                    if(factorValues.contains(tokens[tokenPosition].value)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, factorValues, ParserConstants.LOCATION_13, stack)
                         continue
                     }
-                    if(tokens[tokenPosition].type == TokenType.PLUS_MINUS) {
-                        tokenPosition = expressionStackPusher.pushTerm(tokens, tokenPosition, stack)
+                    if(termTokenTypes.contains(tokens[tokenPosition].type)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, termTokenTypes, termValues, ParserConstants.LOCATION_14, stack)
                         continue
                     }
-                    if(
-                            tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
-                            || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
-                    ) {
-                        tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
+                    if(binaryAssignTokenTypes.contains(tokens[tokenPosition].type)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAssignTokenTypes, binaryAssignValues, ParserConstants.LOCATION_15, stack)
                         continue
                     }
                 }
@@ -641,15 +554,12 @@ internal class ExpressionParser(
                     resultStack.push(termExpression)
 
 
-                    if(tokens[tokenPosition].type == TokenType.PLUS_MINUS) {
-                        tokenPosition = expressionStackPusher.pushTerm(tokens, tokenPosition, stack)
+                    if(termTokenTypes.contains(tokens[tokenPosition].type)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, termTokenTypes, termValues, ParserConstants.LOCATION_14, stack)
                         continue
                     }
-                    if(
-                        tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
-                        || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
-                    ) {
-                        tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
+                    if(binaryAssignTokenTypes.contains(tokens[tokenPosition].type)) {
+                        tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAssignTokenTypes, binaryAssignValues, ParserConstants.LOCATION_15, stack)
                         continue
                     }
                 }

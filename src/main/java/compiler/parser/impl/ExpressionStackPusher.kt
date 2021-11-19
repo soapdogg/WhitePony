@@ -61,37 +61,4 @@ internal class ExpressionStackPusher(
         stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1))
         return positionAfterOr
     }
-
-    override fun pushFactor(
-        tokens: List<Token>,
-        startingPosition: Int,
-        stack: Stack<ExpressionParserStackItem>
-    ): Int {
-        val(factorToken, positionAfterFactor) = tokenTypeAsserter.assertTokenValue(
-            tokens,
-            startingPosition,
-            setOf(
-                ParserConstants.MULTIPLY_OPERATOR,
-                ParserConstants.DIVIDE_OPERATOR,
-                ParserConstants.MODULUS_OPERATOR
-            )
-        )
-        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_13, factorToken))
-        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1))
-        return positionAfterFactor
-    }
-
-    override fun pushTerm(tokens: List<Token>, startingPosition: Int, stack: Stack<ExpressionParserStackItem>): Int {
-        val (termToken, positionAfterTerm) = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.PLUS_MINUS)
-        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_14, termToken))
-        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1))
-        return positionAfterTerm
-    }
-
-    override fun pushBinaryAssign(tokens: List<Token>, startingPosition: Int, stack: Stack<ExpressionParserStackItem>): Int {
-        val (binaryAssignToken, positionAfterBinaryAssign) = tokenTypeAsserter.assertTokenType(tokens, startingPosition, setOf(TokenType.BINARY_ASSIGN, TokenType.BINARY_ASSIGN_OP))
-        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_15, binaryAssignToken))
-        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1))
-        return positionAfterBinaryAssign
-    }
 }
