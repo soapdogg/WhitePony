@@ -4,7 +4,7 @@ import compiler.core.*
 import compiler.core.constants.ParserConstants
 import compiler.parser.impl.internal.IExpressionParser
 
-class ExpressionParserIterative: IExpressionParser {
+internal class ExpressionParser: IExpressionParser {
 
     override fun parse(
         tokens: List<Token>,
