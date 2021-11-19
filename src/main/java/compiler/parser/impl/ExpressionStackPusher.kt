@@ -26,7 +26,7 @@ internal class ExpressionStackPusher(
         )
         tokenTypeAsserter.assertTokenValue(tokens, startingPosition, acceptedTokenValues)
         stack.push(ExpressionParserStackItem(location, token))
-        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1))
+        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, token))
         return positionAfterToken
     }
 }

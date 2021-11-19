@@ -39,7 +39,7 @@ internal class ExpressionParser(
 
         val stack = Stack<ExpressionParserStackItem>()
         val resultStack = Stack<IParsedExpressionNode>()
-        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1))
+        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, tokens[startingPosition]))
         var tokenPosition = startingPosition
 
         while(stack.isNotEmpty()) {
@@ -82,7 +82,7 @@ internal class ExpressionParser(
                 ParserConstants.LOCATION_2 -> {
                     val unaryToken = top.token
                     val insideExpression = resultStack.pop()
-                    val unaryExpression = when (unaryToken!!.type) {
+                    val unaryExpression = when (unaryToken.type) {
                         TokenType.PLUS_MINUS, TokenType.BIT_NEGATION -> {
                             ParsedUnaryOperatorNode(insideExpression, unaryToken.value)
                         }
@@ -262,7 +262,7 @@ internal class ExpressionParser(
                 ParserConstants.LOCATION_7 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
-                    val bitwiseOrExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token!!.value)
+                    val bitwiseOrExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token.value)
                     resultStack.push(bitwiseOrExpression)
 
                     if (bitwiseOrValues.contains(tokens[tokenPosition].value)) {
@@ -305,7 +305,7 @@ internal class ExpressionParser(
                 ParserConstants.LOCATION_8 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
-                    val bitwiseXorExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token!!.value)
+                    val bitwiseXorExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token.value)
                     resultStack.push(bitwiseXorExpression)
 
                     if (bitwiseXorValues.contains(tokens[tokenPosition].value)) {
@@ -344,7 +344,7 @@ internal class ExpressionParser(
                 ParserConstants.LOCATION_9 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
-                    val bitwiseAndExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token!!.value)
+                    val bitwiseAndExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token.value)
                     resultStack.push(bitwiseAndExpression)
 
                     if(bitwiseAndValues.contains(tokens[tokenPosition].value)) {
@@ -379,7 +379,7 @@ internal class ExpressionParser(
                 ParserConstants.LOCATION_10 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
-                    val relationalEqualsExpression = ParsedBinaryRelationalOperatorNode(leftExpression, rightExpression, top.token!!.value)
+                    val relationalEqualsExpression = ParsedBinaryRelationalOperatorNode(leftExpression, rightExpression, top.token.value)
                     resultStack.push(relationalEqualsExpression)
 
                     if(relationalEqualsOperatorValues.contains(tokens[tokenPosition].value)) {
@@ -410,7 +410,7 @@ internal class ExpressionParser(
                 ParserConstants.LOCATION_11 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
-                    val relationalOperatorExpression = ParsedBinaryRelationalOperatorNode(leftExpression, rightExpression, top.token!!.value)
+                    val relationalOperatorExpression = ParsedBinaryRelationalOperatorNode(leftExpression, rightExpression, top.token.value)
                     resultStack.push(relationalOperatorExpression)
 
                     if(relationalOperatorValues.contains(tokens[tokenPosition].value)) {
@@ -438,7 +438,7 @@ internal class ExpressionParser(
 
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
-                    val shiftExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token!!.value)
+                    val shiftExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token.value)
                     resultStack.push(shiftExpression)
 
                     if(shiftValues.contains(tokens[tokenPosition].value)) {
@@ -461,7 +461,7 @@ internal class ExpressionParser(
                 ParserConstants.LOCATION_13 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
-                    val factorExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token!!.value)
+                    val factorExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token.value)
                     resultStack.push(factorExpression)
 
 
@@ -481,7 +481,7 @@ internal class ExpressionParser(
                 ParserConstants.LOCATION_14 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
-                    val termExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token!!.value)
+                    val termExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token.value)
                     resultStack.push(termExpression)
 
 
@@ -497,7 +497,7 @@ internal class ExpressionParser(
                 ParserConstants.LOCATION_15 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
-                    val resultNode = if(top.token!!.type == TokenType.BINARY_ASSIGN) {
+                    val resultNode = if(top.token.type == TokenType.BINARY_ASSIGN) {
                         ParsedBinaryAssignNode(leftExpression, rightExpression)
                     } else {
                         ParsedBinaryAssignOperatorNode(leftExpression, rightExpression, top.token.value.replace(ParserConstants.ASSIGN_OPERATOR, ParserConstants.EMPTY))
