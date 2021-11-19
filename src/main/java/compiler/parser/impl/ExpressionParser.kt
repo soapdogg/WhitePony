@@ -2,6 +2,7 @@ package compiler.parser.impl
 
 import compiler.core.*
 import compiler.core.constants.ParserConstants
+import compiler.core.constants.TokenizerConstants
 import compiler.parser.impl.internal.IExpressionStackPusher
 import compiler.parser.impl.internal.IExpressionParser
 
@@ -138,11 +139,15 @@ internal class ExpressionParser(
                 stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
                 continue
             }
-            if(tokens[tokenPosition].value == ParserConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == ParserConstants.RIGHT_SHIFT_OPERATOR) {
-                val shiftToken = tokens[tokenPosition]
-                tokenPosition++
-                stack.push(ExpressionParserStackItem(12, shiftToken))
-                stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+            if(tokens[tokenPosition].value == TokenizerConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == TokenizerConstants.RIGHT_SHIFT_OPERATOR) {
+                tokenPosition = expressionStackPusher.push(
+                    tokens,
+                    tokenPosition,
+                    setOf(TokenType.BINARY_OPERATOR),
+                    setOf(TokenizerConstants.LEFT_SHIFT_OPERATOR, TokenizerConstants.RIGHT_SHIFT_OPERATOR),
+                    ParserConstants.LOCATION_12,
+                    stack
+                )
                 continue
             }
             if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
@@ -210,11 +215,15 @@ internal class ExpressionParser(
                         stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == ParserConstants.RIGHT_SHIFT_OPERATOR) {
-                        val shiftToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(12, shiftToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(tokens[tokenPosition].value == TokenizerConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == TokenizerConstants.RIGHT_SHIFT_OPERATOR) {
+                        tokenPosition = expressionStackPusher.push(
+                            tokens,
+                            tokenPosition,
+                            setOf(TokenType.BINARY_OPERATOR),
+                            setOf(TokenizerConstants.LEFT_SHIFT_OPERATOR, TokenizerConstants.RIGHT_SHIFT_OPERATOR),
+                            ParserConstants.LOCATION_12,
+                            stack
+                        )
                         continue
                     }
                     if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
@@ -277,11 +286,15 @@ internal class ExpressionParser(
                         stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == ParserConstants.RIGHT_SHIFT_OPERATOR) {
-                        val shiftToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(12, shiftToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(tokens[tokenPosition].value == TokenizerConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == TokenizerConstants.RIGHT_SHIFT_OPERATOR) {
+                        tokenPosition = expressionStackPusher.push(
+                            tokens,
+                            tokenPosition,
+                            setOf(TokenType.BINARY_OPERATOR),
+                            setOf(TokenizerConstants.LEFT_SHIFT_OPERATOR, TokenizerConstants.RIGHT_SHIFT_OPERATOR),
+                            ParserConstants.LOCATION_12,
+                            stack
+                        )
                         continue
                     }
                     if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
@@ -293,8 +306,8 @@ internal class ExpressionParser(
                         continue
                     }
                     if(
-                            tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
-                            || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
+                        tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
+                        || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
                     ) {
                         tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
                         continue
@@ -338,11 +351,15 @@ internal class ExpressionParser(
                         stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == ParserConstants.RIGHT_SHIFT_OPERATOR) {
-                        val shiftToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(12, shiftToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(tokens[tokenPosition].value == TokenizerConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == TokenizerConstants.RIGHT_SHIFT_OPERATOR) {
+                        tokenPosition = expressionStackPusher.push(
+                            tokens,
+                            tokenPosition,
+                            setOf(TokenType.BINARY_OPERATOR),
+                            setOf(TokenizerConstants.LEFT_SHIFT_OPERATOR, TokenizerConstants.RIGHT_SHIFT_OPERATOR),
+                            ParserConstants.LOCATION_12,
+                            stack
+                        )
                         continue
                     }
                     if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
@@ -354,8 +371,8 @@ internal class ExpressionParser(
                         continue
                     }
                     if(
-                            tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
-                            || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
+                        tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
+                        || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
                     ) {
                         tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
                         continue
@@ -393,11 +410,15 @@ internal class ExpressionParser(
                         stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == ParserConstants.RIGHT_SHIFT_OPERATOR) {
-                        val shiftToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(12, shiftToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(tokens[tokenPosition].value == TokenizerConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == TokenizerConstants.RIGHT_SHIFT_OPERATOR) {
+                        tokenPosition = expressionStackPusher.push(
+                            tokens,
+                            tokenPosition,
+                            setOf(TokenType.BINARY_OPERATOR),
+                            setOf(TokenizerConstants.LEFT_SHIFT_OPERATOR, TokenizerConstants.RIGHT_SHIFT_OPERATOR),
+                            ParserConstants.LOCATION_12,
+                            stack
+                        )
                         continue
                     }
                     if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
@@ -409,8 +430,8 @@ internal class ExpressionParser(
                         continue
                     }
                     if(
-                            tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
-                            || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
+                        tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
+                        || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
                     ) {
                         tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
                         continue
@@ -442,11 +463,15 @@ internal class ExpressionParser(
                         stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == ParserConstants.RIGHT_SHIFT_OPERATOR) {
-                        val shiftToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(12, shiftToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(tokens[tokenPosition].value == TokenizerConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == TokenizerConstants.RIGHT_SHIFT_OPERATOR) {
+                        tokenPosition = expressionStackPusher.push(
+                            tokens,
+                            tokenPosition,
+                            setOf(TokenType.BINARY_OPERATOR),
+                            setOf(TokenizerConstants.LEFT_SHIFT_OPERATOR, TokenizerConstants.RIGHT_SHIFT_OPERATOR),
+                            ParserConstants.LOCATION_12,
+                            stack
+                        )
                         continue
                     }
                     if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
@@ -458,8 +483,8 @@ internal class ExpressionParser(
                         continue
                     }
                     if(
-                            tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
-                            || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
+                        tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
+                        || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
                     ) {
                         tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
                         continue
@@ -485,11 +510,15 @@ internal class ExpressionParser(
                         stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == ParserConstants.RIGHT_SHIFT_OPERATOR) {
-                        val shiftToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(12, shiftToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(tokens[tokenPosition].value == TokenizerConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == TokenizerConstants.RIGHT_SHIFT_OPERATOR) {
+                        tokenPosition = expressionStackPusher.push(
+                            tokens,
+                            tokenPosition,
+                            setOf(TokenType.BINARY_OPERATOR),
+                            setOf(TokenizerConstants.LEFT_SHIFT_OPERATOR, TokenizerConstants.RIGHT_SHIFT_OPERATOR),
+                            ParserConstants.LOCATION_12,
+                            stack
+                        )
                         continue
                     }
                     if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
@@ -521,11 +550,15 @@ internal class ExpressionParser(
                         stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
                         continue
                     }
-                    if(tokens[tokenPosition].value == ParserConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == ParserConstants.RIGHT_SHIFT_OPERATOR) {
-                        val shiftToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(12, shiftToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(tokens[tokenPosition].value == TokenizerConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == TokenizerConstants.RIGHT_SHIFT_OPERATOR) {
+                        tokenPosition = expressionStackPusher.push(
+                            tokens,
+                            tokenPosition,
+                            setOf(TokenType.BINARY_OPERATOR),
+                            setOf(TokenizerConstants.LEFT_SHIFT_OPERATOR, TokenizerConstants.RIGHT_SHIFT_OPERATOR),
+                            ParserConstants.LOCATION_12,
+                            stack
+                        )
                         continue
                     }
                     if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
@@ -544,18 +577,22 @@ internal class ExpressionParser(
                         continue
                     }
                 }
-                top.location == 12 -> {
+                top.location == ParserConstants.LOCATION_12 -> {
 
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
                     val shiftExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token!!.value)
                     resultStack.push(shiftExpression)
 
-                    if(tokens[tokenPosition].value == ParserConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == ParserConstants.RIGHT_SHIFT_OPERATOR) {
-                        val shiftToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(12, shiftToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                    if(tokens[tokenPosition].value == TokenizerConstants.LEFT_SHIFT_OPERATOR || tokens[tokenPosition].value == TokenizerConstants.RIGHT_SHIFT_OPERATOR) {
+                        tokenPosition = expressionStackPusher.push(
+                            tokens,
+                            tokenPosition,
+                            setOf(TokenType.BINARY_OPERATOR),
+                            setOf(TokenizerConstants.LEFT_SHIFT_OPERATOR, TokenizerConstants.RIGHT_SHIFT_OPERATOR),
+                            ParserConstants.LOCATION_12,
+                            stack
+                        )
                         continue
                     }
                     if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {

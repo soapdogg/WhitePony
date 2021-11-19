@@ -2,6 +2,7 @@ package compiler.tokenizer
 
 import compiler.core.TokenType
 import compiler.core.TokenTypeRegexPattern
+import compiler.core.constants.TokenizerConstants
 import compiler.tokenizer.impl.MatchFinder
 import compiler.tokenizer.impl.Tokenizer
 import compiler.tokenizer.impl.WordTokenizer
@@ -9,7 +10,7 @@ import compiler.tokenizer.impl.WordTokenizer
 enum class TokenizerSingleton {
     INSTANCE;
 
-    private val binaryAssignOperatorRegexPattern = Regex("^((&|/|<<|-|%|\\*|\\||\\+|>>|\\^)=)")
+    private val binaryAssignOperatorRegexPattern = Regex("^((&|/|${TokenizerConstants.LEFT_SHIFT_OPERATOR}|-|%|\\*|\\||\\+|${compiler.core.constants.TokenizerConstants.RIGHT_SHIFT_OPERATOR}|\\^)=)")
     private val binaryAssignOperatorTokenTypeRegexPattern = TokenTypeRegexPattern(
         binaryAssignOperatorRegexPattern,
         TokenType.BINARY_ASSIGN_OP
