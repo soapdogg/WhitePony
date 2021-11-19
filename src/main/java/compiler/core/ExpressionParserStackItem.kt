@@ -5,5 +5,6 @@ data class ExpressionParserStackItem(
     val token: Token?,
     val expression: IParsedExpressionNode?
 ) {
+    constructor(location: Int): this(location, null, null)
     constructor(location: Int, token: Token?) : this(location, token, null)
 }

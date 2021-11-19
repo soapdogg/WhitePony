@@ -18,4 +18,16 @@ internal class TokenTypeAsserter(
         }
         return Pair(token, position + 1)
     }
+
+    override fun assertTokenType(
+        tokens: List<Token>,
+        position: Int,
+        expectedTypes: Set<TokenType>,
+    ): Pair<Token, Int> {
+        val token = tokens[position]
+        if (!expectedTypes.contains(token.type)) {
+            throw Exception("Unexpected TokenType!")
+        }
+        return Pair(token, position + 1)
+    }
 }
