@@ -16,7 +16,7 @@ internal class ExpressionParser(
 
         val stack = Stack<ExpressionParserStackItem>()
         val resultStack = Stack<IParsedExpressionNode>()
-        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1))
         var tokenPosition = startingPosition
 
         while(stack.isNotEmpty()) {
@@ -146,32 +146,23 @@ internal class ExpressionParser(
                 continue
             }
             if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
-                val factorToken = tokens[tokenPosition]
-                tokenPosition++
-                stack.push(ExpressionParserStackItem(13, factorToken))
-                stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                tokenPosition = expressionStackPusher.pushFactor(tokens, tokenPosition, stack)
                 continue
             }
             if(tokens[tokenPosition].type == TokenType.PLUS_MINUS) {
-                val termToken = tokens[tokenPosition]
-                tokenPosition++
-                stack.push(ExpressionParserStackItem(14, termToken))
-                stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                tokenPosition = expressionStackPusher.pushTerm(tokens, tokenPosition, stack)
                 continue
             }
             if(
                 tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
                 || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
             ) {
-                val binaryAssignToken = tokens[tokenPosition]
-                tokenPosition++
-                stack.push(ExpressionParserStackItem(15, binaryAssignToken))
-                stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
                 continue
             }
 
             when {
-                top.location == 5 -> {
+                top.location == ParserConstants.LOCATION_5 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
                     val binaryOrExpression = ParsedBinaryOrOperatorNode(leftExpression, rightExpression)
@@ -227,10 +218,7 @@ internal class ExpressionParser(
                         continue
                     }
                     if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
-                        val termToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(13, termToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                        tokenPosition = expressionStackPusher.pushFactor(tokens, tokenPosition, stack)
                         continue
                     }
                     if(tokens[tokenPosition].type == TokenType.PLUS_MINUS) {
@@ -241,10 +229,7 @@ internal class ExpressionParser(
                         tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
                         || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
                     ) {
-                        val binaryAssignToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(15, binaryAssignToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                        tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
                         continue
                     }
                 }
@@ -300,10 +285,7 @@ internal class ExpressionParser(
                         continue
                     }
                     if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
-                        val termToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(13, termToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                        tokenPosition = expressionStackPusher.pushFactor(tokens, tokenPosition, stack)
                         continue
                     }
                     if(tokens[tokenPosition].type == TokenType.PLUS_MINUS) {
@@ -314,10 +296,7 @@ internal class ExpressionParser(
                             tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
                             || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
                     ) {
-                        val binaryAssignToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(15, binaryAssignToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                        tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
                         continue
                     }
                 }
@@ -367,10 +346,7 @@ internal class ExpressionParser(
                         continue
                     }
                     if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
-                        val termToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(13, termToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                        tokenPosition = expressionStackPusher.pushFactor(tokens, tokenPosition, stack)
                         continue
                     }
                     if(tokens[tokenPosition].type == TokenType.PLUS_MINUS) {
@@ -381,10 +357,7 @@ internal class ExpressionParser(
                             tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
                             || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
                     ) {
-                        val binaryAssignToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(15, binaryAssignToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                        tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
                         continue
                     }
                 }
@@ -428,10 +401,7 @@ internal class ExpressionParser(
                         continue
                     }
                     if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
-                        val termToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(13, termToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                        tokenPosition = expressionStackPusher.pushFactor(tokens, tokenPosition, stack)
                         continue
                     }
                     if(tokens[tokenPosition].type == TokenType.PLUS_MINUS) {
@@ -442,10 +412,7 @@ internal class ExpressionParser(
                             tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
                             || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
                     ) {
-                        val binaryAssignToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(15, binaryAssignToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                        tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
                         continue
                     }
                 }
@@ -483,10 +450,7 @@ internal class ExpressionParser(
                         continue
                     }
                     if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
-                        val termToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(13, termToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                        tokenPosition = expressionStackPusher.pushFactor(tokens, tokenPosition, stack)
                         continue
                     }
                     if(tokens[tokenPosition].type == TokenType.PLUS_MINUS) {
@@ -497,10 +461,7 @@ internal class ExpressionParser(
                             tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
                             || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
                     ) {
-                        val binaryAssignToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(15, binaryAssignToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                        tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
                         continue
                     }
                 }
@@ -532,10 +493,7 @@ internal class ExpressionParser(
                         continue
                     }
                     if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
-                        val termToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(13, termToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                        tokenPosition = expressionStackPusher.pushFactor(tokens, tokenPosition, stack)
                         continue
                     }
                     if(tokens[tokenPosition].type == TokenType.PLUS_MINUS) {
@@ -546,10 +504,7 @@ internal class ExpressionParser(
                             tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
                             || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
                     ) {
-                        val binaryAssignToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(15, binaryAssignToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                        tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
                         continue
                     }
                 }
@@ -574,10 +529,7 @@ internal class ExpressionParser(
                         continue
                     }
                     if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
-                        val termToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(13, termToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                        tokenPosition = expressionStackPusher.pushFactor(tokens, tokenPosition, stack)
                         continue
                     }
                     if(tokens[tokenPosition].type == TokenType.PLUS_MINUS) {
@@ -588,10 +540,7 @@ internal class ExpressionParser(
                             tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
                             || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
                     ) {
-                        val binaryAssignToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(15, binaryAssignToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                        tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
                         continue
                     }
                 }
@@ -610,10 +559,7 @@ internal class ExpressionParser(
                         continue
                     }
                     if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
-                        val termToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(13, termToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                        tokenPosition = expressionStackPusher.pushFactor(tokens, tokenPosition, stack)
                         continue
                     }
                     if(tokens[tokenPosition].type == TokenType.PLUS_MINUS) {
@@ -624,14 +570,11 @@ internal class ExpressionParser(
                             tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
                             || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
                     ) {
-                        val binaryAssignToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(15, binaryAssignToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                        tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
                         continue
                     }
                 }
-                top.location == 13 -> {
+                top.location == ParserConstants.LOCATION_13 -> {
                     val rightExpression = resultStack.pop()
                     val leftExpression = resultStack.pop()
                     val factorExpression = ParsedBinaryOperatorNode(leftExpression, rightExpression, top.token!!.value)
@@ -639,10 +582,7 @@ internal class ExpressionParser(
 
 
                     if(tokens[tokenPosition].value == ParserConstants.MULTIPLY_OPERATOR || tokens[tokenPosition].value == ParserConstants.DIVIDE_OPERATOR || tokens[tokenPosition].value == ParserConstants.MODULUS_OPERATOR) {
-                        val termToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(13, termToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                        tokenPosition = expressionStackPusher.pushFactor(tokens, tokenPosition, stack)
                         continue
                     }
                     if(tokens[tokenPosition].type == TokenType.PLUS_MINUS) {
@@ -653,10 +593,7 @@ internal class ExpressionParser(
                             tokens[tokenPosition].type == TokenType.BINARY_ASSIGN
                             || tokens[tokenPosition].type == TokenType.BINARY_ASSIGN_OP
                     ) {
-                        val binaryAssignToken = tokens[tokenPosition]
-                        tokenPosition++
-                        stack.push(ExpressionParserStackItem(15, binaryAssignToken))
-                        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, null))
+                        tokenPosition = expressionStackPusher.pushBinaryAssign(tokens, tokenPosition, stack)
                         continue
                     }
                 }

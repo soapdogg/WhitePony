@@ -18,6 +18,12 @@ internal interface IExpressionStackPusher {
         stack: Stack<ExpressionParserStackItem>
     ): Int
 
+    fun pushFactor(
+        tokens: List<Token>,
+        startingPosition: Int,
+        stack: Stack<ExpressionParserStackItem>
+    ): Int
+
     fun pushTerm(
         tokens: List<Token>,
         startingPosition: Int,

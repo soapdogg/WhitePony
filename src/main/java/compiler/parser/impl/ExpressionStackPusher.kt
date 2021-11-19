@@ -17,10 +17,19 @@ internal class ExpressionStackPusher(
         startingPosition: Int,
         stack: Stack<ExpressionParserStackItem>
     ): Int {
-        val unaryToken = tokens[startingPosition]
+        val (unaryToken, positionAfterUnary) = tokenTypeAsserter.assertTokenType(
+            tokens,
+            startingPosition,
+            setOf(
+                TokenType.PLUS_MINUS,
+                TokenType.PRE_POST,
+                TokenType.BIT_NEGATION,
+                TokenType.UNARY_NOT
+            )
+        )
         stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_2, unaryToken))
         stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1))
-        return startingPosition + 1
+        return positionAfterUnary
     }
 
     override fun pushBinaryOr(
@@ -32,6 +41,25 @@ internal class ExpressionStackPusher(
         stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_5))
         stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1))
         return positionAfterOr
+    }
+
+    override fun pushFactor(
+        tokens: List<Token>,
+        startingPosition: Int,
+        stack: Stack<ExpressionParserStackItem>
+    ): Int {
+        val(factorToken, positionAfterFactor) = tokenTypeAsserter.assertTokenValue(
+            tokens,
+            startingPosition,
+            setOf(
+                ParserConstants.MULTIPLY_OPERATOR,
+                ParserConstants.DIVIDE_OPERATOR,
+                ParserConstants.MODULUS_OPERATOR
+            )
+        )
+        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_13, factorToken))
+        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1))
+        return positionAfterFactor
     }
 
     override fun pushTerm(tokens: List<Token>, startingPosition: Int, stack: Stack<ExpressionParserStackItem>): Int {
