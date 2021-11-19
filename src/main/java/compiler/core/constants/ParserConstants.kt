@@ -22,4 +22,10 @@ object ParserConstants {
 
     const val ASSIGN_OPERATOR = "="
     const val EMPTY = ""
+
+    const val LOCATION_1 = 1
+    const val LOCATION_2 = 2
+    const val LOCATION_3 = 3
+    const val LOCATION_4 = 4
+    const val LOCATION_5 = 5
 }

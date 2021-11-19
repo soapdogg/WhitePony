@@ -45,7 +45,7 @@ class RegressionTest {
     fun regressionIndividualTest() {
 
         Assertions.assertDoesNotThrow {
-            recursiveCompiler.compile(Program9)
+            recursiveCompiler.compile(Program14)
         }
     }
 
