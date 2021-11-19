@@ -16,19 +16,19 @@ class StatementPrinterStackItemGeneratorTest {
     @ParameterizedTest
     @MethodSource("inputData")
     fun generateStatementPrinterStackItemTest(arguments: ArgumentsAccessor) {
-        val pair = arguments.get(0) as Triple<*,*, *>
-        val inputNode = pair.first as IParsedStatementNode
-        val numberOfTabs = pair.second as Int
+        val triple = arguments.get(0) as Triple<*,*, *>
+        val inputNode = triple.first as IParsedStatementNode
+        val numberOfTabs = triple.second as Int
         val actual = statementPrinterStackItemGenerator.generateStatementPrinterStackItems(inputNode, numberOfTabs)
 
         val first = actual[0]
         Assertions.assertEquals(inputNode, first.node)
         Assertions.assertEquals(numberOfTabs, first.numberOfTabs)
         Assertions.assertEquals(PrinterConstants.LOCATION_2, first.location)
-        if (pair.third == null) {
+        if (triple.third == null) {
             Assertions.assertEquals(1, actual.size)
         } else {
-            val expectedSecondItem = pair.third as StatementPrinterStackItem
+            val expectedSecondItem = triple.third as StatementPrinterStackItem
             val second = actual[1]
             Assertions.assertEquals(expectedSecondItem.node, second.node)
             Assertions.assertEquals(expectedSecondItem.numberOfTabs, second.numberOfTabs)
