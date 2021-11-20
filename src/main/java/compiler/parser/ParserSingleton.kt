@@ -2,6 +2,7 @@ package compiler.parser
 
 import compiler.core.TokenType
 import compiler.core.constants.ParserConstants
+import compiler.core.constants.PrinterConstants
 import compiler.core.constants.TokenizerConstants
 import compiler.parser.impl.*
 import compiler.parser.impl.DeclarationStatementParser
@@ -49,6 +50,20 @@ enum class ParserSingleton {
     private val binaryRelationalOperatorExpressionGenerator = BinaryRelationalOperatorGenerator()
     private val binaryAssignExpressionGenerator = BinaryAssignExpressionGenerator()
 
+    private val binaryExpressionGenerators = mapOf(
+        ParserConstants.LOCATION_5 to binaryOrOperatorExpressionGenerator,
+        ParserConstants.LOCATION_6 to binaryAndOperatorExpressionGenerator,
+        ParserConstants.LOCATION_7 to binaryOperatorExpressionGenerator,
+        ParserConstants.LOCATION_8 to binaryOperatorExpressionGenerator,
+        ParserConstants.LOCATION_9 to binaryOperatorExpressionGenerator,
+        ParserConstants.LOCATION_10 to binaryRelationalOperatorExpressionGenerator,
+        ParserConstants.LOCATION_11 to binaryRelationalOperatorExpressionGenerator,
+        ParserConstants.LOCATION_12 to binaryOperatorExpressionGenerator,
+        ParserConstants.LOCATION_13 to binaryOperatorExpressionGenerator,
+        ParserConstants.LOCATION_14 to binaryOperatorExpressionGenerator,
+        ParserConstants.LOCATION_15 to binaryAssignExpressionGenerator
+    )
+
     private val expressionParser = ExpressionParser(
         expressionStackPusher,
         unaryTokenTypes,
@@ -75,11 +90,7 @@ enum class ParserSingleton {
         binaryAssignTokenTypes,
         binaryAssignValues,
         unaryExpressionGenerator,
-        binaryOrOperatorExpressionGenerator,
-        binaryAndOperatorExpressionGenerator,
-        binaryOperatorExpressionGenerator,
-        binaryRelationalOperatorExpressionGenerator,
-        binaryAssignExpressionGenerator
+        binaryExpressionGenerators,
     )
     private val arrayParser = ArrayParser(
         tokenTypeAsserter,

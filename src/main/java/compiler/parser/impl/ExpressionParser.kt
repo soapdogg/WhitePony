@@ -32,11 +32,7 @@ internal class ExpressionParser(
     private val binaryAssignTokenTypes: Set<TokenType>,
     private val binaryAssignValues: Set<String>,
     private val unaryExpressionGenerator: IExpressionGenerator,
-    private val binaryOrOperatorExpressionGenerator: IExpressionGenerator,
-    private val binaryAndOperatorExpressionGenerator: IExpressionGenerator,
-    private val binaryOperatorExpressionGenerator: IExpressionGenerator,
-    private val binaryRelationalOperatorExpressionGenerator: IExpressionGenerator,
-    private val binaryAssignExpressionGenerator: IExpressionGenerator
+    private val binaryExpressionGenerators: Map<Int, IExpressionGenerator>
 ): IExpressionParser {
 
     override fun parse(
@@ -145,24 +141,32 @@ internal class ExpressionParser(
                 tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, factorValues, ParserConstants.LOCATION_13, stack)
                 continue
             }
-            if(termTokenTypes.contains(tokens[tokenPosition].type)) {
+            if(termValues.contains(tokens[tokenPosition].value)) {
                 tokenPosition = expressionStackPusher.push(tokens, tokenPosition, termTokenTypes, termValues, ParserConstants.LOCATION_14, stack)
                 continue
             }
-            if(binaryAssignTokenTypes.contains(tokens[tokenPosition].type)) {
+            if(binaryAssignValues.contains(tokens[tokenPosition].value)) {
                 tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAssignTokenTypes, binaryAssignValues, ParserConstants.LOCATION_15, stack)
                 continue
             }
 
+
+
+
+            if (binaryExpressionGenerators.containsKey(top.location)) {
+                binaryExpressionGenerators.getValue(top.location).generateExpression(resultStack, top.token)
+            }
+
+
+
             when (top.location) {
                 ParserConstants.LOCATION_5 -> {
-                    binaryOrOperatorExpressionGenerator.generateExpression(resultStack, top.token)
 
                     if (binaryOrValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOrTokenTypes, binaryOrValues, ParserConstants.LOCATION_5, stack)
                         continue
                     }
-                    if (binaryAndTokenTypes.contains(tokens[tokenPosition].type)) {
+                    if (binaryAndValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAndTokenTypes, binaryAndValues, ParserConstants.LOCATION_6, stack)
                         continue
                     }
@@ -194,19 +198,18 @@ internal class ExpressionParser(
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, factorValues, ParserConstants.LOCATION_13, stack)
                         continue
                     }
-                    if(termTokenTypes.contains(tokens[tokenPosition].type)) {
+                    if(termValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, termTokenTypes, termValues, ParserConstants.LOCATION_14, stack)
                         continue
                     }
-                    if(binaryAssignTokenTypes.contains(tokens[tokenPosition].type)) {
+                    if(binaryAssignValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAssignTokenTypes, binaryAssignValues, ParserConstants.LOCATION_15, stack)
                         continue
                     }
                 }
                 ParserConstants.LOCATION_6 -> {
-                    binaryAndOperatorExpressionGenerator.generateExpression(resultStack, top.token)
 
-                    if (binaryAndTokenTypes.contains(tokens[tokenPosition].type)) {
+                    if (binaryAndValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAndTokenTypes, binaryAndValues, ParserConstants.LOCATION_6, stack)
                         continue
                     }
@@ -238,17 +241,16 @@ internal class ExpressionParser(
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, factorValues, ParserConstants.LOCATION_13, stack)
                         continue
                     }
-                    if(termTokenTypes.contains(tokens[tokenPosition].type)) {
+                    if(termValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, termTokenTypes, termValues, ParserConstants.LOCATION_14, stack)
                         continue
                     }
-                    if(binaryAssignTokenTypes.contains(tokens[tokenPosition].type)) {
+                    if(binaryAssignValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAssignTokenTypes, binaryAssignValues, ParserConstants.LOCATION_15, stack)
                         continue
                     }
                 }
                 ParserConstants.LOCATION_7 -> {
-                    binaryOperatorExpressionGenerator.generateExpression(resultStack, top.token)
 
                     if (bitwiseOrValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, bitwiseOrValues, ParserConstants.LOCATION_7, stack)
@@ -278,17 +280,16 @@ internal class ExpressionParser(
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, factorValues, ParserConstants.LOCATION_13, stack)
                         continue
                     }
-                    if(termTokenTypes.contains(tokens[tokenPosition].type)) {
+                    if(termValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, termTokenTypes, termValues, ParserConstants.LOCATION_14, stack)
                         continue
                     }
-                    if(binaryAssignTokenTypes.contains(tokens[tokenPosition].type)) {
+                    if(binaryAssignValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAssignTokenTypes, binaryAssignValues, ParserConstants.LOCATION_15, stack)
                         continue
                     }
                 }
                 ParserConstants.LOCATION_8 -> {
-                    binaryOperatorExpressionGenerator.generateExpression(resultStack, top.token)
 
                     if (bitwiseXorValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, bitwiseXorValues, ParserConstants.LOCATION_8, stack)
@@ -314,17 +315,16 @@ internal class ExpressionParser(
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, factorValues, ParserConstants.LOCATION_13, stack)
                         continue
                     }
-                    if(termTokenTypes.contains(tokens[tokenPosition].type)) {
+                    if(termValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, termTokenTypes, termValues, ParserConstants.LOCATION_14, stack)
                         continue
                     }
-                    if(binaryAssignTokenTypes.contains(tokens[tokenPosition].type)) {
+                    if(binaryAssignValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAssignTokenTypes, binaryAssignValues, ParserConstants.LOCATION_15, stack)
                         continue
                     }
                 }
                 ParserConstants.LOCATION_9 -> {
-                    binaryOperatorExpressionGenerator.generateExpression(resultStack, top.token)
 
                     if(bitwiseAndValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, bitwiseAndValues, ParserConstants.LOCATION_9, stack)
@@ -346,17 +346,16 @@ internal class ExpressionParser(
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, factorValues, ParserConstants.LOCATION_13, stack)
                         continue
                     }
-                    if(termTokenTypes.contains(tokens[tokenPosition].type)) {
+                    if(termValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, termTokenTypes, termValues, ParserConstants.LOCATION_14, stack)
                         continue
                     }
-                    if(binaryAssignTokenTypes.contains(tokens[tokenPosition].type)) {
+                    if(binaryAssignValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAssignTokenTypes, binaryAssignValues, ParserConstants.LOCATION_15, stack)
                         continue
                     }
                 }
                 ParserConstants.LOCATION_10 -> {
-                    binaryRelationalOperatorExpressionGenerator.generateExpression(resultStack, top.token)
 
                     if(relationalEqualsOperatorValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, relationalOperatorTokenTypes, relationalEqualsOperatorValues, ParserConstants.LOCATION_10, stack)
@@ -374,18 +373,16 @@ internal class ExpressionParser(
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, factorValues, ParserConstants.LOCATION_13, stack)
                         continue
                     }
-                    if(termTokenTypes.contains(tokens[tokenPosition].type)) {
+                    if(termValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, termTokenTypes, termValues, ParserConstants.LOCATION_14, stack)
                         continue
                     }
-                    if(binaryAssignTokenTypes.contains(tokens[tokenPosition].type)) {
+                    if(binaryAssignValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAssignTokenTypes, binaryAssignValues, ParserConstants.LOCATION_15, stack)
                         continue
                     }
                 }
                 ParserConstants.LOCATION_11 -> {
-                    binaryRelationalOperatorExpressionGenerator.generateExpression(resultStack, top.token)
-
                     if(relationalOperatorValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, relationalOperatorTokenTypes, relationalOperatorValues, ParserConstants.LOCATION_11, stack)
                         continue
@@ -398,18 +395,16 @@ internal class ExpressionParser(
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, factorValues, ParserConstants.LOCATION_13, stack)
                         continue
                     }
-                    if(termTokenTypes.contains(tokens[tokenPosition].type)) {
+                    if(termValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, termTokenTypes, termValues, ParserConstants.LOCATION_14, stack)
                         continue
                     }
-                    if(binaryAssignTokenTypes.contains(tokens[tokenPosition].type)) {
+                    if(binaryAssignValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAssignTokenTypes, binaryAssignValues, ParserConstants.LOCATION_15, stack)
                         continue
                     }
                 }
                 ParserConstants.LOCATION_12 -> {
-                    binaryOperatorExpressionGenerator.generateExpression(resultStack, top.token)
-
                     if(shiftValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, shiftValues, ParserConstants.LOCATION_12, stack)
                         continue
@@ -418,48 +413,38 @@ internal class ExpressionParser(
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, factorValues, ParserConstants.LOCATION_13, stack)
                         continue
                     }
-                    if(termTokenTypes.contains(tokens[tokenPosition].type)) {
+                    if(termValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, termTokenTypes, termValues, ParserConstants.LOCATION_14, stack)
                         continue
                     }
-                    if(binaryAssignTokenTypes.contains(tokens[tokenPosition].type)) {
+                    if(binaryAssignValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAssignTokenTypes, binaryAssignValues, ParserConstants.LOCATION_15, stack)
                         continue
                     }
                 }
                 ParserConstants.LOCATION_13 -> {
-                    binaryOperatorExpressionGenerator.generateExpression(resultStack, top.token)
-
                     if(factorValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryOperatorTokenTypes, factorValues, ParserConstants.LOCATION_13, stack)
                         continue
                     }
-                    if(termTokenTypes.contains(tokens[tokenPosition].type)) {
+                    if(termValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, termTokenTypes, termValues, ParserConstants.LOCATION_14, stack)
                         continue
                     }
-                    if(binaryAssignTokenTypes.contains(tokens[tokenPosition].type)) {
+                    if(binaryAssignValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAssignTokenTypes, binaryAssignValues, ParserConstants.LOCATION_15, stack)
                         continue
                     }
                 }
                 ParserConstants.LOCATION_14 -> {
-                    binaryOperatorExpressionGenerator.generateExpression(resultStack, top.token)
-
-                    if(termTokenTypes.contains(tokens[tokenPosition].type)) {
+                    if(termValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, termTokenTypes, termValues, ParserConstants.LOCATION_14, stack)
                         continue
                     }
-                    if(binaryAssignTokenTypes.contains(tokens[tokenPosition].type)) {
+                    if(binaryAssignValues.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, binaryAssignTokenTypes, binaryAssignValues, ParserConstants.LOCATION_15, stack)
                         continue
                     }
-                }
-                ParserConstants.LOCATION_15 -> {
-                    binaryAssignExpressionGenerator.generateExpression(
-                        resultStack,
-                        top.token
-                    )
                 }
             }
 
