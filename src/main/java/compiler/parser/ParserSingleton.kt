@@ -42,6 +42,20 @@ enum class ParserSingleton {
     private val binaryAssignTokenTypes = setOf(TokenType.BINARY_ASSIGN_OP, TokenType.BINARY_ASSIGN)
     private val binaryAssignValues = setOf(TokenizerConstants.AND_ASSIGN_OPERATOR, TokenizerConstants.DIVIDE_ASSIGN_OPERATOR, TokenizerConstants.LEFT_SHIFT_ASSIGN_OPERATOR, TokenizerConstants.MINUS_ASSIGN_OPERATOR, TokenizerConstants.MODULUS_ASSIGN_OPERATOR, TokenizerConstants.MULTIPLY_ASSIGN_OPERATOR, TokenizerConstants.OR_ASSIGN_OPERATOR, TokenizerConstants.PLUS_ASSIGN_OPERATOR, TokenizerConstants.RIGHT_SHIFT_ASSIGN_OPERATOR, TokenizerConstants.XOR_ASSIGN_OPERATOR, TokenizerConstants.ASSIGN_OPERATOR)
 
+    private val locationToAcceptedTokensMap = mapOf(
+        ParserConstants.LOCATION_5 to Pair(binaryOrValues, binaryOrTokenTypes),
+        ParserConstants.LOCATION_6 to Pair(binaryAndValues, binaryAndTokenTypes),
+        ParserConstants.LOCATION_7 to Pair(bitwiseOrValues, binaryOperatorTokenTypes),
+        ParserConstants.LOCATION_8 to Pair(bitwiseXorValues, binaryOperatorTokenTypes),
+        ParserConstants.LOCATION_9 to Pair(bitwiseAndValues, binaryOperatorTokenTypes),
+        ParserConstants.LOCATION_10 to Pair(relationalEqualsValues, relationalOperatorTokenTypes),
+        ParserConstants.LOCATION_11 to Pair(relationalOperatorValues, relationalOperatorTokenTypes),
+        ParserConstants.LOCATION_12 to Pair(shiftValues, binaryOperatorTokenTypes),
+        ParserConstants.LOCATION_13 to Pair(factorValues, binaryOperatorTokenTypes),
+        ParserConstants.LOCATION_14 to Pair(termValues, termTokenTypes),
+        ParserConstants.LOCATION_15 to Pair(binaryAssignValues, binaryAssignTokenTypes)
+    )
+
     private val unaryExpressionGenerator = UnaryExpressionGenerator()
 
     private val binaryOrOperatorExpressionGenerator = BinaryOrOperatorExpressionGenerator()
@@ -89,6 +103,7 @@ enum class ParserSingleton {
         termValues,
         binaryAssignTokenTypes,
         binaryAssignValues,
+        locationToAcceptedTokensMap,
         unaryExpressionGenerator,
         binaryExpressionGenerators,
     )
