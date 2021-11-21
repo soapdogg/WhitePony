@@ -15,7 +15,7 @@ import java.util.stream.Stream
 class RegressionTest {
 
     private val tokenizer = TokenizerSingleton.INSTANCE.tokenizer
-    private val recursiveParser = ParserSingleton.INSTANCE.recursiveParser
+    private val recursiveParser = ParserSingleton.INSTANCE.parser
     private val translator = TranslatorSingleton.INSTANCE.translator
     private val printer = PrinterSingleton.INSTANCE.printer
     private val recursiveCompiler = Compiler(

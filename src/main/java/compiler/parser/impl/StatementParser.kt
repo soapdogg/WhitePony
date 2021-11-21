@@ -9,7 +9,7 @@ import compiler.parser.impl.internal.IStatementParser
 import compiler.parser.impl.internal.ITokenTypeAsserter
 import compiler.parser.impl.internal.IVariableDeclarationListParser
 
-internal class StatementParserIterative(
+internal class StatementParser(
     private val tokenTypeAsserter: ITokenTypeAsserter,
     private val expressionParser: IExpressionParser,
     private val variableDeclarationListParser: IVariableDeclarationListParser,
