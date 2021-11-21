@@ -4,7 +4,7 @@ import compiler.core.ExpressionParserStackItem
 import compiler.core.Stack
 import compiler.core.Token
 import compiler.core.TokenType
-import compiler.core.constants.ParserConstants
+import compiler.core.constants.ExpressionParserConstants
 import compiler.parser.impl.internal.ITokenTypeAsserter
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -45,7 +45,7 @@ class ExpressionStackPusherTest {
         Assertions.assertEquals(positionAfterToken, actual)
 
         val location1Item = stack.pop()
-        Assertions.assertEquals(ParserConstants.LOCATION_START, location1Item.location)
+        Assertions.assertEquals(ExpressionParserConstants.LOCATION_START, location1Item.location)
 
         val returnLocationItem = stack.pop()
         Assertions.assertEquals(location, returnLocationItem.location)

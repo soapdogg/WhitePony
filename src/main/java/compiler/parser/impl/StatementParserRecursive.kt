@@ -19,9 +19,8 @@ internal class StatementParserRecursive(
         tokens: List<Token>,
         startingPosition: Int
     ): Pair<IParsedStatementNode, Int> {
-        val tokenType = tokens[startingPosition].type
 
-        return when (tokenType) {
+        return when (tokens[startingPosition].type) {
             TokenType.DO -> {
                 val (_, positionAfterDo) = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.DO)
                 val (body, positionAfterBody) = parse(tokens, positionAfterDo)

@@ -1,6 +1,6 @@
 package compiler.core.constants
 
-object ParserConstants {
+object ExpressionParserConstants {
     const val ASSIGN_OPERATOR = "="
     const val EMPTY = ""
 

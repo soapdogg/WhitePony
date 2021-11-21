@@ -1,7 +1,7 @@
 package compiler.parser.impl
 
 import compiler.core.*
-import compiler.core.constants.ParserConstants
+import compiler.core.constants.ExpressionParserConstants
 import compiler.parser.impl.internal.IExpressionGenerator
 import compiler.parser.impl.internal.IExpressionStackPusher
 import compiler.parser.impl.internal.IExpressionParser
@@ -25,17 +25,17 @@ internal class ExpressionParser(
 
         val stack = Stack<ExpressionParserStackItem>()
         val resultStack = Stack<IParsedExpressionNode>()
-        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_START, tokens[startingPosition]))
+        stack.push(ExpressionParserStackItem(ExpressionParserConstants.LOCATION_START, tokens[startingPosition]))
         var tokenPosition = startingPosition
 
         top@ while(stack.isNotEmpty()) {
             val top = stack.pop()
 
             when (top.location) {
-                ParserConstants.LOCATION_START -> {
+                ExpressionParserConstants.LOCATION_START -> {
                     when (tokens[tokenPosition].type) {
                         TokenType.PLUS_MINUS, TokenType.PRE_POST, TokenType.BIT_NEGATION, TokenType.UNARY_NOT -> {
-                            tokenPosition = expressionStackPusher.push(tokens, tokenPosition, unaryTokenTypes, ParserConstants.LOCATION_UNARY_EXPRESSION, stack)
+                            tokenPosition = expressionStackPusher.push(tokens, tokenPosition, unaryTokenTypes, ExpressionParserConstants.LOCATION_UNARY_EXPRESSION, stack)
                         }
                         TokenType.FLOATING_POINT, TokenType.INTEGER -> {
                             val (constantToken, positionAfterConstant) = tokenTypeAsserter.assertTokenType(tokens, tokenPosition, setOf(TokenType.FLOATING_POINT, TokenType.INTEGER))
@@ -49,7 +49,7 @@ internal class ExpressionParser(
                             val variableExpression = ParsedVariableExpressionNode(identifierToken.value)
                             if (tokens[tokenPosition].type == TokenType.LEFT_BRACKET) {
                                 resultStack.push(variableExpression)
-                                tokenPosition = expressionStackPusher.push(tokens, tokenPosition, arrayExpressionTokenTypes, ParserConstants.LOCATION_BINARY_ARRAY, stack)
+                                tokenPosition = expressionStackPusher.push(tokens, tokenPosition, arrayExpressionTokenTypes, ExpressionParserConstants.LOCATION_BINARY_ARRAY, stack)
                                 continue
                             }
                             val identifierExpression = if (tokens[tokenPosition].type == TokenType.PRE_POST) {
@@ -62,14 +62,14 @@ internal class ExpressionParser(
                             resultStack.push(identifierExpression)
                         }
                         else -> {
-                            tokenPosition = expressionStackPusher.push(tokens, tokenPosition, innerExpressionTokenTypes, ParserConstants.LOCATION_INNER_EXPRESSION, stack)
+                            tokenPosition = expressionStackPusher.push(tokens, tokenPosition, innerExpressionTokenTypes, ExpressionParserConstants.LOCATION_INNER_EXPRESSION, stack)
                         }
                     }
                 }
-                ParserConstants.LOCATION_UNARY_EXPRESSION -> {
+                ExpressionParserConstants.LOCATION_UNARY_EXPRESSION -> {
                     unaryExpressionGenerator.generateExpression(resultStack, top.token)
                 }
-                ParserConstants.LOCATION_BINARY_ARRAY -> {
+                ExpressionParserConstants.LOCATION_BINARY_ARRAY -> {
                     val insideExpression = resultStack.pop()
                     val variableExpression = resultStack.pop() as ParsedVariableExpressionNode
                     tokenPosition++
@@ -84,14 +84,14 @@ internal class ExpressionParser(
                     }
                     resultStack.push(identifierExpression)
                 }
-                ParserConstants.LOCATION_INNER_EXPRESSION -> {
+                ExpressionParserConstants.LOCATION_INNER_EXPRESSION -> {
                     val innerExpression = resultStack.pop()
                     tokenPosition++
                     resultStack.push(ParsedInnerExpression(innerExpression))
                 }
             }
 
-            for (i in ParserConstants.LOCATION_BINARY_OR..ParserConstants.LOCATION_BINARY_ASSIGN) {
+            for (i in ExpressionParserConstants.LOCATION_BINARY_OR..ExpressionParserConstants.LOCATION_BINARY_ASSIGN) {
                 val acceptedTokens = locationToAcceptedTokenValues.getValue(i)
                 if (acceptedTokens.first.contains(tokens[tokenPosition].value)) {
                     tokenPosition = expressionStackPusher.push(tokens, tokenPosition, acceptedTokens.second, i, stack)
@@ -103,8 +103,8 @@ internal class ExpressionParser(
                 binaryExpressionGenerators.getValue(top.location).generateExpression(resultStack, top.token)
             }
 
-            if (locationToAcceptedTokenValues.containsKey(top.location) && top.location != ParserConstants.LOCATION_BINARY_ASSIGN) {
-                for (i in top.location..ParserConstants.LOCATION_BINARY_ASSIGN) {
+            if (locationToAcceptedTokenValues.containsKey(top.location) && top.location != ExpressionParserConstants.LOCATION_BINARY_ASSIGN) {
+                for (i in top.location..ExpressionParserConstants.LOCATION_BINARY_ASSIGN) {
                     val acceptedTokens = locationToAcceptedTokenValues.getValue(i)
                     if (acceptedTokens.first.contains(tokens[tokenPosition].value)) {
                         tokenPosition = expressionStackPusher.push(tokens, tokenPosition, acceptedTokens.second, i, stack)

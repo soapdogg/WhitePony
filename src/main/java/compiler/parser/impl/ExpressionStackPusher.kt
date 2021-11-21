@@ -4,7 +4,7 @@ import compiler.core.ExpressionParserStackItem
 import compiler.core.Stack
 import compiler.core.Token
 import compiler.core.TokenType
-import compiler.core.constants.ParserConstants
+import compiler.core.constants.ExpressionParserConstants
 import compiler.parser.impl.internal.IExpressionStackPusher
 import compiler.parser.impl.internal.ITokenTypeAsserter
 
@@ -24,7 +24,7 @@ internal class ExpressionStackPusher(
             acceptedTokenTypes
         )
         stack.push(ExpressionParserStackItem(location, token))
-        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_START, token))
+        stack.push(ExpressionParserStackItem(ExpressionParserConstants.LOCATION_START, token))
         return positionAfterToken
     }
 }
