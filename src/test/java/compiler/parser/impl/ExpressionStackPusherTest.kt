@@ -24,7 +24,6 @@ class ExpressionStackPusherTest {
         val startingPosition = 0
         val stack = Stack<ExpressionParserStackItem>()
         val tokenTypeSet = setOf<TokenType>()
-        val tokenValueSet = setOf<String>()
         val location = 2
         val token = Mockito.mock(Token::class.java)
         val positionAfterToken = 1
@@ -40,20 +39,17 @@ class ExpressionStackPusherTest {
             tokens,
             startingPosition,
             tokenTypeSet,
-            tokenValueSet,
             location,
             stack
         )
         Assertions.assertEquals(positionAfterToken, actual)
 
         val location1Item = stack.pop()
-        Assertions.assertEquals(ParserConstants.LOCATION_1, location1Item.location)
+        Assertions.assertEquals(ParserConstants.LOCATION_START, location1Item.location)
 
         val returnLocationItem = stack.pop()
         Assertions.assertEquals(location, returnLocationItem.location)
         Assertions.assertEquals(token, returnLocationItem.token)
-
-        Mockito.verify(tokenTypeAsserter).assertTokenValue(tokens, startingPosition, tokenValueSet)
     }
 
 }

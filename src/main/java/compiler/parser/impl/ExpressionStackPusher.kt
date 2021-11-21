@@ -15,7 +15,6 @@ internal class ExpressionStackPusher(
         tokens: List<Token>,
         startingPosition: Int,
         acceptedTokenTypes: Set<TokenType>,
-        acceptedTokenValues: Set<String>,
         location: Int,
         stack: Stack<ExpressionParserStackItem>
     ): Int {
@@ -24,9 +23,8 @@ internal class ExpressionStackPusher(
             startingPosition,
             acceptedTokenTypes
         )
-        tokenTypeAsserter.assertTokenValue(tokens, startingPosition, acceptedTokenValues)
         stack.push(ExpressionParserStackItem(location, token))
-        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_1, token))
+        stack.push(ExpressionParserStackItem(ParserConstants.LOCATION_START, token))
         return positionAfterToken
     }
 }

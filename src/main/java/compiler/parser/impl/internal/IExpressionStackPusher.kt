@@ -11,7 +11,6 @@ internal interface IExpressionStackPusher {
         tokens: List<Token>,
         startingPosition: Int,
         acceptedTokenTypes: Set<TokenType>,
-        acceptedTokenValues: Set<String>,
         location: Int,
         stack: Stack<ExpressionParserStackItem>
     ): Int

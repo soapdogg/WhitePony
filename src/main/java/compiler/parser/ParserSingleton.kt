@@ -2,7 +2,6 @@ package compiler.parser
 
 import compiler.core.TokenType
 import compiler.core.constants.ParserConstants
-import compiler.core.constants.PrinterConstants
 import compiler.core.constants.TokenizerConstants
 import compiler.parser.impl.*
 import compiler.parser.impl.DeclarationStatementParser
@@ -19,11 +18,8 @@ enum class ParserSingleton {
     )
 
     private val unaryTokenTypes = setOf(TokenType.PLUS_MINUS, TokenType.PRE_POST, TokenType.BIT_NEGATION, TokenType.UNARY_NOT)
-    private val unaryValues = setOf(TokenizerConstants.PLUS_OPERATOR, TokenizerConstants.MINUS_OPERATOR, TokenizerConstants.INCREMENT, TokenizerConstants.DECREMENT, TokenizerConstants.NEGATION, TokenizerConstants.BIT_NEGATION)
     private val arrayExpressionTokenTypes = setOf(TokenType.LEFT_BRACKET)
-    private val arrayExpressionValues = setOf(TokenizerConstants.LEFT_BRACKET)
     private val innerExpressionTokenTypes = setOf(TokenType.LEFT_PARENTHESES)
-    private val innerExpressionValues = setOf(TokenizerConstants.LEFT_PARENTHESES)
     private val binaryOrTokenTypes = setOf(TokenType.BINARY_OR)
     private val binaryOrValues = setOf(TokenizerConstants.OR_OPERATOR)
     private val binaryAndTokenTypes = setOf(TokenType.BINARY_AND)
@@ -43,17 +39,17 @@ enum class ParserSingleton {
     private val binaryAssignValues = setOf(TokenizerConstants.AND_ASSIGN_OPERATOR, TokenizerConstants.DIVIDE_ASSIGN_OPERATOR, TokenizerConstants.LEFT_SHIFT_ASSIGN_OPERATOR, TokenizerConstants.MINUS_ASSIGN_OPERATOR, TokenizerConstants.MODULUS_ASSIGN_OPERATOR, TokenizerConstants.MULTIPLY_ASSIGN_OPERATOR, TokenizerConstants.OR_ASSIGN_OPERATOR, TokenizerConstants.PLUS_ASSIGN_OPERATOR, TokenizerConstants.RIGHT_SHIFT_ASSIGN_OPERATOR, TokenizerConstants.XOR_ASSIGN_OPERATOR, TokenizerConstants.ASSIGN_OPERATOR)
 
     private val locationToAcceptedTokensMap = mapOf(
-        ParserConstants.LOCATION_5 to Pair(binaryOrValues, binaryOrTokenTypes),
-        ParserConstants.LOCATION_6 to Pair(binaryAndValues, binaryAndTokenTypes),
-        ParserConstants.LOCATION_7 to Pair(bitwiseOrValues, binaryOperatorTokenTypes),
-        ParserConstants.LOCATION_8 to Pair(bitwiseXorValues, binaryOperatorTokenTypes),
-        ParserConstants.LOCATION_9 to Pair(bitwiseAndValues, binaryOperatorTokenTypes),
-        ParserConstants.LOCATION_10 to Pair(relationalEqualsValues, relationalOperatorTokenTypes),
-        ParserConstants.LOCATION_11 to Pair(relationalOperatorValues, relationalOperatorTokenTypes),
-        ParserConstants.LOCATION_12 to Pair(shiftValues, binaryOperatorTokenTypes),
-        ParserConstants.LOCATION_13 to Pair(factorValues, binaryOperatorTokenTypes),
-        ParserConstants.LOCATION_14 to Pair(termValues, termTokenTypes),
-        ParserConstants.LOCATION_15 to Pair(binaryAssignValues, binaryAssignTokenTypes)
+        ParserConstants.LOCATION_BINARY_OR to Pair(binaryOrValues, binaryOrTokenTypes),
+        ParserConstants.LOCATION_BINARY_AND to Pair(binaryAndValues, binaryAndTokenTypes),
+        ParserConstants.LOCATION_BITWISE_OR to Pair(bitwiseOrValues, binaryOperatorTokenTypes),
+        ParserConstants.LOCATION_BITWISE_XOR to Pair(bitwiseXorValues, binaryOperatorTokenTypes),
+        ParserConstants.LOCATION_BITWISE_AND to Pair(bitwiseAndValues, binaryOperatorTokenTypes),
+        ParserConstants.LOCATION_RELATIONAL_EQUALS to Pair(relationalEqualsValues, relationalOperatorTokenTypes),
+        ParserConstants.LOCATION_RELATIONAL_OPERATOR to Pair(relationalOperatorValues, relationalOperatorTokenTypes),
+        ParserConstants.LOCATION_SHIFT to Pair(shiftValues, binaryOperatorTokenTypes),
+        ParserConstants.LOCATION_FACTOR to Pair(factorValues, binaryOperatorTokenTypes),
+        ParserConstants.LOCATION_TERM to Pair(termValues, termTokenTypes),
+        ParserConstants.LOCATION_BINARY_ASSIGN to Pair(binaryAssignValues, binaryAssignTokenTypes)
     )
 
     private val unaryExpressionGenerator = UnaryExpressionGenerator()
@@ -65,27 +61,25 @@ enum class ParserSingleton {
     private val binaryAssignExpressionGenerator = BinaryAssignExpressionGenerator()
 
     private val binaryExpressionGenerators = mapOf(
-        ParserConstants.LOCATION_5 to binaryOrOperatorExpressionGenerator,
-        ParserConstants.LOCATION_6 to binaryAndOperatorExpressionGenerator,
-        ParserConstants.LOCATION_7 to binaryOperatorExpressionGenerator,
-        ParserConstants.LOCATION_8 to binaryOperatorExpressionGenerator,
-        ParserConstants.LOCATION_9 to binaryOperatorExpressionGenerator,
-        ParserConstants.LOCATION_10 to binaryRelationalOperatorExpressionGenerator,
-        ParserConstants.LOCATION_11 to binaryRelationalOperatorExpressionGenerator,
-        ParserConstants.LOCATION_12 to binaryOperatorExpressionGenerator,
-        ParserConstants.LOCATION_13 to binaryOperatorExpressionGenerator,
-        ParserConstants.LOCATION_14 to binaryOperatorExpressionGenerator,
-        ParserConstants.LOCATION_15 to binaryAssignExpressionGenerator
+        ParserConstants.LOCATION_BINARY_OR to binaryOrOperatorExpressionGenerator,
+        ParserConstants.LOCATION_BINARY_AND to binaryAndOperatorExpressionGenerator,
+        ParserConstants.LOCATION_BITWISE_OR to binaryOperatorExpressionGenerator,
+        ParserConstants.LOCATION_BITWISE_XOR to binaryOperatorExpressionGenerator,
+        ParserConstants.LOCATION_BITWISE_AND to binaryOperatorExpressionGenerator,
+        ParserConstants.LOCATION_RELATIONAL_EQUALS to binaryRelationalOperatorExpressionGenerator,
+        ParserConstants.LOCATION_RELATIONAL_OPERATOR to binaryRelationalOperatorExpressionGenerator,
+        ParserConstants.LOCATION_SHIFT to binaryOperatorExpressionGenerator,
+        ParserConstants.LOCATION_FACTOR to binaryOperatorExpressionGenerator,
+        ParserConstants.LOCATION_TERM to binaryOperatorExpressionGenerator,
+        ParserConstants.LOCATION_BINARY_ASSIGN to binaryAssignExpressionGenerator
     )
 
     private val expressionParser = ExpressionParser(
+        tokenTypeAsserter,
         expressionStackPusher,
         unaryTokenTypes,
-        unaryValues,
         arrayExpressionTokenTypes,
-        arrayExpressionValues,
         innerExpressionTokenTypes,
-        innerExpressionValues,
         locationToAcceptedTokensMap,
         unaryExpressionGenerator,
         binaryExpressionGenerators,
