@@ -6,7 +6,11 @@ import compiler.core.ITranslatedExpressionNode
 import compiler.translator.impl.internal.IExpressionTranslator
 
 class FakeExpressionTranslator: IExpressionTranslator {
-    override fun translate(expressionNode: IParsedExpressionNode): ITranslatedExpressionNode {
-        return FakeTranslatedExpressionNode(expressionNode.toString())
+    override fun translate(
+        expressionNode: IParsedExpressionNode,
+        labelCounter: Int,
+        tempCounter: Int
+    ): ITranslatedExpressionNode {
+        return FakeTranslatedExpressionNode(expressionNode)
     }
 }

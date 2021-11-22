@@ -9,10 +9,16 @@ internal class AssignTranslator(
     private val expressionTranslator: IExpressionTranslator
 ): IAssignTranslator {
     override fun translate(
-        assignNode: ParsedAssignNode
+        assignNode: ParsedAssignNode,
+        labelCounter: Int,
+        tempCounter: Int
     ): TranslatedAssignNode {
 
-        val translatedExpressionNode = expressionTranslator.translate(assignNode.expressionNode)
+        val translatedExpressionNode = expressionTranslator.translate(
+            assignNode.expressionNode,
+            labelCounter,
+            tempCounter
+        )
 
         return TranslatedAssignNode(translatedExpressionNode)
     }

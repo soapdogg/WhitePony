@@ -14,7 +14,7 @@ internal class DeclarationStatementTranslator(
 ): IDeclarationStatementTranslator {
     override fun translate(declarationStatementNode: IParsedDeclarationStatementNode): ITranslatedDeclarationStatementNode {
         return if (declarationStatementNode is ParsedVariableDeclarationListNode) {
-            variableDeclarationListTranslator.translate(declarationStatementNode)
+            variableDeclarationListTranslator.translate(declarationStatementNode, 0, 0)
         } else {
             functionDeclarationTranslator.translate(declarationStatementNode as ParsedFunctionDeclarationNode)
         }

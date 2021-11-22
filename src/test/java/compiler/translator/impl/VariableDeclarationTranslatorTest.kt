@@ -19,23 +19,25 @@ class VariableDeclarationTranslatorTest {
     @Test
     fun bothPresentTest() {
         val variableDeclarationNode = Mockito.mock(ParsedVariableDeclarationNode::class.java)
+        val labelCounter = 0
+        val tempCounter = 0
 
         val parsedArrayNode = Mockito.mock(ParsedArrayNode::class.java)
         Mockito.`when`(variableDeclarationNode.arrayNode).thenReturn(parsedArrayNode)
 
         val translatedArrayNode = Mockito.mock(TranslatedArrayNode::class.java)
-        Mockito.`when`(arrayTranslator.translate(parsedArrayNode)).thenReturn(translatedArrayNode)
+        Mockito.`when`(arrayTranslator.translate(parsedArrayNode, labelCounter, tempCounter)).thenReturn(translatedArrayNode)
 
         val parsedAssignNode = Mockito.mock(ParsedAssignNode::class.java)
         Mockito.`when`(variableDeclarationNode.assignNode).thenReturn(parsedAssignNode)
 
         val translatedAssignNode = Mockito.mock(TranslatedAssignNode::class.java)
-        Mockito.`when`(assignTranslator.translate(parsedAssignNode)).thenReturn(translatedAssignNode)
+        Mockito.`when`(assignTranslator.translate(parsedAssignNode, labelCounter, tempCounter)).thenReturn(translatedAssignNode)
 
         val id = "id"
         Mockito.`when`(variableDeclarationNode.id).thenReturn(id)
 
-        val actual = variableDeclarationTranslator.translate(variableDeclarationNode)
+        val actual = variableDeclarationTranslator.translate(variableDeclarationNode, labelCounter, tempCounter)
 
         Assertions.assertEquals(id, actual.id)
         Assertions.assertEquals(translatedArrayNode, actual.arrayNode)
@@ -45,11 +47,13 @@ class VariableDeclarationTranslatorTest {
     @Test
     fun neitherPresentTest() {
         val variableDeclarationNode = Mockito.mock(ParsedVariableDeclarationNode::class.java)
+        val labelCounter = 0
+        val tempCounter = 0
 
         val id = "id"
         Mockito.`when`(variableDeclarationNode.id).thenReturn(id)
 
-        val actual = variableDeclarationTranslator.translate(variableDeclarationNode)
+        val actual = variableDeclarationTranslator.translate(variableDeclarationNode, labelCounter, tempCounter)
 
         Assertions.assertEquals(id, actual.id)
         Assertions.assertNull(actual.arrayNode)

@@ -8,8 +8,16 @@ import compiler.translator.impl.internal.IReturnStatementTranslator
 internal class ReturnStatementTranslator(
     private val expressionStatementTranslator: IExpressionStatementTranslator
 ): IReturnStatementTranslator {
-    override fun translate(returnNode: ParsedReturnNode): TranslatedReturnNode {
-        val expressionStatement = expressionStatementTranslator.translate(returnNode.expressionStatement)
+    override fun translate(
+        returnNode: ParsedReturnNode,
+        labelCounter: Int,
+        tempCounter: Int
+    ): TranslatedReturnNode {
+        val expressionStatement = expressionStatementTranslator.translate(
+            returnNode.expressionStatement,
+            labelCounter,
+            tempCounter
+        )
         return TranslatedReturnNode(expressionStatement)
     }
 }

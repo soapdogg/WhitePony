@@ -9,10 +9,16 @@ internal class VariableDeclarationListTranslator(
     private val variableDeclarationTranslator: IVariableDeclarationTranslator
 ):IVariableDeclarationListTranslator {
     override fun translate(
-        variableDeclarationListNode: ParsedVariableDeclarationListNode
+        variableDeclarationListNode: ParsedVariableDeclarationListNode,
+        labelCounter: Int,
+        tempCounter: Int
     ): TranslatedVariableDeclarationListNode {
         val translatedVariableDeclarations = variableDeclarationListNode.variableDeclarations.map {
-            variableDeclarationTranslator.translate(it)
+            variableDeclarationTranslator.translate(
+                it,
+                labelCounter,
+                tempCounter
+            )
         }
         return TranslatedVariableDeclarationListNode(
             variableDeclarationListNode.type,

@@ -4,5 +4,9 @@ import compiler.core.ParsedExpressionStatementNode
 import compiler.core.TranslatedExpressionStatementNode
 
 internal interface IExpressionStatementTranslator {
-    fun translate(expressionStatementNode: ParsedExpressionStatementNode): TranslatedExpressionStatementNode
+    fun translate(
+        expressionStatementNode: ParsedExpressionStatementNode,
+        labelCounter: Int,
+        tempCounter: Int
+    ): TranslatedExpressionStatementNode
 }

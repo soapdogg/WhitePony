@@ -7,7 +7,6 @@ import compiler.translator.impl.DeclarationStatementTranslator
 import compiler.translator.impl.ExpressionStatementTranslator
 import compiler.translator.impl.FunctionDeclarationTranslator
 import compiler.translator.impl.ReturnStatementTranslator
-import compiler.translator.impl.StatementTranslatorRecursive
 import compiler.translator.impl.Translator
 import compiler.translator.impl.VariableDeclarationListTranslator
 import compiler.translator.impl.VariableDeclarationTranslator
@@ -31,7 +30,7 @@ enum class TranslatorSingleton {
 
     private val returnStatementTranslator = ReturnStatementTranslator(expressionStatementTranslator)
 
-    private val statementTranslator = StatementTranslatorRecursive(
+    private val statementTranslator = StatementTranslator(
         expressionTranslator,
         variableDeclarationListTranslator,
         returnStatementTranslator,

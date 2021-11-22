@@ -1,5 +1,5 @@
 package compiler.core
 
 data class FakeTranslatedExpressionNode(
-    val value: String
+    val value: IParsedExpressionNode
 ): ITranslatedExpressionNode

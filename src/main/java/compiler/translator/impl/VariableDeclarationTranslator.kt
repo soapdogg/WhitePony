@@ -10,15 +10,27 @@ internal class VariableDeclarationTranslator(
     private val arrayTranslator: IArrayTranslator,
     private val assignTranslator: IAssignTranslator
 ): IVariableDeclarationTranslator {
-    override fun translate(variableDeclarationNode: ParsedVariableDeclarationNode): TranslatedVariableDeclarationNode {
+    override fun translate(
+        variableDeclarationNode: ParsedVariableDeclarationNode,
+        labelCounter: Int,
+        tempCounter: Int
+    ): TranslatedVariableDeclarationNode {
 
         val translatedArrayNode = if (variableDeclarationNode.arrayNode != null) {
-            arrayTranslator.translate(variableDeclarationNode.arrayNode)
+            arrayTranslator.translate(
+                variableDeclarationNode.arrayNode,
+                labelCounter,
+                tempCounter
+            )
         } else {
             null
         }
         val translatedAssignNode = if (variableDeclarationNode.assignNode != null) {
-            assignTranslator.translate(variableDeclarationNode.assignNode)
+            assignTranslator.translate(
+                variableDeclarationNode.assignNode,
+                labelCounter,
+                tempCounter
+            )
         } else {
             null
         }

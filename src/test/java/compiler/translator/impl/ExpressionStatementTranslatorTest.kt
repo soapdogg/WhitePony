@@ -16,14 +16,16 @@ class ExpressionStatementTranslatorTest {
     @Test
     fun translateTest() {
         val expressionStatement = Mockito.mock(ParsedExpressionStatementNode::class.java)
+        val labelCounter = 0
+        val tempCounter = 0
 
         val expression = Mockito.mock(IParsedExpressionNode::class.java)
         Mockito.`when`(expressionStatement.expressionNode).thenReturn(expression)
 
         val translatedExpression = Mockito.mock(ITranslatedExpressionNode::class.java)
-        Mockito.`when`(expressionTranslator.translate(expression)).thenReturn(translatedExpression)
+        Mockito.`when`(expressionTranslator.translate(expression, labelCounter, tempCounter)).thenReturn(translatedExpression)
 
-        val actual = expressionStatementTranslator.translate(expressionStatement)
+        val actual = expressionStatementTranslator.translate(expressionStatement, labelCounter, tempCounter)
         Assertions.assertEquals(translatedExpression, actual.expression)
     }
 }

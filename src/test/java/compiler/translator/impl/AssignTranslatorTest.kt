@@ -16,14 +16,16 @@ class AssignTranslatorTest {
     @Test
     fun translateTest() {
         val assignNode = Mockito.mock(ParsedAssignNode::class.java)
+        val labelCounter = 0
+        val tempCounter = 0
 
         val parsedExpressionNode = Mockito.mock(IParsedExpressionNode::class.java)
         Mockito.`when`(assignNode.expressionNode).thenReturn(parsedExpressionNode)
 
         val translatedExpressionNode = Mockito.mock(ITranslatedExpressionNode::class.java)
-        Mockito.`when`(expressionTranslator.translate(parsedExpressionNode)).thenReturn(translatedExpressionNode)
+        Mockito.`when`(expressionTranslator.translate(parsedExpressionNode, labelCounter, tempCounter)).thenReturn(translatedExpressionNode)
 
-        val actual = assignTranslator.translate(assignNode)
+        val actual = assignTranslator.translate(assignNode, labelCounter, tempCounter)
 
         Assertions.assertEquals(translatedExpressionNode, actual.expressionNode)
     }

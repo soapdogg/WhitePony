@@ -22,9 +22,11 @@ class DeclarationStatementTranslatorTest {
     @Test
     fun translateVariableListTest() {
         val parsedDeclarationStatementNode = Mockito.mock(ParsedVariableDeclarationListNode::class.java)
+        val labelCounter = 0
+        val tempCounter = 0
 
         val translatedDeclarationStatementNode = Mockito.mock(TranslatedVariableDeclarationListNode::class.java)
-        Mockito.`when`(variableDeclarationListTranslator.translate(parsedDeclarationStatementNode)).thenReturn(translatedDeclarationStatementNode)
+        Mockito.`when`(variableDeclarationListTranslator.translate(parsedDeclarationStatementNode, labelCounter, tempCounter)).thenReturn(translatedDeclarationStatementNode)
 
         val actual = declarationStatementTranslator.translate(parsedDeclarationStatementNode)
 
