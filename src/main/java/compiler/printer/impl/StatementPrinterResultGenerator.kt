@@ -116,6 +116,14 @@ internal class StatementPrinterResultGenerator(
                 }
                 node.expression.code.joinToString(PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs)
             }
+            is TranslatedReturnNode -> {
+                var tabs = PrinterConstants.EMPTY
+                for(i in 0 until numberOfTabs + 1) {
+                    tabs += PrinterConstants.TAB
+                }
+                val expressionCode = node.expressionStatement.expression.code.joinToString(PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs)
+                expressionCode + PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs + PrinterConstants.RETURN + PrinterConstants.SPACE + node.expressionStatement.expression.address + PrinterConstants.SEMICOLON
+            }
             else -> {
                 PrinterConstants.EMPTY
             }
