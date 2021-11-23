@@ -1,7 +1,7 @@
 package compiler.printer.impl.internal
 
-import compiler.core.ParsedFunctionDeclarationNode
+import compiler.core.IFunctionDeclarationNode
 
 internal interface IFunctionDeclarationPrinter {
-    fun printParsedNode(node: ParsedFunctionDeclarationNode): String
+    fun printNode(node: IFunctionDeclarationNode): String
 }

@@ -1,7 +1,7 @@
 package compiler.printer.impl.internal
 
-import compiler.core.IParsedStatementNode
+import compiler.core.IStatementNode
 
 internal interface IStatementPrinter {
-    fun printParsedNode(node: IParsedStatementNode, numberOfTabs: Int): String
+    fun printNode(node: IStatementNode, numberOfTabs: Int): String
 }

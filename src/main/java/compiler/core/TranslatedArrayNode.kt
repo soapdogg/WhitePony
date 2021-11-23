@@ -1,5 +1,5 @@
 package compiler.core
 
 data class TranslatedArrayNode(
-    val indexExpressionNode: ITranslatedExpressionNode?
-)
+    override val indexExpressionNode: ITranslatedExpressionNode?
+): IArrayNode

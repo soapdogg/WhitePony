@@ -21,13 +21,13 @@ class PrinterTest {
         Mockito.`when`(parsedRootNode.declarationStatements).thenReturn(listOf(declarationStatement1, declarationStatement2))
 
         val s1 = "s1"
-        Mockito.`when`(declarationStatementPrinter.printParsedNode(declarationStatement1)).thenReturn(s1)
+        Mockito.`when`(declarationStatementPrinter.printNode(declarationStatement1)).thenReturn(s1)
 
         val s2 = "s2"
-        Mockito.`when`(declarationStatementPrinter.printParsedNode(declarationStatement2)).thenReturn(s2)
+        Mockito.`when`(declarationStatementPrinter.printNode(declarationStatement2)).thenReturn(s2)
 
         val expected = s1 + "\n" + s2
-        val actual = printer.printParsedNode(parsedRootNode)
+        val actual = printer.printNode(parsedRootNode)
 
         Assertions.assertEquals(expected, actual)
     }

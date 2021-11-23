@@ -26,6 +26,6 @@ class TranslatorTest {
 
         val actual = translator.translate(rootNode)
 
-        Assertions.assertEquals(translatedDeclarationStatementNode, actual.declarationStatementNodes[0])
+        Assertions.assertEquals(translatedDeclarationStatementNode, actual.declarationStatements[0])
     }
 }

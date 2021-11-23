@@ -1,7 +1,7 @@
 package compiler.printer.impl.internal
 
-import compiler.core.IParsedDeclarationStatementNode
+import compiler.core.IDeclarationStatementNode
 
 internal interface IDeclarationStatementPrinter {
-    fun printParsedNode(node: IParsedDeclarationStatementNode): String
+    fun printNode(node: IDeclarationStatementNode): String
 }

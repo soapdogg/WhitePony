@@ -1,7 +1,7 @@
 package compiler.printer
 
-import compiler.core.ParsedProgramRootNode
+import compiler.core.IProgramRootNode
 
 interface IPrinter {
-    fun printParsedNode(node: ParsedProgramRootNode): String
+    fun printNode(node: IProgramRootNode): String
 }

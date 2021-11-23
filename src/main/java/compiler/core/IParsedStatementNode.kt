@@ -1,5 +1,5 @@
 package compiler.core
 
-interface IParsedStatementNode {
+interface IParsedStatementNode: IStatementNode {
     fun getNumberOfStatements(): Int
 }

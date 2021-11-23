@@ -1,7 +1,7 @@
 package compiler.printer.impl.internal
 
-import compiler.core.ParsedArrayNode
+import compiler.core.IArrayNode
 
 interface IArrayPrinter {
-    fun printParsedNode(node: ParsedArrayNode): String
+    fun printNode(node: IArrayNode): String
 }

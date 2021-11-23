@@ -1,7 +1,7 @@
 package compiler.printer.impl.internal
 
-import compiler.core.ParsedAssignNode
+import compiler.core.IAssignNode
 
 internal interface IAssignPrinter {
-    fun printParsedNode(node: ParsedAssignNode): String
+    fun printNode(node: IAssignNode): String
 }

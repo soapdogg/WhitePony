@@ -1,7 +1,7 @@
 package compiler.core
 
 data class TranslatedVariableDeclarationNode(
-    val id: String,
-    val arrayNode: TranslatedArrayNode?,
-    val assignNode: TranslatedAssignNode?
-)
+    override val id: String,
+    override val arrayNode: TranslatedArrayNode?,
+    override val assignNode: TranslatedAssignNode?
+): IVariableDeclarationNode

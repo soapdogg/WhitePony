@@ -17,7 +17,7 @@ class ArrayPrinterTest {
     fun noIndexTest() {
         val node = Mockito.mock(ParsedArrayNode::class.java)
         val expected = PrinterConstants.LEFT_BRACKET + PrinterConstants.RIGHT_BRACKET
-        val actual = arrayPrinter.printParsedNode(node)
+        val actual = arrayPrinter.printNode(node)
 
         Assertions.assertEquals(expected, actual)
     }
@@ -30,10 +30,10 @@ class ArrayPrinterTest {
         Mockito.`when`(node.indexExpressionNode).thenReturn(indexNode)
 
         val indexString = "indexString"
-        Mockito.`when`(expressionPrinter.printParsedNode(indexNode)).thenReturn(indexString)
+        Mockito.`when`(expressionPrinter.printNode(indexNode)).thenReturn(indexString)
 
         val expected = PrinterConstants.LEFT_BRACKET + indexString + PrinterConstants.RIGHT_BRACKET
-        val actual = arrayPrinter.printParsedNode(node)
+        val actual = arrayPrinter.printNode(node)
 
         Assertions.assertEquals(expected, actual)
     }

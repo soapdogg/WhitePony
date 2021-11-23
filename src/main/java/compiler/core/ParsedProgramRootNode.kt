@@ -1,5 +1,5 @@
 package compiler.core
 
 data class ParsedProgramRootNode(
-    val declarationStatements: List<IParsedDeclarationStatementNode>
-)
+    override val declarationStatements: List<IParsedDeclarationStatementNode>
+):IProgramRootNode

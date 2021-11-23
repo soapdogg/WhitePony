@@ -54,7 +54,7 @@ class StatementPrinterResultGeneratorTest {
         Mockito.`when`(node.expression).thenReturn(expression)
 
         val expressionString = "expressionString"
-        Mockito.`when`(expressionPrinter.printParsedNode(expression)).thenReturn(expressionString)
+        Mockito.`when`(expressionPrinter.printNode(expression)).thenReturn(expressionString)
 
         val expected = PrinterConstants.DO +
                 PrinterConstants.SPACE +
@@ -80,7 +80,7 @@ class StatementPrinterResultGeneratorTest {
         Mockito.`when`(node.expression).thenReturn(expression)
 
         val expressionString = "expressionString"
-        Mockito.`when`(expressionPrinter.printParsedNode(expression)).thenReturn(expressionString)
+        Mockito.`when`(expressionPrinter.printNode(expression)).thenReturn(expressionString)
 
         val expected = PrinterConstants.WHILE +
                 PrinterConstants.SPACE +
@@ -103,19 +103,19 @@ class StatementPrinterResultGeneratorTest {
         Mockito.`when`(node.initExpression).thenReturn(initExpression)
 
         val initExpressionString = "initExpressionString"
-        Mockito.`when`(expressionPrinter.printParsedNode(initExpression)).thenReturn(initExpressionString)
+        Mockito.`when`(expressionPrinter.printNode(initExpression)).thenReturn(initExpressionString)
 
         val testExpression = Mockito.mock(IParsedExpressionNode::class.java)
         Mockito.`when`(node.testExpression).thenReturn(testExpression)
 
         val testExpressionString = "testExpressionString"
-        Mockito.`when`(expressionPrinter.printParsedNode(testExpression)).thenReturn(testExpressionString)
+        Mockito.`when`(expressionPrinter.printNode(testExpression)).thenReturn(testExpressionString)
 
         val incrementExpression = Mockito.mock(IParsedExpressionNode::class.java)
         Mockito.`when`(node.incrementExpression).thenReturn(incrementExpression)
 
         val incrementExpressionString = "incrementExpressionString"
-        Mockito.`when`(expressionPrinter.printParsedNode(incrementExpression)).thenReturn(incrementExpressionString)
+        Mockito.`when`(expressionPrinter.printNode(incrementExpression)).thenReturn(incrementExpressionString)
 
         val expected = PrinterConstants.FOR +
                 PrinterConstants.SPACE +
@@ -146,7 +146,7 @@ class StatementPrinterResultGeneratorTest {
         Mockito.`when`(node.booleanExpression).thenReturn(expression)
 
         val expressionString = "expressionString"
-        Mockito.`when`(expressionPrinter.printParsedNode(expression)).thenReturn(expressionString)
+        Mockito.`when`(expressionPrinter.printNode(expression)).thenReturn(expressionString)
 
         val expected = PrinterConstants.IF +
                 expressionString +
@@ -177,7 +177,7 @@ class StatementPrinterResultGeneratorTest {
         val statementStrings = listOf<String>()
 
         val expected = "result"
-        Mockito.`when`(variableDeclarationListPrinter.printParsedNode(node)).thenReturn(expected)
+        Mockito.`when`(variableDeclarationListPrinter.printNode(node)).thenReturn(expected)
 
         val actual = statementPrinterResultGenerator.generateResult(node, numberOfTabs, statementStrings)
         Assertions.assertEquals(expected, actual)

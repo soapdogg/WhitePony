@@ -20,10 +20,10 @@ class AssignPrinterTest {
         Mockito.`when`(assignNode.expressionNode).thenReturn(expressionNode)
 
         val expressionString = "expressionString"
-        Mockito.`when`(expressionPrinter.printParsedNode(expressionNode)).thenReturn(expressionString)
+        Mockito.`when`(expressionPrinter.printNode(expressionNode)).thenReturn(expressionString)
 
         val expected = PrinterConstants.SPACE + PrinterConstants.EQUALS + PrinterConstants.SPACE + expressionString
-        val actual = assignPrinter.printParsedNode(assignNode)
+        val actual = assignPrinter.printNode(assignNode)
 
         Assertions.assertEquals(expected, actual)
     }

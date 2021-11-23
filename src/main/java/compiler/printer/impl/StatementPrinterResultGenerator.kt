@@ -15,7 +15,7 @@ internal class StatementPrinterResultGenerator(
     private val expressionPrinter: IExpressionPrinter
 ): IStatementPrinterResultGenerator {
     override fun generateResult(
-        node: IParsedStatementNode,
+        node: IStatementNode,
         numberOfTabs: Int,
         statementStrings: List<String>
     ): String {
@@ -36,7 +36,7 @@ internal class StatementPrinterResultGenerator(
             }
             is ParsedDoWhileNode -> {
                 val bodyString = statementStrings[0]
-                val expressionString = expressionPrinter.printParsedNode(node.expression)
+                val expressionString = expressionPrinter.printNode(node.expression)
                 PrinterConstants.DO +
                     PrinterConstants.SPACE +
                     bodyString +
@@ -48,7 +48,7 @@ internal class StatementPrinterResultGenerator(
             }
             is ParsedWhileNode -> {
                 val bodyString = statementStrings[0]
-                val expressionString = expressionPrinter.printParsedNode(node.expression)
+                val expressionString = expressionPrinter.printNode(node.expression)
                 PrinterConstants.WHILE +
                     PrinterConstants.SPACE +
                     expressionString +
@@ -57,9 +57,9 @@ internal class StatementPrinterResultGenerator(
             }
             is ParsedForNode -> {
                 val bodyString = statementStrings[0]
-                val initExpressionString = expressionPrinter.printParsedNode(node.initExpression)
-                val testExpressionString = expressionPrinter.printParsedNode(node.testExpression)
-                val incrementExpressionString = expressionPrinter.printParsedNode(node.incrementExpression)
+                val initExpressionString = expressionPrinter.printNode(node.initExpression)
+                val testExpressionString = expressionPrinter.printNode(node.testExpression)
+                val incrementExpressionString = expressionPrinter.printNode(node.incrementExpression)
                 PrinterConstants.FOR +
                     PrinterConstants.SPACE +
                     PrinterConstants.LEFT_PARENTHESES +
@@ -76,7 +76,7 @@ internal class StatementPrinterResultGenerator(
             }
             is ParsedIfNode -> {
                 val ifBodyString = statementStrings[0]
-                val booleanExpressionString = expressionPrinter.printParsedNode(node.booleanExpression)
+                val booleanExpressionString = expressionPrinter.printNode(node.booleanExpression)
                 PrinterConstants.IF +
                     booleanExpressionString +
                     PrinterConstants.SPACE +
@@ -87,7 +87,7 @@ internal class StatementPrinterResultGenerator(
                 PrinterConstants.ELSE + PrinterConstants.SPACE + elseBodyString
             }
             is ParsedVariableDeclarationListNode -> {
-                variableDeclarationListPrinter.printParsedNode(node)
+                variableDeclarationListPrinter.printNode(node)
             }
             is ParsedReturnNode -> {
                 returnStatementPrinter.printParsedNode(node)

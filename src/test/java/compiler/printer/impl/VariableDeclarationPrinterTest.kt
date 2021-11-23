@@ -26,19 +26,19 @@ class VariableDeclarationPrinterTest {
         Mockito.`when`(node.arrayNode).thenReturn(arrayNode)
 
         val arrayString = "arrayString"
-        Mockito.`when`(arrayPrinter.printParsedNode(arrayNode)).thenReturn(arrayString)
+        Mockito.`when`(arrayPrinter.printNode(arrayNode)).thenReturn(arrayString)
 
         val assignNode = Mockito.mock(ParsedAssignNode::class.java)
         Mockito.`when`(node.assignNode).thenReturn(assignNode)
 
         val assignString = "assignString"
-        Mockito.`when`(assignPrinter.printParsedNode(assignNode)).thenReturn(assignString)
+        Mockito.`when`(assignPrinter.printNode(assignNode)).thenReturn(assignString)
 
         val id = "id"
         Mockito.`when`(node.id).thenReturn(id)
 
         val expected = id + arrayString + assignString
-        val actual = variableDeclarationPrinter.printParsedNode(node)
+        val actual = variableDeclarationPrinter.printNode(node)
 
         Assertions.assertEquals(expected, actual)
     }
@@ -50,7 +50,7 @@ class VariableDeclarationPrinterTest {
         val id = "id"
         Mockito.`when`(node.id).thenReturn(id)
 
-        val actual = variableDeclarationPrinter.printParsedNode(node)
+        val actual = variableDeclarationPrinter.printNode(node)
 
         Assertions.assertEquals(id, actual)
     }

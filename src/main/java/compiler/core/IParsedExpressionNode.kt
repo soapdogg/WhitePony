@@ -1,4 +1,3 @@
 package compiler.core
 
-interface IParsedExpressionNode {
-}
+interface IParsedExpressionNode : IExpressionNode

@@ -1,6 +1,8 @@
 package compiler.core
 
+import compiler.core.constants.IVariableDeclarationListNode
+
 data class TranslatedVariableDeclarationListNode(
-    val type: String,
-    val variableDeclarations: List<TranslatedVariableDeclarationNode>
-): ITranslatedDeclarationStatementNode, ITranslatedStatementNode
+    override val type: String,
+    override val variableDeclarations: List<TranslatedVariableDeclarationNode>
+): ITranslatedDeclarationStatementNode, ITranslatedStatementNode, IVariableDeclarationListNode

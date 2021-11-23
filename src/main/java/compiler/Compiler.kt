@@ -15,10 +15,13 @@ class Compiler(
     fun compile(program: String): Pair<TranslatedProgramRootNode, String> {
         val tokens = tokenizer.tokenize(program)
         val parseTree = parser.parse(tokens)
-        val parseTreeString = printer.printParsedNode(parseTree)
+        val parseTreeString = printer.printNode(parseTree)
         println(parseTreeString)
         println()
         val translatedTree = translator.translate(parseTree)
+        val translatedTreeString = printer.printNode(translatedTree)
+        println(translatedTreeString)
+        println()
 
         return Pair(translatedTree, parseTreeString)
     }

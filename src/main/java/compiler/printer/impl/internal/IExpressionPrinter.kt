@@ -1,7 +1,7 @@
 package compiler.printer.impl.internal
 
-import compiler.core.IParsedExpressionNode
+import compiler.core.IExpressionNode
 
 internal interface IExpressionPrinter {
-    fun printParsedNode(node: IParsedExpressionNode): String
+    fun printNode(node: IExpressionNode): String
 }

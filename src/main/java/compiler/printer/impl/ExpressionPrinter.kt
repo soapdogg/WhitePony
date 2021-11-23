@@ -5,7 +5,16 @@ import compiler.core.constants.PrinterConstants
 import compiler.printer.impl.internal.IExpressionPrinter
 
 internal class ExpressionPrinter: IExpressionPrinter {
-    override fun printParsedNode(node: IParsedExpressionNode): String {
+
+    override fun printNode(node: IExpressionNode): String {
+        return if (node is IParsedExpressionNode) {
+            printParsedNode(node)
+        } else {
+            PrinterConstants.EMPTY
+        }
+    }
+
+    private fun printParsedNode(node: IParsedExpressionNode): String {
         val stack = Stack<ExpressionPrinterStackItem>()
         val resultStack = Stack<String>()
         stack.push(ExpressionPrinterStackItem(node, PrinterConstants.LOCATION_1))

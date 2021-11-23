@@ -1,7 +1,7 @@
 package compiler.core
 
 data class ParsedFunctionDeclarationNode(
-    val functionName: String,
-    val type: String,
-    val basicBlockNode: ParsedBasicBlockNode
-): IParsedDeclarationStatementNode
+    override val functionName: String,
+    override val type: String,
+    override val basicBlockNode: ParsedBasicBlockNode
+): IParsedDeclarationStatementNode, IFunctionDeclarationNode

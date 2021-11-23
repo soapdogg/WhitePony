@@ -1,4 +1,3 @@
 package compiler.core
 
-interface ITranslatedStatementNode {
-}
+interface ITranslatedStatementNode: IStatementNode

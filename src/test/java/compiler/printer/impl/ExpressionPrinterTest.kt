@@ -20,7 +20,7 @@ class ExpressionPrinterTest {
         val input = pair.first as IParsedExpressionNode
         val expected = pair.second as String
 
-        val actual = expressionPrinter.printParsedNode(input)
+        val actual = expressionPrinter.printNode(input)
         Assertions.assertEquals(expected, actual)
     }
 

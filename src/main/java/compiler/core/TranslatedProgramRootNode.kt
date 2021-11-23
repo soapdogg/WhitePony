@@ -1,5 +1,5 @@
 package compiler.core
 
 data class TranslatedProgramRootNode(
-    val declarationStatementNodes: List<ITranslatedDeclarationStatementNode>
-)
+    override val declarationStatements: List<ITranslatedDeclarationStatementNode>
+):IProgramRootNode

@@ -1,4 +1,3 @@
 package compiler.core
 
-interface IParsedDeclarationStatementNode {
-}
+interface IParsedDeclarationStatementNode : IDeclarationStatementNode

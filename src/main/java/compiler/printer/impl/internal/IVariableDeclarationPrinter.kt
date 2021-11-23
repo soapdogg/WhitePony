@@ -1,7 +1,7 @@
 package compiler.printer.impl.internal
 
-import compiler.core.ParsedVariableDeclarationNode
+import compiler.core.IVariableDeclarationNode
 
 internal interface IVariableDeclarationPrinter {
-    fun printParsedNode(node: ParsedVariableDeclarationNode): String
+    fun printNode(node: IVariableDeclarationNode): String
 }

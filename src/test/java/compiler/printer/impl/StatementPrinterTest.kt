@@ -7,7 +7,6 @@ import compiler.printer.impl.internal.IStatementPrinterResultGenerator
 import compiler.printer.impl.internal.IStatementPrinterStackItemGenerator
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.mockito.Mock
 import org.mockito.Mockito
 
 class StatementPrinterTest {
@@ -55,7 +54,7 @@ class StatementPrinterTest {
         val expected = "result"
         Mockito.`when`(statementPrinterResultGenerator.generateResult(generatedNode, generatedNumberOfTabs, listOf(result2))).thenReturn(expected)
 
-        val actual = statementPrinter.printParsedNode(node, numberOfTabs)
+        val actual = statementPrinter.printNode(node, numberOfTabs)
         Assertions.assertEquals(expected, actual)
     }
 }

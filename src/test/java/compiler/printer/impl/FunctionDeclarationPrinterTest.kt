@@ -26,7 +26,7 @@ class FunctionDeclarationPrinterTest {
         Mockito.`when`(node.basicBlockNode).thenReturn(basicBlockNode)
 
         val basicBlockString = "basicBlockString"
-        Mockito.`when`(statementPrinter.printParsedNode(basicBlockNode, PrinterConstants.INITIAL_NUMBER_OF_TABS)).thenReturn(basicBlockString)
+        Mockito.`when`(statementPrinter.printNode(basicBlockNode, PrinterConstants.INITIAL_NUMBER_OF_TABS)).thenReturn(basicBlockString)
 
         val expected = type +
                 PrinterConstants.SPACE +
@@ -36,7 +36,7 @@ class FunctionDeclarationPrinterTest {
                 PrinterConstants.SPACE +
                 basicBlockString
 
-        val actual = functionDeclarationPrinter.printParsedNode(node)
+        val actual = functionDeclarationPrinter.printNode(node)
 
         Assertions.assertEquals(expected, actual)
     }

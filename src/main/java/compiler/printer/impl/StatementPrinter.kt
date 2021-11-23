@@ -10,7 +10,15 @@ internal class StatementPrinter(
     private val statementPrinterStackItemGenerator: IStatementPrinterStackItemGenerator,
     private val statementPrinterResultGenerator: IStatementPrinterResultGenerator
 ): IStatementPrinter {
-    override fun printParsedNode(node: IParsedStatementNode, numberOfTabs: Int): String {
+    override fun printNode(node: IStatementNode, numberOfTabs: Int): String {
+        return if (node is IParsedStatementNode) {
+            printParseNode(node, numberOfTabs)
+        } else {
+            PrinterConstants.EMPTY
+        }
+    }
+
+    private fun printParseNode(node: IParsedStatementNode, numberOfTabs: Int): String {
         val stack = Stack<StatementPrinterStackItem>()
         val resultStack = Stack<String>()
         stack.push(StatementPrinterStackItem(node, numberOfTabs, PrinterConstants.LOCATION_1))

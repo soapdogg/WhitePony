@@ -21,16 +21,16 @@ class VariableDeclarationListPrinterTest {
         Mockito.`when`(node.variableDeclarations).thenReturn(listOf(variableDeclaration1, variableDeclaration2))
 
         val s1 = "s1"
-        Mockito.`when`(variableDeclarationPrinter.printParsedNode(variableDeclaration1)).thenReturn(s1)
+        Mockito.`when`(variableDeclarationPrinter.printNode(variableDeclaration1)).thenReturn(s1)
 
         val s2 = "s2"
-        Mockito.`when`(variableDeclarationPrinter.printParsedNode(variableDeclaration2)).thenReturn(s2)
+        Mockito.`when`(variableDeclarationPrinter.printNode(variableDeclaration2)).thenReturn(s2)
 
         val type = "type"
         Mockito.`when`(node.type).thenReturn(type)
 
         val expected = type + PrinterConstants.SPACE + s1 + PrinterConstants.COMMA + PrinterConstants.SPACE + s2 + PrinterConstants.SEMICOLON
-        val actual = variableDeclarationListPrinter.printParsedNode(node)
+        val actual = variableDeclarationListPrinter.printNode(node)
 
         Assertions.assertEquals(expected, actual)
     }

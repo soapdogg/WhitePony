@@ -1,8 +1,8 @@
 package compiler.core
 
 data class ParsedBasicBlockNode (
-    val statements: List<IParsedStatementNode>
-): IParsedStatementNode {
+    override val statements: List<IParsedStatementNode>
+): IParsedStatementNode, IBasicBlockNode  {
     override fun getNumberOfStatements(): Int {
         return statements.size
     }
