@@ -1,3 +1,5 @@
 package compiler.core
 
-interface IStatementNode
+interface IStatementNode {
+    fun getNumberOfStatements(): Int
+}

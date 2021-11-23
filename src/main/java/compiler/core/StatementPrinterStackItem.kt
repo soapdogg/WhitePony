@@ -1,7 +1,7 @@
 package compiler.core
 
 data class StatementPrinterStackItem(
-    val node: IParsedStatementNode,
+    val node: IStatementNode,
     val numberOfTabs: Int,
     val location: Int
 )

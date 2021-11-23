@@ -5,4 +5,8 @@ data class TranslatedForNode(
     val testExpression: ITranslatedExpressionNode,
     val incrementExpression: ITranslatedExpressionNode,
     val body: ITranslatedStatementNode
-): ITranslatedStatementNode
+): ITranslatedStatementNode {
+    override fun getNumberOfStatements(): Int {
+        return 1
+    }
+}

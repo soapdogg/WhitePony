@@ -5,7 +5,7 @@ import compiler.core.constants.PrinterConstants
 import compiler.printer.impl.internal.IStatementPrinterStackItemGenerator
 
 internal class StatementPrinterStackItemGenerator: IStatementPrinterStackItemGenerator {
-    override fun generateStatementPrinterStackItems(node: IParsedStatementNode, numberOfTabs: Int): List<StatementPrinterStackItem> {
+    override fun generateStatementPrinterStackItems(node: IStatementNode, numberOfTabs: Int): List<StatementPrinterStackItem> {
         val returnStackItem = StatementPrinterStackItem(node, numberOfTabs, PrinterConstants.LOCATION_2)
         val stackItems = mutableListOf(returnStackItem)
         when(node) {
