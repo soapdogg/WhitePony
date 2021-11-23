@@ -8,5 +8,5 @@ internal interface IExpressionStatementTranslator {
         expressionStatementNode: ParsedExpressionStatementNode,
         labelCounter: Int,
         tempCounter: Int
-    ): TranslatedExpressionStatementNode
+    ): Triple<TranslatedExpressionStatementNode, Int, Int>
 }

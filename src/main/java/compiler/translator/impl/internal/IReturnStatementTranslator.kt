@@ -8,5 +8,5 @@ internal interface IReturnStatementTranslator {
         returnNode: ParsedReturnNode,
         labelCounter: Int,
         tempCounter: Int
-    ): TranslatedReturnNode
+    ): Triple<TranslatedReturnNode, Int, Int>
 }

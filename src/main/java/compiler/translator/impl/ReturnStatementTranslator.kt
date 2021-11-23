@@ -12,12 +12,12 @@ internal class ReturnStatementTranslator(
         returnNode: ParsedReturnNode,
         labelCounter: Int,
         tempCounter: Int
-    ): TranslatedReturnNode {
-        val expressionStatement = expressionStatementTranslator.translate(
+    ): Triple<TranslatedReturnNode, Int, Int> {
+        val (expressionStatement, l, t) = expressionStatementTranslator.translate(
             returnNode.expressionStatement,
             labelCounter,
             tempCounter
         )
-        return TranslatedReturnNode(expressionStatement)
+        return Triple(TranslatedReturnNode(expressionStatement), l, t)
     }
 }
