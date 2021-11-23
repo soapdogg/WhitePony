@@ -100,7 +100,7 @@ internal class StatementPrinterResultGenerator(
                 for(i in 0 until numberOfTabs + 1) {
                     tabs += PrinterConstants.TAB
                 }
-                node.expression.code.joinToString(PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs)
+                node.expression.code.joinToString(PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs, PrinterConstants.EMPTY, PrinterConstants.SEMICOLON)
             }
             is TranslatedReturnNode -> {
                 var tabs = PrinterConstants.EMPTY

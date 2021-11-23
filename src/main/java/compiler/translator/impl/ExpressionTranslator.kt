@@ -2,7 +2,9 @@ package compiler.translator.impl
 
 import compiler.core.*
 import compiler.core.constants.PrinterConstants
+import compiler.core.constants.TokenizerConstants
 import compiler.translator.impl.internal.IExpressionTranslator
+import kotlin.math.exp
 
 internal class ExpressionTranslator: IExpressionTranslator {
     override fun translate(
@@ -30,7 +32,7 @@ internal class ExpressionTranslator: IExpressionTranslator {
                             2 -> {
                                 val rightExpression = resultStack.pop()
                                 val address = rightExpression.address
-                                val code = rightExpression.code + listOf(top.node.leftExpression.value + " = " + rightExpression.address + ";")
+                                val code = rightExpression.code + listOf(top.node.leftExpression.value + " = " + rightExpression.address)
                                 val translatedBinaryOperatorNode = TranslatedExpressionNode(
                                     address,
                                     code
@@ -59,7 +61,6 @@ internal class ExpressionTranslator: IExpressionTranslator {
                             val address = "_t" + tempCounter
                             tempCounter++
                             val code = leftExpression.code +
-
                                 rightExpression.code +
                                 listOf(address +
                                 PrinterConstants.SPACE +
@@ -87,6 +88,37 @@ internal class ExpressionTranslator: IExpressionTranslator {
                         listOf(code)
                     )
                     resultStack.push(translatedVariableExpressionNode)
+                }
+                is ParsedUnaryOperatorNode -> {
+                    when (top.location) {
+                        1 -> {
+                            stack.push(ExpressionTranslatorStackItem(2, top.node))
+                            stack.push(ExpressionTranslatorStackItem(1, top.node.expression))
+                        }
+                        2 -> {
+                            val expression = resultStack.pop()
+                            if (top.node.operator == TokenizerConstants.PLUS_OPERATOR) {
+                                resultStack.push(expression)
+                            } else {
+                                val address ="_t" + tempCounter
+                                tempCounter++
+                                val code = expression.code +
+                                    listOf(
+                                        address +
+                                            PrinterConstants.SPACE +
+                                            PrinterConstants.EQUALS +
+                                            PrinterConstants.SPACE +
+                                            top.node.operator +
+                                            expression.address
+                                    )
+                                val translatedExpressionNode = TranslatedExpressionNode(
+                                    address,
+                                    code
+                                )
+                                resultStack.push(translatedExpressionNode)
+                            }
+                        }
+                    }
                 }
                 is ParsedConstantNode -> {
                     val translatedConstantNode = TranslatedExpressionNode(
