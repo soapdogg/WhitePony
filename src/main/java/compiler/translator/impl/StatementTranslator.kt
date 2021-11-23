@@ -27,7 +27,7 @@ internal class StatementTranslator (
                     stack.push(Pair(2, top.second))
                     when (top.second) {
                         is ParsedBasicBlockNode -> {
-                            (top.second as ParsedBasicBlockNode).statements.reversed().forEach {
+                            (top.second as ParsedBasicBlockNode).statements.forEach {
                                 stack.push(Pair(1, it))
                             }
                         }
@@ -62,20 +62,11 @@ internal class StatementTranslator (
                     }
                 }
                 2 -> {
-                    val translatedNodes = mutableListOf<ITranslatedStatementNode>()
-                    for (i in 0 until top.second.getNumberOfStatements()) {
-                        translatedNodes.add(resultStack.pop())
-                    }
-
 
                     when(top.second) {
-                        is ParsedBasicBlockNode -> {
-                            val translatedBasicBlock = TranslatedBasicBlockNode(translatedNodes)
-                            resultStack.push(translatedBasicBlock)
-                        }
                         is ParsedDoWhileNode -> {
                             val expression = expressionStack.pop()
-                            val body = translatedNodes[0]
+                            val body = resultStack.pop()
                             val doWhile = TranslatedDoWhileNode(
                                 expression,
                                 body
@@ -84,7 +75,7 @@ internal class StatementTranslator (
                         }
                         is ParsedWhileNode -> {
                             val expression = expressionStack.pop()
-                            val body = translatedNodes[0]
+                            val body = resultStack.pop()
                             val whileNode = TranslatedWhileNode(
                                 expression,
                                 body
@@ -95,7 +86,7 @@ internal class StatementTranslator (
                             val initExpression = expressionStack.pop()
                             val testExpression = expressionStack.pop()
                             val incrementExpression = expressionStack.pop()
-                            val body = translatedNodes[0]
+                            val body = resultStack.pop()
                             val forNode = TranslatedForNode(
                                 initExpression,
                                 testExpression,
@@ -106,7 +97,7 @@ internal class StatementTranslator (
                         }
                         is ParsedIfNode -> {
                             val expression = expressionStack.pop()
-                            val body = translatedNodes[0]
+                            val body = resultStack.pop()
                             val ifNode = TranslatedIfNode(
                                 expression,
                                 body
@@ -114,7 +105,7 @@ internal class StatementTranslator (
                             resultStack.push(ifNode)
                         }
                         is ParsedElseNode -> {
-                            val body = translatedNodes[0]
+                            val body = resultStack.pop()
                             val elseNode = TranslatedElseNode(body)
                             resultStack.push(elseNode)
                         }
@@ -141,9 +132,12 @@ internal class StatementTranslator (
                 }
             }
         }
+        val translatedNodes = mutableListOf<ITranslatedStatementNode>()
+        while (resultStack.isNotEmpty()) {
+            translatedNodes.add(resultStack.pop())
+        }
 
 
-        return resultStack.pop()
-
+        return TranslatedBasicBlockNode(translatedNodes)
     }
 }
