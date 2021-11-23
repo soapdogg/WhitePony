@@ -29,7 +29,7 @@ internal class FunctionDeclarationParser(
         val functionDeclarationNode = ParsedFunctionDeclarationNode(
             identifierToken.value,
             typeToken.value,
-            basicBlockNode as ParsedBasicBlockNode
+            basicBlockNode
         )
         return Pair(functionDeclarationNode, finalPosition)
     }

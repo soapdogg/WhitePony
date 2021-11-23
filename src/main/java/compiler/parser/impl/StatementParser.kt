@@ -19,7 +19,7 @@ internal class StatementParser(
     override fun parse(
         tokens: List<Token>,
         startingPosition: Int
-    ): Pair<IParsedStatementNode, Int> {
+    ): Pair<ParsedBasicBlockNode, Int> {
 
         val stack = Stack<Int>()
         val resultStack = Stack<IParsedStatementNode>()
@@ -177,6 +177,6 @@ internal class StatementParser(
                 }
             }
         }
-        return Pair(resultStack.pop(), tokenPosition)
+        return Pair(resultStack.pop() as ParsedBasicBlockNode, tokenPosition)
     }
 }

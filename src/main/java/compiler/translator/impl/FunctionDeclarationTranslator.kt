@@ -18,7 +18,7 @@ internal class FunctionDeclarationTranslator(
         return TranslatedFunctionDeclarationNode(
             functionDeclarationNode.type,
             functionDeclarationNode.functionName,
-            translatedStatement as TranslatedBasicBlockNode
+            translatedStatement
         )
     }
 }

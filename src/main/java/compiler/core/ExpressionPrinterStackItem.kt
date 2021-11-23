@@ -1,6 +1,6 @@
 package compiler.core
 
 data class ExpressionPrinterStackItem(
-    val node: IParsedExpressionNode,
+    val node: IExpressionNode,
     val location: Int
 )
