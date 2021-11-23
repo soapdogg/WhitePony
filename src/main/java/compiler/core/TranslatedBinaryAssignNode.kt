@@ -1,6 +1,6 @@
 package compiler.core
 
-data class FakeTranslatedExpressionNode(
+data class TranslatedBinaryAssignNode(
     override val address: String,
     override val code: List<String>,
 ): ITranslatedExpressionNode

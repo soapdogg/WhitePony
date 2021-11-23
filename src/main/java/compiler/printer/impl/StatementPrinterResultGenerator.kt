@@ -109,6 +109,13 @@ internal class StatementPrinterResultGenerator(
             is ParsedExpressionStatementNode -> {
                 expressionStatementPrinter.printParsedNode(node)
             }
+            is TranslatedExpressionStatementNode -> {
+                var tabs = PrinterConstants.EMPTY
+                for(i in 0 until numberOfTabs + 1) {
+                    tabs += PrinterConstants.TAB
+                }
+                node.expression.code.joinToString(PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs)
+            }
             else -> {
                 PrinterConstants.EMPTY
             }

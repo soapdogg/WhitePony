@@ -1,5 +1,5 @@
 package compiler.core
 
 data class ParsedVariableExpressionNode(
-    override val value: String
+    override val value: String,
 ): IParsedValueExpressionNode

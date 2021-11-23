@@ -10,9 +10,7 @@ import compiler.translator.impl.Translator
 enum class TranslatorSingleton {
     INSTANCE;
 
-    private val expressionTranslator = FakeExpressionTranslator()
-
-
+    private val expressionTranslator = ExpressionTranslator()
 
     private val expressionStatementTranslator = ExpressionStatementTranslator(expressionTranslator)
 

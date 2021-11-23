@@ -39,7 +39,8 @@ internal class ExpressionParser(
                         }
                         TokenType.FLOATING_POINT, TokenType.INTEGER -> {
                             val (constantToken, positionAfterConstant) = tokenTypeAsserter.assertTokenType(tokens, tokenPosition, setOf(TokenType.FLOATING_POINT, TokenType.INTEGER))
-                            val constantNode = ParsedConstantNode(constantToken.value, constantToken.type == TokenType.INTEGER)
+                            val type = if (constantToken.type == TokenType.INTEGER) "int" else "double"
+                            val constantNode = ParsedConstantNode(constantToken.value, type)
                             tokenPosition = positionAfterConstant
                             resultStack.push(constantNode)
                         }

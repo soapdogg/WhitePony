@@ -27,7 +27,7 @@ internal class StatementTranslator (
                     stack.push(StatementTranslatorStackItem(2, top.node))
                     when (top.node) {
                         is ParsedBasicBlockNode -> {
-                            top.node.statements.forEach {
+                            top.node.statements.reversed().forEach {
                                 stack.push(StatementTranslatorStackItem(1, it))
                             }
                         }
@@ -149,6 +149,6 @@ internal class StatementTranslator (
             translatedNodes.add(resultStack.pop())
         }
 
-        return TranslatedBasicBlockNode(translatedNodes)
+        return TranslatedBasicBlockNode(translatedNodes.reversed())
     }
 }
