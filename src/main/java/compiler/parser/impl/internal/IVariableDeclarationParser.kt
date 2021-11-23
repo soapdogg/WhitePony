@@ -1,11 +1,11 @@
 package compiler.parser.impl.internal
 
 import compiler.core.Token
-import compiler.core.ParsedVariableDeclarationNode
+import compiler.core.VariableDeclarationNode
 
 internal interface IVariableDeclarationParser {
     fun parse(
         tokens: List<Token>,
         startingPosition: Int
-    ): Pair<ParsedVariableDeclarationNode, Int>
+    ): Pair<VariableDeclarationNode, Int>
 }

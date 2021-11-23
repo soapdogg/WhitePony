@@ -86,7 +86,7 @@ internal class StatementPrinterResultGenerator(
                 val elseBodyString = statementStrings[0]
                 PrinterConstants.ELSE + PrinterConstants.SPACE + elseBodyString
             }
-            is ParsedVariableDeclarationListNode -> {
+            is VariableDeclarationListNode -> {
                 variableDeclarationListPrinter.printNode(node)
             }
             is ParsedReturnNode -> {

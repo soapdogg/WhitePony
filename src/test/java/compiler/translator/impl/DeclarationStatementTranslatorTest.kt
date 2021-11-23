@@ -1,36 +1,26 @@
 package compiler.translator.impl
 
 import compiler.core.ParsedFunctionDeclarationNode
-import compiler.core.ParsedVariableDeclarationListNode
 import compiler.core.TranslatedFunctionDeclarationNode
-import compiler.core.TranslatedVariableDeclarationListNode
+import compiler.core.VariableDeclarationListNode
 import compiler.translator.impl.internal.IFunctionDeclarationTranslator
-import compiler.translator.impl.internal.IVariableDeclarationListTranslator
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 
 class DeclarationStatementTranslatorTest {
     private val functionDeclarationTranslator = Mockito.mock(IFunctionDeclarationTranslator::class.java)
-    private val variableDeclarationListTranslator = Mockito.mock(IVariableDeclarationListTranslator::class.java)
 
     private val declarationStatementTranslator = DeclarationStatementTranslator(
-        functionDeclarationTranslator,
-        variableDeclarationListTranslator
+        functionDeclarationTranslator
     )
 
     @Test
     fun translateVariableListTest() {
-        val parsedDeclarationStatementNode = Mockito.mock(ParsedVariableDeclarationListNode::class.java)
-        val labelCounter = 0
-        val tempCounter = 0
-
-        val translatedDeclarationStatementNode = Mockito.mock(TranslatedVariableDeclarationListNode::class.java)
-        Mockito.`when`(variableDeclarationListTranslator.translate(parsedDeclarationStatementNode, labelCounter, tempCounter)).thenReturn(translatedDeclarationStatementNode)
+        val parsedDeclarationStatementNode = Mockito.mock(VariableDeclarationListNode::class.java)
 
         val actual = declarationStatementTranslator.translate(parsedDeclarationStatementNode)
-
-        Assertions.assertEquals(translatedDeclarationStatementNode, actual)
+        Assertions.assertEquals(parsedDeclarationStatementNode, actual)
     }
 
     @Test

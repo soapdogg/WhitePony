@@ -5,11 +5,9 @@ import compiler.translator.impl.internal.IExpressionStatementTranslator
 import compiler.translator.impl.internal.IExpressionTranslator
 import compiler.translator.impl.internal.IReturnStatementTranslator
 import compiler.translator.impl.internal.IStatementTranslator
-import compiler.translator.impl.internal.IVariableDeclarationListTranslator
 
 internal class StatementTranslator (
     private val expressionTranslator: IExpressionTranslator,
-    private val variableDeclarationListTranslator: IVariableDeclarationListTranslator,
     private val returnStatementTranslator: IReturnStatementTranslator,
     private val expressionStatementTranslator: IExpressionStatementTranslator,
 ): IStatementTranslator {
@@ -120,13 +118,8 @@ internal class StatementTranslator (
                             val elseNode = TranslatedElseNode(body)
                             resultStack.push(elseNode)
                         }
-                        is ParsedVariableDeclarationListNode -> {
-                            val variableStatement = variableDeclarationListTranslator.translate(
-                                top.second as ParsedVariableDeclarationListNode,
-                                labelCounter,
-                                tempCounter
-                            )
-                            resultStack.push(variableStatement)
+                        is VariableDeclarationListNode -> {
+                            resultStack.push(top.second as ITranslatedStatementNode)
                         }
                         is ParsedReturnNode -> {
                             val returnStatement = returnStatementTranslator.translate(

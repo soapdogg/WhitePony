@@ -1,7 +1,7 @@
 package compiler.parser.impl
 
-import compiler.core.ParsedArrayNode
-import compiler.core.ParsedAssignNode
+import compiler.core.ArrayNode
+import compiler.core.AssignNode
 import compiler.core.Token
 import compiler.core.TokenType
 import compiler.parser.impl.internal.IArrayParser
@@ -40,11 +40,11 @@ class VariableDeclarationParserTest {
         val positionAfterIdentifier = startingPosition + 1
         Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.IDENTIFIER)).thenReturn(Pair(identifierToken, positionAfterIdentifier))
 
-        val arrayNode = Mockito.mock(ParsedArrayNode::class.java)
+        val arrayNode = Mockito.mock(ArrayNode::class.java)
         val positionAfterArray = positionAfterIdentifier + 2
         Mockito.`when`(arrayParser.parse(tokens, positionAfterIdentifier)).thenReturn(Pair(arrayNode, positionAfterArray))
 
-        val assignNode = Mockito.mock(ParsedAssignNode::class.java)
+        val assignNode = Mockito.mock(AssignNode::class.java)
         val positionAfterAssign = positionAfterArray + 1
         Mockito.`when`(assignParser.parse(tokens, positionAfterArray)).thenReturn(Pair(assignNode, positionAfterAssign))
 

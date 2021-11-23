@@ -1,8 +1,8 @@
 package compiler.printer.impl
 
-import compiler.core.ParsedArrayNode
-import compiler.core.ParsedAssignNode
-import compiler.core.ParsedVariableDeclarationNode
+import compiler.core.ArrayNode
+import compiler.core.AssignNode
+import compiler.core.VariableDeclarationNode
 import compiler.printer.impl.internal.IArrayPrinter
 import compiler.printer.impl.internal.IAssignPrinter
 import org.junit.jupiter.api.Assertions
@@ -20,15 +20,15 @@ class VariableDeclarationPrinterTest {
 
     @Test
     fun bothPresentTest() {
-        val node = Mockito.mock(ParsedVariableDeclarationNode::class.java)
+        val node = Mockito.mock(VariableDeclarationNode::class.java)
 
-        val arrayNode = Mockito.mock(ParsedArrayNode::class.java)
+        val arrayNode = Mockito.mock(ArrayNode::class.java)
         Mockito.`when`(node.arrayNode).thenReturn(arrayNode)
 
         val arrayString = "arrayString"
         Mockito.`when`(arrayPrinter.printNode(arrayNode)).thenReturn(arrayString)
 
-        val assignNode = Mockito.mock(ParsedAssignNode::class.java)
+        val assignNode = Mockito.mock(AssignNode::class.java)
         Mockito.`when`(node.assignNode).thenReturn(assignNode)
 
         val assignString = "assignString"
@@ -45,7 +45,7 @@ class VariableDeclarationPrinterTest {
 
     @Test
     fun neitherPresentTest() {
-        val node = Mockito.mock(ParsedVariableDeclarationNode::class.java)
+        val node = Mockito.mock(VariableDeclarationNode::class.java)
 
         val id = "id"
         Mockito.`when`(node.id).thenReturn(id)

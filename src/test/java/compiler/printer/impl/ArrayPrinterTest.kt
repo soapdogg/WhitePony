@@ -1,7 +1,7 @@
 package compiler.printer.impl
 
+import compiler.core.ArrayNode
 import compiler.core.IParsedExpressionNode
-import compiler.core.ParsedArrayNode
 import compiler.core.constants.PrinterConstants
 import compiler.printer.impl.internal.IExpressionPrinter
 import org.junit.jupiter.api.Assertions
@@ -15,7 +15,7 @@ class ArrayPrinterTest {
 
     @Test
     fun noIndexTest() {
-        val node = Mockito.mock(ParsedArrayNode::class.java)
+        val node = Mockito.mock(ArrayNode::class.java)
         val expected = PrinterConstants.LEFT_BRACKET + PrinterConstants.RIGHT_BRACKET
         val actual = arrayPrinter.printNode(node)
 
@@ -24,7 +24,7 @@ class ArrayPrinterTest {
 
     @Test
     fun indexTest() {
-        val node = Mockito.mock(ParsedArrayNode::class.java)
+        val node = Mockito.mock(ArrayNode::class.java)
 
         val indexNode = Mockito.mock(IParsedExpressionNode::class.java)
         Mockito.`when`(node.indexExpressionNode).thenReturn(indexNode)

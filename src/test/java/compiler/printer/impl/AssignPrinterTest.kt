@@ -1,7 +1,7 @@
 package compiler.printer.impl
 
+import compiler.core.AssignNode
 import compiler.core.IParsedExpressionNode
-import compiler.core.ParsedAssignNode
 import compiler.core.constants.PrinterConstants
 import compiler.printer.impl.internal.IExpressionPrinter
 import org.junit.jupiter.api.Assertions
@@ -14,7 +14,7 @@ class AssignPrinterTest {
 
     @Test
     fun printParsedNodeTest() {
-        val assignNode = Mockito.mock(ParsedAssignNode::class.java)
+        val assignNode = Mockito.mock(AssignNode::class.java)
 
         val expressionNode = Mockito.mock(IParsedExpressionNode::class.java)
         Mockito.`when`(assignNode.expressionNode).thenReturn(expressionNode)

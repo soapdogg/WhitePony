@@ -1,7 +1,7 @@
 package compiler.printer.impl.internal
 
-import compiler.core.constants.IVariableDeclarationListNode
+import compiler.core.VariableDeclarationListNode
 
 internal interface IVariableDeclarationListPrinter {
-    fun printNode(node: IVariableDeclarationListNode): String
+    fun printNode(node: VariableDeclarationListNode): String
 }

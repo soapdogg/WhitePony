@@ -1,6 +1,6 @@
 package compiler.parser.impl
 
-import compiler.core.ParsedAssignNode
+import compiler.core.AssignNode
 import compiler.core.Token
 import compiler.core.TokenType
 import compiler.parser.impl.internal.IAssignParser
@@ -14,11 +14,11 @@ internal class AssignParser(
     override fun parse(
         tokens: List<Token>,
         startingPosition: Int
-    ): Pair<ParsedAssignNode, Int> {
+    ): Pair<AssignNode, Int> {
         tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.BINARY_ASSIGN)
         val positionAfterAssign = startingPosition + 1
         val (expressionNode, positionAfterExpression) = expressionParser.parse(tokens, positionAfterAssign)
-        val assignNode = ParsedAssignNode(expressionNode)
+        val assignNode = AssignNode(expressionNode)
         return Pair(assignNode, positionAfterExpression)
     }
 }

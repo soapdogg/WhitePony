@@ -1,9 +1,6 @@
 package compiler.parser.impl
 
-import compiler.core.Token
-import compiler.core.TokenType
-import compiler.core.ParsedVariableDeclarationListNode
-import compiler.core.ParsedVariableDeclarationNode
+import compiler.core.*
 import compiler.parser.impl.internal.ITokenTypeAsserter
 import compiler.parser.impl.internal.IVariableDeclarationListParser
 import compiler.parser.impl.internal.IVariableDeclarationParser
@@ -15,10 +12,10 @@ internal class VariableDeclarationListParser(
     override fun parse(
         tokens: List<Token>,
         startingPosition: Int,
-    ): Pair<ParsedVariableDeclarationListNode, Int> {
+    ): Pair<VariableDeclarationListNode, Int> {
         val (typeToken, _) = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.TYPE)
 
-        val variableDeclarations = mutableListOf<ParsedVariableDeclarationNode>()
+        val variableDeclarations = mutableListOf<VariableDeclarationNode>()
         var variableDeclarationPosition = startingPosition
         do {
             variableDeclarationPosition++
@@ -31,7 +28,7 @@ internal class VariableDeclarationListParser(
         } while(hasAnotherVariableDeclaration)
 
         val (_, positionAfterSemicolon) = tokenTypeAsserter.assertTokenType(tokens, variableDeclarationPosition, TokenType.SEMICOLON)
-        val variableDeclarationListNode = ParsedVariableDeclarationListNode(typeToken.value, variableDeclarations)
+        val variableDeclarationListNode = VariableDeclarationListNode(typeToken.value, variableDeclarations)
         return Pair(variableDeclarationListNode, positionAfterSemicolon)
     }
 }

@@ -172,7 +172,7 @@ class StatementPrinterResultGeneratorTest {
 
     @Test
     fun printVariableDeclarationListTest() {
-        val node = Mockito.mock(ParsedVariableDeclarationListNode::class.java)
+        val node = Mockito.mock(VariableDeclarationListNode::class.java)
         val numberOfTabs = 0
         val statementStrings = listOf<String>()
 

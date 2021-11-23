@@ -1,7 +1,7 @@
 package compiler.printer.impl
 
 import compiler.core.ParsedFunctionDeclarationNode
-import compiler.core.ParsedVariableDeclarationListNode
+import compiler.core.VariableDeclarationListNode
 import compiler.printer.impl.internal.IFunctionDeclarationPrinter
 import compiler.printer.impl.internal.IVariableDeclarationListPrinter
 import org.junit.jupiter.api.Assertions
@@ -20,7 +20,7 @@ class DeclarationStatementPrinterTest {
 
     @Test
     fun printParsedNodeVariableListTest() {
-        val parsedDeclarationStatementNode = Mockito.mock(ParsedVariableDeclarationListNode::class.java)
+        val parsedDeclarationStatementNode = Mockito.mock(VariableDeclarationListNode::class.java)
 
         val s1 = "s1"
         Mockito.`when`(variableDeclarationListPrinter.printNode(parsedDeclarationStatementNode)).thenReturn(s1)
