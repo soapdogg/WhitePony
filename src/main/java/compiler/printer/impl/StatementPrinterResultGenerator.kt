@@ -20,21 +20,7 @@ internal class StatementPrinterResultGenerator(
         statementStrings: List<String>
     ): String {
         return when (node) {
-            is ParsedBasicBlockNode -> {
-                var tabs = PrinterConstants.EMPTY
-                for(i in 0 until numberOfTabs + 1) {
-                    tabs += PrinterConstants.TAB
-                }
-                var closingTabs = PrinterConstants.EMPTY
-                for (i in 0 until numberOfTabs) {
-                    closingTabs += PrinterConstants.TAB
-                }
-                val tabbedStatementStrings = statementStrings.joinToString(PrinterConstants.NEW_LINE + tabs,  PrinterConstants.NEW_LINE + tabs,  PrinterConstants.NEW_LINE + closingTabs)
-                PrinterConstants.LEFT_BRACE +
-                    tabbedStatementStrings +
-                    PrinterConstants.RIGHT_BRACE
-            }
-            is TranslatedBasicBlockNode -> {
+            is IBasicBlockNode -> {
                 var tabs = PrinterConstants.EMPTY
                 for(i in 0 until numberOfTabs + 1) {
                     tabs += PrinterConstants.TAB
