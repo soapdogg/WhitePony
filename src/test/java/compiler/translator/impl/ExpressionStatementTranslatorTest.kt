@@ -3,6 +3,7 @@ package compiler.translator.impl
 import compiler.core.IParsedExpressionNode
 import compiler.core.ITranslatedExpressionNode
 import compiler.core.ParsedExpressionStatementNode
+import compiler.core.TranslatedExpressionNode
 import compiler.translator.impl.internal.IExpressionTranslator
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -22,7 +23,7 @@ class ExpressionStatementTranslatorTest {
         val expression = Mockito.mock(IParsedExpressionNode::class.java)
         Mockito.`when`(expressionStatement.expressionNode).thenReturn(expression)
 
-        val translatedExpression = Mockito.mock(ITranslatedExpressionNode::class.java)
+        val translatedExpression = Mockito.mock(TranslatedExpressionNode::class.java)
         val l = 1
         val t = 2
         Mockito.`when`(expressionTranslator.translate(expression, labelCounter, tempCounter)).thenReturn(Triple(translatedExpression, l, t))

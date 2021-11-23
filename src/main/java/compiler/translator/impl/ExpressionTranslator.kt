@@ -9,10 +9,10 @@ internal class ExpressionTranslator: IExpressionTranslator {
         expressionNode: IParsedExpressionNode,
         l: Int,
         t: Int
-    ): Triple<ITranslatedExpressionNode, Int, Int> {
+    ): Triple<TranslatedExpressionNode, Int, Int> {
         val stack = Stack<ExpressionTranslatorStackItem>()
         stack.push(ExpressionTranslatorStackItem(1, expressionNode))
-        val resultStack = Stack<ITranslatedExpressionNode>()
+        val resultStack = Stack<TranslatedExpressionNode>()
         var labelCounter = l
         var tempCounter = t
 
@@ -31,7 +31,7 @@ internal class ExpressionTranslator: IExpressionTranslator {
                                 val rightExpression = resultStack.pop()
                                 val address = rightExpression.address
                                 val code = rightExpression.code + listOf(top.node.leftExpression.value + " = " + rightExpression.address + ";")
-                                val translatedBinaryOperatorNode = TranslatedBinaryAssignNode(
+                                val translatedBinaryOperatorNode = TranslatedExpressionNode(
                                     address,
                                     code
                                 )
@@ -40,7 +40,7 @@ internal class ExpressionTranslator: IExpressionTranslator {
                         }
                     }
                     else {
-                        resultStack.push(FakeTranslatedExpressionNode("", listOf(top.node.toString())))
+                        resultStack.push(TranslatedExpressionNode("", listOf(top.node.toString())))
                     }
                 }
                 is ParsedBinaryOperatorNode -> {
@@ -70,7 +70,7 @@ internal class ExpressionTranslator: IExpressionTranslator {
                                 top.node.operator +
                                 PrinterConstants.SPACE +
                                 rightExpression.address)
-                            val translatedBinaryOperatorNode = TranslatedBinaryOperatorNode(
+                            val translatedBinaryOperatorNode = TranslatedExpressionNode(
                                 address,
                                 code
                             )
@@ -82,21 +82,21 @@ internal class ExpressionTranslator: IExpressionTranslator {
                     val address = "_t" + tempCounter
                     tempCounter++
                     val code = address + " = " + top.node.value
-                    val translatedVariableExpressionNode = TranslatedVariableExpressionNode(
+                    val translatedVariableExpressionNode = TranslatedExpressionNode(
                         address,
                         listOf(code)
                     )
                     resultStack.push(translatedVariableExpressionNode)
                 }
                 is ParsedConstantNode -> {
-                    val translatedConstantNode = TranslatedConstantNode(
+                    val translatedConstantNode = TranslatedExpressionNode(
                         top.node.value,
                         listOf()
                     )
                     resultStack.push(translatedConstantNode)
                 }
                 else -> {
-                    resultStack.push(FakeTranslatedExpressionNode("", listOf(top.node.toString())))
+                    resultStack.push(TranslatedExpressionNode("", listOf(top.node.toString())))
                 }
             }
         }
