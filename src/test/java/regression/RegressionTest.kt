@@ -74,10 +74,10 @@ class RegressionTest {
                 Triple(Program10, IProgram10, 22),
                 Triple(Program11, IProgram11, 22),
                 Triple(Program12,null, 32),
-                Triple(Program13,null, 30),
-                Triple(Program14,null, 37),
-                Triple(Program15, null,44),
-                Triple(Program16, null,42),
+                Triple(Program13, IProgram13, 30),
+                Triple(Program14, IProgram14, 37),
+                Triple(Program15, IProgram15,44),
+                Triple(Program16, IProgram16,42),
                 Triple(Program17, null,37),
                 Triple(Program18, null,42),
                 Triple(Program19, null,39),
@@ -352,6 +352,18 @@ class RegressionTest {
     z = (x + y);
     return z;
 }"""
+        private const val IProgram13 =
+"""int test13() {
+    int x = 2;
+    int y = 4;
+    int z;
+    int _t0 = x;
+    int _t1 = y;
+    int _t2 = _t0 + _t1;
+    z = _t2;
+    int _t3 = z;
+    return _t3;
+}"""
 
         private const val Program14 =
 """int test14() {
@@ -361,6 +373,18 @@ class RegressionTest {
     int x;
     x = a[y];
     return x;
+}"""
+        private const val IProgram14 =
+"""int test14() {
+    int a[10];
+    a[1] = 9;
+    int y = 1;
+    int x;
+    int _t0 = y;
+    int _t1 = a[_t0];
+    x = _t1;
+    int _t2 = x;
+    return _t2;
 }"""
 
         private const val Program15 =
@@ -372,6 +396,21 @@ class RegressionTest {
     a[0] += x * y;
     return a[0];
 }"""
+        private const val IProgram15 =
+"""int test15() {
+    int a[10];
+    int x = 34;
+    int y = 2;
+    a[0] = 45;
+    int _t3 = a[0];
+    int _t0 = x;
+    int _t1 = y;
+    int _t2 = _t0 * _t1;
+    _t3 = _t3 + _t2;
+    a[0] = _t3;
+    int _t4 = a[0];
+    return _t4;
+}"""
 
         private const val Program16 =
 """int test16() {
@@ -381,6 +420,24 @@ class RegressionTest {
     ++x[y];
     x[y]++;
     return x[y];
+}"""
+        private const val IProgram16 =
+"""int test16() {
+    int x[10];
+    int y = 0;
+    x[0] = 34;
+    int _t0 = y;
+    int _t1 = x[_t0];
+    _t1 = _t1 + 1;
+    x[_t0] = _t1;
+    int _t2 = y;
+    int _t3 = x[_t2];
+    _t3 = _t3 + 1;
+    x[_t2] = _t3;
+    _t3 = _t3 - 1;
+    int _t4 = y;
+    int _t5 = x[_t4];
+    return _t5;
 }"""
 
         private const val Program17 =
