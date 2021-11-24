@@ -248,6 +248,78 @@ internal class ExpressionTranslator: IExpressionTranslator {
                         }
                     }
                 }
+                is ParsedUnaryPreOperatorNode -> {
+                    if (top.node.expression is ParsedVariableExpressionNode) {
+                        val address = "_t" + tempCounter
+                        tempCounter++
+                        val code = listOf(
+                            address +
+                                    PrinterConstants.SPACE +
+                                    PrinterConstants.EQUALS +
+                                    PrinterConstants.SPACE +
+                                    top.node.expression.value +
+                                    PrinterConstants.SPACE +
+                                    top.node.operator +
+                                    PrinterConstants.SPACE +
+                                    PrinterConstants.ONE,
+                            top.node.expression.value +
+                                    PrinterConstants.SPACE +
+                                    PrinterConstants.EQUALS +
+                                    PrinterConstants.SPACE +
+                                    address
+                        )
+                        val translatedExpressionNode = TranslatedExpressionNode(
+                            address,
+                            code
+                        )
+                        resultStack.push(translatedExpressionNode)
+                    } else if (top.node.expression is ParsedBinaryArrayOperatorNode) {
+                        when (top.location) {
+                            1 -> {
+                                stack.push(ExpressionTranslatorStackItem(2, top.node))
+                                stack.push(ExpressionTranslatorStackItem(1, top.node.expression.rightExpression))
+                            }
+                            2 -> {
+                                val insideExpression = resultStack.pop()
+                                val address = "_t" + tempCounter
+                                tempCounter++
+                                val code = insideExpression.code +
+                                        listOf(
+                                            address +
+                                                    PrinterConstants.SPACE +
+                                                    PrinterConstants.EQUALS +
+                                                    PrinterConstants.SPACE +
+                                                    top.node.expression.leftExpression.value +
+                                                    PrinterConstants.LEFT_BRACKET +
+                                                    insideExpression.address +
+                                                    PrinterConstants.RIGHT_BRACKET,
+                                            address +
+                                                    PrinterConstants.SPACE +
+                                                    PrinterConstants.EQUALS +
+                                                    PrinterConstants.SPACE +
+                                                    address +
+                                                    PrinterConstants.SPACE +
+                                                    top.node.operator +
+                                                    PrinterConstants.SPACE +
+                                                    PrinterConstants.ONE,
+                                            top.node.expression.leftExpression.value +
+                                                    PrinterConstants.LEFT_BRACKET +
+                                                    insideExpression.address +
+                                                    PrinterConstants.RIGHT_BRACKET +
+                                                    PrinterConstants.SPACE +
+                                                    PrinterConstants.EQUALS +
+                                                    PrinterConstants.SPACE +
+                                                    address
+                                        )
+                                val translatedExpressionNode = TranslatedExpressionNode(
+                                    address,
+                                    code
+                                )
+                                resultStack.push(translatedExpressionNode)
+                            }
+                        }
+                    }
+                }
                 is ParsedInnerExpression -> {
                     stack.push(ExpressionTranslatorStackItem(1, top.node.expression))
                 }
@@ -261,7 +333,6 @@ internal class ExpressionTranslator: IExpressionTranslator {
                     )
                     resultStack.push(translatedVariableExpressionNode)
                 }
-
                 is ParsedConstantNode -> {
                     val translatedConstantNode = TranslatedExpressionNode(
                         top.node.value,

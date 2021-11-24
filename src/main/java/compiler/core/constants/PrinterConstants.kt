@@ -6,6 +6,7 @@ object PrinterConstants {
     const val SPACE = " "
     const val NEW_LINE = "\n"
     const val TAB = "    "
+    const val ONE = "1"
     const val EQUALS = "="
     const val SEMICOLON = ";"
     const val COMMA = ","
