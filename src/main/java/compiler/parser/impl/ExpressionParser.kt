@@ -2,6 +2,7 @@ package compiler.parser.impl
 
 import compiler.core.*
 import compiler.core.constants.ExpressionParserConstants
+import compiler.core.constants.TokenizerConstants
 import compiler.parser.impl.internal.IExpressionGenerator
 import compiler.parser.impl.internal.IExpressionStackPusher
 import compiler.parser.impl.internal.IExpressionParser
@@ -56,7 +57,9 @@ internal class ExpressionParser(
                             val identifierExpression = if (tokens[tokenPosition].type == TokenType.PRE_POST) {
                                 val prePostToken = tokens[tokenPosition]
                                 tokenPosition++
-                                ParsedUnaryPostOperatorNode(variableExpression, prePostToken.value[0].toString())
+                                val operator = prePostToken.value[0].toString()
+                                val oppositeOperator = if(operator == TokenizerConstants.PLUS_OPERATOR) TokenizerConstants.MINUS_OPERATOR else TokenizerConstants.PLUS_OPERATOR
+                                ParsedUnaryPostOperatorNode(variableExpression, operator, oppositeOperator)
                             } else {
                                 variableExpression
                             }
@@ -79,7 +82,9 @@ internal class ExpressionParser(
                     val identifierExpression = if (tokens[tokenPosition].type == TokenType.PRE_POST) {
                         val prePostToken = tokens[tokenPosition]
                         tokenPosition++
-                        ParsedUnaryPostOperatorNode(arrayExpression, prePostToken.value[0].toString())
+                        val operator = prePostToken.value[0].toString()
+                        val oppositeOperator = if(operator == TokenizerConstants.PLUS_OPERATOR) TokenizerConstants.MINUS_OPERATOR else TokenizerConstants.PLUS_OPERATOR
+                        ParsedUnaryPostOperatorNode(arrayExpression, operator, oppositeOperator)
                     } else {
                         arrayExpression
                     }
