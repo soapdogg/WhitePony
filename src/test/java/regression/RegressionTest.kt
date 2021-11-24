@@ -30,15 +30,24 @@ class RegressionTest {
         "inputData",
     )
     fun regressionTest(arguments: ArgumentsAccessor) {
-        val pair = arguments.get(0) as Pair<*, *>
-        val input = pair.first as String
-        val expectedSize = pair.second as Int
+        val triple = arguments.get(0) as Triple<*, *, *>
+        val input = triple.first as String
+        val intermediateCode = triple.second as String?
+        val expectedSize = triple.third as Int
         val result = tokenizer.tokenize(input)
 
         Assertions.assertEquals(expectedSize, result.size)
 
-        val (_, parseTreeString) = recursiveCompiler.compile(input)
+        val (parseTreeString, translatedTreeString) = recursiveCompiler.compile(input)
         Assertions.assertEquals(input, parseTreeString)
+        if (intermediateCode != null) {
+            Assertions.assertEquals(intermediateCode, translatedTreeString)
+        } else {
+            println(parseTreeString)
+            println()
+            println(translatedTreeString)
+            println()
+        }
     }
 
     @Test
@@ -51,30 +60,30 @@ class RegressionTest {
 
     companion object {
         @JvmStatic
-        fun inputData(): Stream<Pair<String, Int>> {
+        fun inputData(): Stream<Triple<String, String?, Int>> {
             return Stream.of(
-                Pair(Program1, 34),
-                Pair(Program2, 37),
-                Pair(Program3, 34),
-                Pair(Program4, 28),
-                Pair(Program5, 36),
-                Pair(Program6, 44),
-                Pair(Program7, 71),
-                Pair(Program8, 30),
-                Pair(Program9, 100),
-                Pair(Program10, 22),
-                Pair(Program11, 22),
-                Pair(Program12, 32),
-                Pair(Program13, 30),
-                Pair(Program14, 37),
-                Pair(Program15, 44),
-                Pair(Program16, 42),
-                Pair(Program17, 37),
-                Pair(Program18, 42),
-                Pair(Program19, 39),
-                Pair(Program20, 39),
-                Pair(Program21, 152),
-                Pair(Program22, 367)
+                Triple(Program1, IProgram1, 34),
+                Triple(Program2, IProgram2, 37),
+                Triple(Program3, IProgram3, 34),
+                Triple(Program4, IProgram4, 28),
+                Triple(Program5, IProgram5,36),
+                Triple(Program6, IProgram6,44),
+                Triple(Program7, null,71),
+                Triple(Program8, IProgram8,30),
+                Triple(Program9, null,100),
+                Triple(Program10, IProgram10, 22),
+                Triple(Program11, IProgram11, 22),
+                Triple(Program12,null, 32),
+                Triple(Program13,null, 30),
+                Triple(Program14,null, 37),
+                Triple(Program15, null,44),
+                Triple(Program16, null,42),
+                Triple(Program17, null,37),
+                Triple(Program18, null,42),
+                Triple(Program19, null,39),
+                Triple(Program20, null,39),
+                Triple(Program21, null,152),
+                Triple(Program22, null,367)
             )
         }
 
@@ -93,6 +102,18 @@ class RegressionTest {
     }
     return a;
 }"""
+        private const val IProgram1 =
+"""int test1() {
+    int a;
+    int b = 5;
+    int c = 10;
+    int _t0 = b;
+    int _t1 = c;
+    int _t2 = _t0 + _t1;
+    a = _t2;
+    int _t3 = a;
+    return _t3;
+}"""
 
         private const val Program2 =
 """int test2() {
@@ -102,6 +123,23 @@ class RegressionTest {
     d = d & 7;
     d = ~d;
     return d;
+}"""
+        private const val IProgram2 =
+"""int test2() {
+    int d = 1;
+    int _t0 = 1 | 2;
+    d = _t0;
+    int _t1 = d;
+    int _t2 = _t1 ^ 4;
+    d = _t2;
+    int _t3 = d;
+    int _t4 = _t3 & 7;
+    d = _t4;
+    int _t5 = d;
+    int _t6 = ~_t5;
+    d = _t6;
+    int _t7 = d;
+    return _t7;
 }"""
 
         private const val Program3 =
@@ -114,6 +152,22 @@ class RegressionTest {
     e &= 4;
     return e;
 }"""
+        private const val IProgram3 =
+"""int test3() {
+    int e = 4;
+    int _t0 = e << 3;
+    e = _t0;
+    int _t1 = e >> 2;
+    e = _t1;
+    int _t2 = e & 7;
+    e = _t2;
+    int _t3 = e | 15;
+    e = _t3;
+    int _t4 = e & 4;
+    e = _t4;
+    int _t5 = e;
+    return _t5;
+}"""
 
         private const val Program4 =
 """int test4() {
@@ -122,6 +176,18 @@ class RegressionTest {
     int z = 3;
     x = y + z;
     return x;
+}"""
+        private const val IProgram4 =
+"""int test4() {
+    int x;
+    int y = 2;
+    int z = 3;
+    int _t0 = y;
+    int _t1 = z;
+    int _t2 = _t0 + _t1;
+    x = _t2;
+    int _t3 = x;
+    return _t3;
 }"""
 
         private const val Program5 =
@@ -132,6 +198,20 @@ class RegressionTest {
     w = x = q = y + z;
     return w;
 }"""
+        private const val IProgram5 =
+"""int test5() {
+    int w, x, q;
+    int y = 4;
+    int z = 10;
+    int _t0 = y;
+    int _t1 = z;
+    int _t2 = _t0 + _t1;
+    q = _t2;
+    x = _t2;
+    w = _t2;
+    int _t3 = w;
+    return _t3;
+}"""
 
         private const val Program6 =
 """int test6() {
@@ -141,6 +221,22 @@ class RegressionTest {
     int z = 0;
     a[x = y + z] = x;
     return a[x];
+}"""
+        private const val IProgram6 =
+"""int test6() {
+    int a[10];
+    int x = 9;
+    int y = 1;
+    int z = 0;
+    int _t0 = y;
+    int _t1 = z;
+    int _t2 = _t0 + _t1;
+    x = _t2;
+    int _t3 = x;
+    a[_t2] = _t3;
+    int _t4 = x;
+    int _t5 = a[_t4];
+    return _t5;
 }"""
 
         private const val Program7 =
@@ -165,6 +261,19 @@ class RegressionTest {
     int z = 1232;
     x += y + z;
     return x;
+}"""
+        private const val IProgram8 =
+"""int test8() {
+    int x = 102;
+    int y = 34;
+    int z = 1232;
+    int _t0 = y;
+    int _t1 = z;
+    int _t2 = _t0 + _t1;
+    int _t3 = x + _t2;
+    x = _t3;
+    int _t4 = x;
+    return _t4;
 }"""
 
         private const val Program9 =
@@ -199,6 +308,15 @@ class RegressionTest {
     x = ++y;
     return x;
 }"""
+        private const val IProgram10 =
+"""int test10() {
+    int x;
+    int y = 10;
+    y = y + 1;
+    x = y;
+    int _t0 = x;
+    return _t0;
+}"""
 
         private const val Program11 =
 """int test11() {
@@ -206,6 +324,16 @@ class RegressionTest {
     int y = 19;
     x = y++;
     return x;
+}"""
+        private const val IProgram11 =
+"""int test11() {
+    int x;
+    int y = 19;
+    int _t0 = y;
+    y = y + 1;
+    x = _t0;
+    int _t1 = x;
+    return _t1;
 }"""
 
         private const val Program12 =

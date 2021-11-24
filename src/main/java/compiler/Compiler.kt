@@ -1,6 +1,5 @@
 package compiler
 
-import compiler.core.TranslatedProgramRootNode
 import compiler.parser.IParser
 import compiler.printer.IPrinter
 import compiler.tokenizer.ITokenizer
@@ -12,17 +11,13 @@ class Compiler(
     private val translator: ITranslator,
     private val printer: IPrinter
 ) {
-    fun compile(program: String): Pair<TranslatedProgramRootNode, String> {
+    fun compile(program: String): Pair<String, String> {
         val tokens = tokenizer.tokenize(program)
         val parseTree = parser.parse(tokens)
         val parseTreeString = printer.printNode(parseTree)
-        println(parseTreeString)
-        println()
         val translatedTree = translator.translate(parseTree)
         val translatedTreeString = printer.printNode(translatedTree)
-        println(translatedTreeString)
-        println()
 
-        return Pair(translatedTree, parseTreeString)
+        return Pair(parseTreeString, translatedTreeString)
     }
 }
