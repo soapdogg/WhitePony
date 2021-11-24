@@ -6,7 +6,6 @@ import compiler.core.TranslatedExpressionStatementNode
 internal interface IExpressionStatementTranslator {
     fun translate(
         expressionStatementNode: ParsedExpressionStatementNode,
-        labelCounter: Int,
         tempCounter: Int
-    ): Triple<TranslatedExpressionStatementNode, Int, Int>
+    ): Pair<TranslatedExpressionStatementNode, Int>
 }

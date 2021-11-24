@@ -10,14 +10,12 @@ internal class ExpressionStatementTranslator(
 ): IExpressionStatementTranslator {
     override fun translate(
         expressionStatementNode: ParsedExpressionStatementNode,
-        labelCounter: Int,
         tempCounter: Int,
-    ): Triple<TranslatedExpressionStatementNode, Int, Int> {
-        val (expression, l, t) = expressionTranslator.translate(
+    ): Pair<TranslatedExpressionStatementNode, Int> {
+        val (expression, t) = expressionTranslator.translate(
             expressionStatementNode.expressionNode,
-            labelCounter,
             tempCounter
         )
-        return Triple(TranslatedExpressionStatementNode(expression), l, t)
+        return Pair(TranslatedExpressionStatementNode(expression), t)
     }
 }

@@ -6,7 +6,6 @@ import compiler.core.TranslatedReturnNode
 internal interface IReturnStatementTranslator {
     fun translate(
         returnNode: ParsedReturnNode,
-        labelCounter: Int,
         tempCounter: Int
-    ): Triple<TranslatedReturnNode, Int, Int>
+    ): Pair<TranslatedReturnNode, Int>
 }

@@ -10,14 +10,12 @@ internal class ReturnStatementTranslator(
 ): IReturnStatementTranslator {
     override fun translate(
         returnNode: ParsedReturnNode,
-        labelCounter: Int,
         tempCounter: Int
-    ): Triple<TranslatedReturnNode, Int, Int> {
-        val (expressionStatement, l, t) = expressionStatementTranslator.translate(
+    ): Pair<TranslatedReturnNode, Int> {
+        val (expressionStatement, t) = expressionStatementTranslator.translate(
             returnNode.expressionStatement,
-            labelCounter,
             tempCounter
         )
-        return Triple(TranslatedReturnNode(expressionStatement), l, t)
+        return Pair(TranslatedReturnNode(expressionStatement), t)
     }
 }

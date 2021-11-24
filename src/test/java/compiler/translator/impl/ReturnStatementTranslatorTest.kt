@@ -17,20 +17,17 @@ class ReturnStatementTranslatorTest {
     @Test
     fun translateTest() {
         val returnNode = Mockito.mock(ParsedReturnNode::class.java)
-        val labelCounter = 0
         val tempCounter = 0
 
         val expressionStatement = Mockito.mock(ParsedExpressionStatementNode::class.java)
         Mockito.`when`(returnNode.expressionStatement).thenReturn(expressionStatement)
 
         val translatedExpressionStatement = Mockito.mock(TranslatedExpressionStatementNode::class.java)
-        val l = 1
         val t = 2
-        Mockito.`when`(expressionStatementTranslator.translate(expressionStatement, labelCounter, tempCounter)).thenReturn(Triple(translatedExpressionStatement, l, t))
+        Mockito.`when`(expressionStatementTranslator.translate(expressionStatement, tempCounter)).thenReturn(Pair(translatedExpressionStatement, t))
 
-        val actual = returnStatementTranslator.translate(returnNode, labelCounter, tempCounter)
+        val actual = returnStatementTranslator.translate(returnNode, tempCounter)
         Assertions.assertEquals(translatedExpressionStatement, actual.first.expressionStatement)
-        Assertions.assertEquals(l, actual.second)
-        Assertions.assertEquals(t, actual.third)
+        Assertions.assertEquals(t, actual.second)
     }
 }

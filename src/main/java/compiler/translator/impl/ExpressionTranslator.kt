@@ -9,13 +9,11 @@ import kotlin.math.exp
 internal class ExpressionTranslator: IExpressionTranslator {
     override fun translate(
         expressionNode: IParsedExpressionNode,
-        l: Int,
         t: Int
-    ): Triple<TranslatedExpressionNode, Int, Int> {
+    ): Pair<TranslatedExpressionNode, Int> {
         val stack = Stack<ExpressionTranslatorStackItem>()
         stack.push(ExpressionTranslatorStackItem(1, expressionNode))
         val resultStack = Stack<TranslatedExpressionNode>()
-        var labelCounter = l
         var tempCounter = t
 
         while(stack.isNotEmpty()) {
@@ -419,6 +417,6 @@ internal class ExpressionTranslator: IExpressionTranslator {
                 }
             }
         }
-        return Triple(resultStack.pop(), labelCounter, tempCounter)
+        return Pair(resultStack.pop(), tempCounter)
     }
 }

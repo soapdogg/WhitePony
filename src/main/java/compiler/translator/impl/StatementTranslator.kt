@@ -32,24 +32,24 @@ internal class StatementTranslator (
                             }
                         }
                         is ParsedDoWhileNode -> {
-                            val (expression, l, t) = expressionTranslator.translate(top.node.expression, labelCounter, tempCounter)
-                            labelCounter = l
+                            val (expression, t) = expressionTranslator.translate(top.node.expression, tempCounter)
+                            //labelCounter = l
                             tempCounter = t
                             expressionStack.push(expression)
                             stack.push(StatementTranslatorStackItem(1, top.node.body))
                         }
                         is ParsedWhileNode -> {
-                            val (expression, l, t)  = expressionTranslator.translate(top.node.expression, labelCounter, tempCounter)
-                            labelCounter = l
+                            val (expression, t)  = expressionTranslator.translate(top.node.expression, tempCounter)
+                            //labelCounter = l
                             tempCounter = t
                             expressionStack.push(expression)
                             stack.push(StatementTranslatorStackItem(1, top.node.body))
                         }
                         is ParsedForNode -> {
-                            val (initExpression, labelAfterInit, tempAfterInit) = expressionTranslator.translate(top.node.initExpression, labelCounter, tempCounter)
-                            val (testExpression, labelAfterTest, tempAfterTest) = expressionTranslator.translate(top.node.testExpression, labelAfterInit, tempAfterInit)
-                            val (incrementExpression, l, t) = expressionTranslator.translate(top.node.incrementExpression, labelAfterTest, tempAfterTest)
-                            labelCounter = l
+                            val (initExpression, tempAfterInit) = expressionTranslator.translate(top.node.initExpression,  tempCounter)
+                            val (testExpression, tempAfterTest) = expressionTranslator.translate(top.node.testExpression, tempAfterInit)
+                            val (incrementExpression, t) = expressionTranslator.translate(top.node.incrementExpression, tempAfterTest)
+                            //labelCounter = l
                             tempCounter = t
                             expressionStack.push(incrementExpression)
                             expressionStack.push(testExpression)
@@ -57,8 +57,8 @@ internal class StatementTranslator (
                             stack.push(StatementTranslatorStackItem(1, top.node.body))
                         }
                         is ParsedIfNode -> {
-                            val (expression, l, t) = expressionTranslator.translate(top.node.booleanExpression, labelCounter, tempCounter)
-                            labelCounter = l
+                            val (expression, t) = expressionTranslator.translate(top.node.booleanExpression,  tempCounter)
+                            //labelCounter = l
                             tempCounter = t
                             expressionStack.push(expression)
                             stack.push(StatementTranslatorStackItem(1, top.node.ifBody))
@@ -121,22 +121,18 @@ internal class StatementTranslator (
                             resultStack.push(top.node as ITranslatedStatementNode)
                         }
                         is ParsedReturnNode -> {
-                            val (returnStatement, l, t) = returnStatementTranslator.translate(
+                            val (returnStatement, t) = returnStatementTranslator.translate(
                                 top.node,
-                                labelCounter,
                                 tempCounter
                             )
-                            labelCounter = l
                             tempCounter = t
                             resultStack.push(returnStatement)
                         }
                         is ParsedExpressionStatementNode -> {
-                            val (expressionStatement, l, t) = expressionStatementTranslator.translate(
+                            val (expressionStatement, t) = expressionStatementTranslator.translate(
                                 top.node,
-                                labelCounter,
                                 tempCounter
                             )
-                            labelCounter = l
                             tempCounter = t
                             resultStack.push(expressionStatement)
                         }
