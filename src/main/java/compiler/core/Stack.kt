@@ -12,11 +12,5 @@ class Stack<T> {
         return item
     }
 
-    fun peek(): T = elements.last()
-
-    fun isEmpty(): Boolean = elements.isEmpty()
-
     fun isNotEmpty(): Boolean = elements.isNotEmpty()
-
-    fun size(): Int = elements.size
 }

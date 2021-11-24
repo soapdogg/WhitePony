@@ -30,16 +30,4 @@ internal class TokenTypeAsserter(
         }
         return Pair(token, position + 1)
     }
-
-    override fun assertTokenValue(
-        tokens: List<Token>,
-        position: Int,
-        expectedValues: Set<String>
-    ): Pair<Token, Int> {
-        val token = tokens[position]
-        if (!expectedValues.contains(token.value)) {
-            throw Exception("Unexpected TokenValue!")
-        }
-        return Pair(token, position + 1)
-    }
 }

@@ -75,37 +75,4 @@ class TokenTypeAsserterTest {
             tokenTypeAsserter.assertTokenType(tokens, position, setOf(expectedType))
         }
     }
-
-    @Test
-    fun valueThrowsExceptionTest() {
-        val token = Mockito.mock(Token::class.java)
-
-        val tokens = listOf(token)
-
-        val position = 0
-        val expectedValue = "expected"
-        val differentValue = "different"
-        Mockito.`when`(token.value).thenReturn(differentValue)
-
-        Assertions.assertThrows(
-            Exception::class.java
-        ){
-            tokenTypeAsserter.assertTokenValue(tokens, position, setOf(expectedValue))
-        }
-    }
-
-    @Test
-    fun valueDoesNotThrowExceptionTest() {
-        val token = Mockito.mock(Token::class.java)
-
-        val tokens = listOf(token)
-
-        val position = 0
-        val expectedValue = "expected"
-        Mockito.`when`(token.value).thenReturn(expectedValue)
-
-        Assertions.assertDoesNotThrow{
-            tokenTypeAsserter.assertTokenValue(tokens, position, setOf(expectedValue))
-        }
-    }
 }
