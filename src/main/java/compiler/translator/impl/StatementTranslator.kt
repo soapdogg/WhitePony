@@ -1,6 +1,7 @@
 package compiler.translator.impl
 
 import compiler.core.*
+import compiler.translator.impl.internal.*
 import compiler.translator.impl.internal.IExpressionStatementTranslator
 import compiler.translator.impl.internal.IExpressionTranslator
 import compiler.translator.impl.internal.IReturnStatementTranslator
@@ -8,6 +9,7 @@ import compiler.translator.impl.internal.IStatementTranslator
 
 internal class StatementTranslator (
     private val expressionTranslator: IExpressionTranslator,
+    private val booleanExpressionTranslator: IBooleanExpressionTranslator,
     private val returnStatementTranslator: IReturnStatementTranslator,
     private val expressionStatementTranslator: IExpressionStatementTranslator,
 ): IStatementTranslator {
@@ -32,24 +34,24 @@ internal class StatementTranslator (
                             }
                         }
                         is ParsedDoWhileNode -> {
-                            val (expression, t) = expressionTranslator.translate(top.node.expression, tempCounter)
-                            //labelCounter = l
+                            val (expression, l, t) = booleanExpressionTranslator.translate(top.node.expression, labelCounter, tempCounter)
+                            labelCounter = l
                             tempCounter = t
                             expressionStack.push(expression)
                             stack.push(StatementTranslatorStackItem(1, top.node.body))
                         }
                         is ParsedWhileNode -> {
-                            val (expression, t)  = expressionTranslator.translate(top.node.expression, tempCounter)
-                            //labelCounter = l
+                            val (expression, l, t)  = booleanExpressionTranslator.translate(top.node.expression, labelCounter, tempCounter)
+                            labelCounter = l
                             tempCounter = t
                             expressionStack.push(expression)
                             stack.push(StatementTranslatorStackItem(1, top.node.body))
                         }
                         is ParsedForNode -> {
                             val (initExpression, tempAfterInit) = expressionTranslator.translate(top.node.initExpression,  tempCounter)
-                            val (testExpression, tempAfterTest) = expressionTranslator.translate(top.node.testExpression, tempAfterInit)
+                            val (testExpression, l, tempAfterTest) = booleanExpressionTranslator.translate(top.node.testExpression, labelCounter, tempAfterInit)
                             val (incrementExpression, t) = expressionTranslator.translate(top.node.incrementExpression, tempAfterTest)
-                            //labelCounter = l
+                            labelCounter = l
                             tempCounter = t
                             expressionStack.push(incrementExpression)
                             expressionStack.push(testExpression)
@@ -57,8 +59,8 @@ internal class StatementTranslator (
                             stack.push(StatementTranslatorStackItem(1, top.node.body))
                         }
                         is ParsedIfNode -> {
-                            val (expression, t) = expressionTranslator.translate(top.node.booleanExpression,  tempCounter)
-                            //labelCounter = l
+                            val (expression, l, t) = booleanExpressionTranslator.translate(top.node.booleanExpression, labelCounter, tempCounter)
+                            labelCounter = l
                             tempCounter = t
                             expressionStack.push(expression)
                             stack.push(StatementTranslatorStackItem(1, top.node.ifBody))

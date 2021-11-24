@@ -412,9 +412,6 @@ internal class ExpressionTranslator: IExpressionTranslator {
                     )
                     resultStack.push(translatedConstantNode)
                 }
-                else -> {
-                    resultStack.push(TranslatedExpressionNode("", listOf(top.node.toString())))
-                }
             }
         }
         return Pair(resultStack.pop(), tempCounter)

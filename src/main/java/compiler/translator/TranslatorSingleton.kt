@@ -12,12 +12,15 @@ enum class TranslatorSingleton {
 
     private val expressionTranslator = ExpressionTranslator()
 
+    private val booleanExpressionTranslator = BooleanExpressionTranslator()
+
     private val expressionStatementTranslator = ExpressionStatementTranslator(expressionTranslator)
 
     private val returnStatementTranslator = ReturnStatementTranslator(expressionStatementTranslator)
 
     private val statementTranslator = StatementTranslator(
         expressionTranslator,
+        booleanExpressionTranslator,
         returnStatementTranslator,
         expressionStatementTranslator
     )
