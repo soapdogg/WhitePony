@@ -10,10 +10,11 @@ internal class FunctionDeclarationTranslator(
     private val statementTranslator: IStatementTranslator
 ): IFunctionDeclarationTranslator {
     override fun translate(
-        functionDeclarationNode: ParsedFunctionDeclarationNode
+        functionDeclarationNode: ParsedFunctionDeclarationNode,
+        variableToTypeMap: Map<String, String>,
     ): TranslatedFunctionDeclarationNode {
 
-        val translatedStatement = statementTranslator.translate(functionDeclarationNode.basicBlockNode)
+        val translatedStatement = statementTranslator.translate(functionDeclarationNode.basicBlockNode, variableToTypeMap)
 
         return TranslatedFunctionDeclarationNode(
             functionDeclarationNode.type,

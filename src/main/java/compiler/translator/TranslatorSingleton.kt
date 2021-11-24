@@ -10,7 +10,11 @@ import compiler.translator.impl.Translator
 enum class TranslatorSingleton {
     INSTANCE;
 
-    private val expressionTranslator = ExpressionTranslator()
+    private val variableTypeRecorder = VariableTypeRecorder()
+
+    private val tempGenerator = TempGenerator()
+
+    private val expressionTranslator = ExpressionTranslator(tempGenerator)
 
     private val booleanExpressionTranslator = BooleanExpressionTranslator()
 
@@ -30,7 +34,8 @@ enum class TranslatorSingleton {
     )
 
     private val declarationStatementTranslator = DeclarationStatementTranslator(
-        functionDeclarationTranslator
+        functionDeclarationTranslator,
+        variableTypeRecorder
     )
 
     val translator: ITranslator = Translator(declarationStatementTranslator)

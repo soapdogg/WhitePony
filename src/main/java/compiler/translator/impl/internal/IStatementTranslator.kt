@@ -5,5 +5,8 @@ import compiler.core.ITranslatedStatementNode
 import compiler.core.TranslatedBasicBlockNode
 
 internal interface IStatementTranslator {
-    fun translate(statementNode: IParsedStatementNode): TranslatedBasicBlockNode
+    fun translate(
+        statementNode: IParsedStatementNode,
+        variableToTypeMap: Map<String, String>
+    ): TranslatedBasicBlockNode
 }

@@ -17,6 +17,7 @@ class ReturnStatementTranslatorTest {
     @Test
     fun translateTest() {
         val returnNode = Mockito.mock(ParsedReturnNode::class.java)
+        val variableToTypeMap = mapOf<String, String>()
         val tempCounter = 0
 
         val expressionStatement = Mockito.mock(ParsedExpressionStatementNode::class.java)
@@ -24,9 +25,9 @@ class ReturnStatementTranslatorTest {
 
         val translatedExpressionStatement = Mockito.mock(TranslatedExpressionStatementNode::class.java)
         val t = 2
-        Mockito.`when`(expressionStatementTranslator.translate(expressionStatement, tempCounter)).thenReturn(Pair(translatedExpressionStatement, t))
+        Mockito.`when`(expressionStatementTranslator.translate(expressionStatement, variableToTypeMap, tempCounter)).thenReturn(Pair(translatedExpressionStatement, t))
 
-        val actual = returnStatementTranslator.translate(returnNode, tempCounter)
+        val actual = returnStatementTranslator.translate(returnNode, variableToTypeMap, tempCounter)
         Assertions.assertEquals(translatedExpressionStatement, actual.first.expressionStatement)
         Assertions.assertEquals(t, actual.second)
     }

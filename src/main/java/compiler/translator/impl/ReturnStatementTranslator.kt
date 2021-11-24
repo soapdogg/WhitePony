@@ -10,10 +10,12 @@ internal class ReturnStatementTranslator(
 ): IReturnStatementTranslator {
     override fun translate(
         returnNode: ParsedReturnNode,
+        variableToTypeMap: Map<String, String>,
         tempCounter: Int
     ): Pair<TranslatedReturnNode, Int> {
         val (expressionStatement, t) = expressionStatementTranslator.translate(
             returnNode.expressionStatement,
+            variableToTypeMap,
             tempCounter
         )
         return Pair(TranslatedReturnNode(expressionStatement), t)

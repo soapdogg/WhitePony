@@ -4,5 +4,8 @@ import compiler.core.IParsedDeclarationStatementNode
 import compiler.core.ITranslatedDeclarationStatementNode
 
 internal interface IDeclarationStatementTranslator {
-    fun translate(declarationStatementNode: IParsedDeclarationStatementNode): ITranslatedDeclarationStatementNode
+    fun translate(
+        declarationStatementNode: IParsedDeclarationStatementNode,
+        variableToTypeMap: MutableMap<String, String>
+    ): ITranslatedDeclarationStatementNode
 }

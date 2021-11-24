@@ -17,12 +17,13 @@ class TranslatorTest {
     @Test
     fun translateTest() {
         val rootNode = Mockito.mock(ParsedProgramRootNode::class.java)
+        val variableToTypeMap = mutableMapOf<String, String>()
 
         val parsedDeclarationStatementNode = Mockito.mock(IParsedDeclarationStatementNode::class.java)
         Mockito.`when`(rootNode.declarationStatements).thenReturn(listOf(parsedDeclarationStatementNode))
 
         val translatedDeclarationStatementNode = Mockito.mock(ITranslatedDeclarationStatementNode::class.java)
-        Mockito.`when`(declarationStatementTranslator.translate(parsedDeclarationStatementNode)).thenReturn(translatedDeclarationStatementNode)
+        Mockito.`when`(declarationStatementTranslator.translate(parsedDeclarationStatementNode, variableToTypeMap)).thenReturn(translatedDeclarationStatementNode)
 
         val actual = translator.translate(rootNode)
 

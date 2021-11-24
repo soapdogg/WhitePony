@@ -13,7 +13,10 @@ internal class StatementTranslator (
     private val returnStatementTranslator: IReturnStatementTranslator,
     private val expressionStatementTranslator: IExpressionStatementTranslator,
 ): IStatementTranslator {
-    override fun translate(statementNode: IParsedStatementNode): TranslatedBasicBlockNode {
+    override fun translate(
+        statementNode: IParsedStatementNode,
+        variableToTypeMap: Map<String, String>
+    ): TranslatedBasicBlockNode {
 
         val stack = Stack<StatementTranslatorStackItem>()
         stack.push(StatementTranslatorStackItem(1, statementNode))
@@ -48,9 +51,9 @@ internal class StatementTranslator (
                             stack.push(StatementTranslatorStackItem(1, top.node.body))
                         }
                         is ParsedForNode -> {
-                            val (initExpression, tempAfterInit) = expressionTranslator.translate(top.node.initExpression,  tempCounter)
+                            val (initExpression, tempAfterInit) = expressionTranslator.translate(top.node.initExpression, variableToTypeMap, tempCounter)
                             val (testExpression, l, tempAfterTest) = booleanExpressionTranslator.translate(top.node.testExpression, labelCounter, tempAfterInit)
-                            val (incrementExpression, t) = expressionTranslator.translate(top.node.incrementExpression, tempAfterTest)
+                            val (incrementExpression, t) = expressionTranslator.translate(top.node.incrementExpression, variableToTypeMap, tempAfterTest)
                             labelCounter = l
                             tempCounter = t
                             expressionStack.push(incrementExpression)
@@ -120,11 +123,12 @@ internal class StatementTranslator (
                             resultStack.push(elseNode)
                         }
                         is VariableDeclarationListNode -> {
-                            resultStack.push(top.node as ITranslatedStatementNode)
+                            resultStack.push(top.node)
                         }
                         is ParsedReturnNode -> {
                             val (returnStatement, t) = returnStatementTranslator.translate(
                                 top.node,
+                                variableToTypeMap,
                                 tempCounter
                             )
                             tempCounter = t
@@ -133,6 +137,7 @@ internal class StatementTranslator (
                         is ParsedExpressionStatementNode -> {
                             val (expressionStatement, t) = expressionStatementTranslator.translate(
                                 top.node,
+                                variableToTypeMap,
                                 tempCounter
                             )
                             tempCounter = t

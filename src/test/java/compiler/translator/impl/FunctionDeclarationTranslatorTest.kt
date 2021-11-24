@@ -16,12 +16,13 @@ class FunctionDeclarationTranslatorTest {
     @Test
     fun translateTest() {
         val functionDeclarationNode = Mockito.mock(ParsedFunctionDeclarationNode::class.java)
+        val variableToTypeMap = mapOf<String, String>()
 
         val parsedStatementNode = Mockito.mock(ParsedBasicBlockNode::class.java)
         Mockito.`when`(functionDeclarationNode.basicBlockNode).thenReturn(parsedStatementNode)
 
         val translatedStatementNode = Mockito.mock(TranslatedBasicBlockNode::class.java)
-        Mockito.`when`(statementTranslator.translate(parsedStatementNode)).thenReturn(translatedStatementNode)
+        Mockito.`when`(statementTranslator.translate(parsedStatementNode, variableToTypeMap)).thenReturn(translatedStatementNode)
 
         val type = "type"
         Mockito.`when`(functionDeclarationNode.type).thenReturn(type)
@@ -29,7 +30,7 @@ class FunctionDeclarationTranslatorTest {
         val functionName = "functionName"
         Mockito.`when`(functionDeclarationNode.functionName).thenReturn(functionName)
 
-        val actual = functionDeclarationTranslator.translate(functionDeclarationNode)
+        val actual = functionDeclarationTranslator.translate(functionDeclarationNode, variableToTypeMap)
 
         Assertions.assertEquals(type, actual.type)
         Assertions.assertEquals(functionName, actual.functionName)
