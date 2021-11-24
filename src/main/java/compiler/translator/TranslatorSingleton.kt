@@ -23,6 +23,7 @@ enum class TranslatorSingleton {
     private val returnStatementTranslator = ReturnStatementTranslator(expressionStatementTranslator)
 
     private val statementTranslator = StatementTranslator(
+        variableTypeRecorder,
         expressionTranslator,
         booleanExpressionTranslator,
         returnStatementTranslator,

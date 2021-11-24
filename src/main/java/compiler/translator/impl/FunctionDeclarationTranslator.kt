@@ -11,7 +11,7 @@ internal class FunctionDeclarationTranslator(
 ): IFunctionDeclarationTranslator {
     override fun translate(
         functionDeclarationNode: ParsedFunctionDeclarationNode,
-        variableToTypeMap: Map<String, String>,
+        variableToTypeMap: MutableMap<String, String>,
     ): TranslatedFunctionDeclarationNode {
 
         val translatedStatement = statementTranslator.translate(functionDeclarationNode.basicBlockNode, variableToTypeMap)

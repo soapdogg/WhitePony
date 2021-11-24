@@ -7,6 +7,6 @@ import compiler.core.TranslatedBasicBlockNode
 internal interface IStatementTranslator {
     fun translate(
         statementNode: IParsedStatementNode,
-        variableToTypeMap: Map<String, String>
+        variableToTypeMap: MutableMap<String, String>
     ): TranslatedBasicBlockNode
 }

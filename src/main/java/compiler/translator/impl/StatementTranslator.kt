@@ -8,6 +8,7 @@ import compiler.translator.impl.internal.IReturnStatementTranslator
 import compiler.translator.impl.internal.IStatementTranslator
 
 internal class StatementTranslator (
+    private val variableTypeRecorder: IVariableTypeRecorder,
     private val expressionTranslator: IExpressionTranslator,
     private val booleanExpressionTranslator: IBooleanExpressionTranslator,
     private val returnStatementTranslator: IReturnStatementTranslator,
@@ -15,7 +16,7 @@ internal class StatementTranslator (
 ): IStatementTranslator {
     override fun translate(
         statementNode: IParsedStatementNode,
-        variableToTypeMap: Map<String, String>
+        variableToTypeMap: MutableMap<String, String>
     ): TranslatedBasicBlockNode {
 
         val stack = Stack<StatementTranslatorStackItem>()
@@ -123,6 +124,7 @@ internal class StatementTranslator (
                             resultStack.push(elseNode)
                         }
                         is VariableDeclarationListNode -> {
+                            variableTypeRecorder.recordVariableTypes(top.node, variableToTypeMap)
                             resultStack.push(top.node)
                         }
                         is ParsedReturnNode -> {

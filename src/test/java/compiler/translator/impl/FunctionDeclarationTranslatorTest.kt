@@ -16,7 +16,7 @@ class FunctionDeclarationTranslatorTest {
     @Test
     fun translateTest() {
         val functionDeclarationNode = Mockito.mock(ParsedFunctionDeclarationNode::class.java)
-        val variableToTypeMap = mapOf<String, String>()
+        val variableToTypeMap = mutableMapOf<String, String>()
 
         val parsedStatementNode = Mockito.mock(ParsedBasicBlockNode::class.java)
         Mockito.`when`(functionDeclarationNode.basicBlockNode).thenReturn(parsedStatementNode)

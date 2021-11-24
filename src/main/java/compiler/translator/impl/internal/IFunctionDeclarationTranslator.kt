@@ -6,6 +6,6 @@ import compiler.core.TranslatedFunctionDeclarationNode
 internal interface IFunctionDeclarationTranslator {
     fun translate(
         functionDeclarationNode: ParsedFunctionDeclarationNode,
-        variableToTypeMap: Map<String, String>
+        variableToTypeMap: MutableMap<String, String>
     ): TranslatedFunctionDeclarationNode
 }
