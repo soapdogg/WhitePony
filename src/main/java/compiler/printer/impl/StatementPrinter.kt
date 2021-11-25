@@ -51,6 +51,16 @@ internal class StatementPrinter(
                                 stackItems.add(stackItem)
                             }
                         }
+                        is TranslatedIfNode -> {
+                            top.node.ifBody.forEach {
+                                val stackItem = StatementPrinterStackItem(it, top.numberOfTabs, PrinterConstants.LOCATION_1)
+                                stackItems.add(stackItem)
+                            }
+                            top.node.elseBody.forEach {
+                                val stackItem = StatementPrinterStackItem(it, top.numberOfTabs, PrinterConstants.LOCATION_1)
+                                stackItems.add(stackItem)
+                            }
+                        }
                         is ParsedDoWhileNode -> {
                             val stackItem =
                                 StatementPrinterStackItem(top.node.body, top.numberOfTabs, PrinterConstants.LOCATION_1)
@@ -83,12 +93,6 @@ internal class StatementPrinter(
                     stackItems.forEach { stack.push(it) }
                 }
                 PrinterConstants.LOCATION_2 -> {
-                    val statementStrings = mutableListOf<String>()
-                    var i = 0
-                    while(resultStack.isNotEmpty() && i < top.node.getNumberOfStatements()) {
-                        statementStrings.add(resultStack.pop())
-                        i++
-                    }
 
                     val result = when (top.node) {
                         is IBasicBlockNode -> {
@@ -100,6 +104,10 @@ internal class StatementPrinter(
                             for (i in 0 until top.numberOfTabs) {
                                 closingTabs += PrinterConstants.TAB
                             }
+                            val statementStrings = mutableListOf<String>()
+                            for (i in 0 until top.node.statements.size) {
+                                statementStrings.add(resultStack.pop())
+                            }
                             val tabbedStatementStrings = statementStrings.joinToString(
                                 PrinterConstants.NEW_LINE + tabs,
                                 PrinterConstants.NEW_LINE + tabs,
@@ -110,7 +118,7 @@ internal class StatementPrinter(
                                     PrinterConstants.RIGHT_BRACE
                         }
                         is ParsedDoWhileNode -> {
-                            val bodyString = statementStrings[0]
+                            val bodyString = resultStack.pop()
                             val expressionString = expressionPrinter.printNode(top.node.expression)
                             PrinterConstants.DO +
                                     PrinterConstants.SPACE +
@@ -122,7 +130,7 @@ internal class StatementPrinter(
                                     PrinterConstants.SEMICOLON
                         }
                         is ParsedWhileNode -> {
-                            val bodyString = statementStrings[0]
+                            val bodyString = resultStack.pop()
                             val expressionString = expressionPrinter.printNode(top.node.expression)
                             PrinterConstants.WHILE +
                                     PrinterConstants.SPACE +
@@ -131,7 +139,7 @@ internal class StatementPrinter(
                                     bodyString
                         }
                         is ParsedForNode -> {
-                            val bodyString = statementStrings[0]
+                            val bodyString = resultStack.pop()
                             val initExpressionString = expressionPrinter.printNode(top.node.initExpression)
                             val testExpressionString = expressionPrinter.printNode(top.node.testExpression)
                             val incrementExpressionString = expressionPrinter.printNode(top.node.incrementExpression)
@@ -150,7 +158,7 @@ internal class StatementPrinter(
                                     bodyString
                         }
                         is ParsedIfNode -> {
-                            val ifBodyString = statementStrings[0]
+                            val ifBodyString = resultStack.pop()
                             val booleanExpressionString = expressionPrinter.printNode(top.node.booleanExpression)
                             val ifString = PrinterConstants.IF +
                                     booleanExpressionString +
@@ -161,7 +169,7 @@ internal class StatementPrinter(
                                 for (i in 0 until top.numberOfTabs) {
                                     tabs += PrinterConstants.TAB
                                 }
-                                val elseBodyString = statementStrings[1]
+                                val elseBodyString = resultStack.pop()
                                 ifString + PrinterConstants.NEW_LINE + tabs + PrinterConstants.ELSE + PrinterConstants.SPACE + elseBodyString
                             } else {
                                 ifString
@@ -181,6 +189,10 @@ internal class StatementPrinter(
                             for (i in 0 until numberOfTabs + 1) {
                                 tabs += PrinterConstants.TAB
                             }
+                            val bodyStatementStrings = mutableListOf<String>()
+                            for (i in 0 until top.node.body.size) {
+                                bodyStatementStrings.add(resultStack.pop())
+                            }
                             top.node.initExpression.code.joinToString(
                                 PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs,
                                 PrinterConstants.EMPTY,
@@ -193,7 +205,7 @@ internal class StatementPrinter(
                                         PrinterConstants.SEMICOLON
                                     ) +
                                     PrinterConstants.NEW_LINE + tabs + top.node.trueLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
-                                    statementStrings.joinToString(
+                                    bodyStatementStrings.joinToString(
                                         PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs,
                                         PrinterConstants.NEW_LINE + tabs,
                                         PrinterConstants.NEW_LINE + tabs
@@ -205,6 +217,57 @@ internal class StatementPrinter(
                                     ) +
                                     PrinterConstants.NEW_LINE + tabs + PrinterConstants.GOTO + PrinterConstants.SPACE + top.node.beginLabel + PrinterConstants.SEMICOLON +
                                     PrinterConstants.NEW_LINE + tabs + top.node.falseLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
+                        }
+                        is TranslatedIfNode -> {
+                            var tabs = PrinterConstants.EMPTY
+                            for (i in 0 until numberOfTabs + 1) {
+                                tabs += PrinterConstants.TAB
+                            }
+                            if (top.node.elseBody.isEmpty()) {
+                                val ifBodyStatementString = mutableListOf<String>()
+                                for (i in 0 until top.node.ifBody.size) {
+                                    ifBodyStatementString.add(resultStack.pop())
+                                }
+                                top.node.expression.code.joinToString(
+                                    PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs,
+                                    PrinterConstants.EMPTY,
+                                    PrinterConstants.SEMICOLON
+                                ) +
+                                        PrinterConstants.NEW_LINE + tabs + top.node.trueLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
+                                        ifBodyStatementString.joinToString(
+                                            PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs,
+                                            PrinterConstants.NEW_LINE + tabs,
+                                        ) +
+                                        PrinterConstants.NEW_LINE + tabs + top.node.falseLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
+                            } else {
+                                val elseBodyStatementString = mutableListOf<String>()
+                                for (i in 0 until top.node.elseBody.size) {
+                                    elseBodyStatementString.add(resultStack.pop())
+                                }
+                                val ifBodyStatementString = mutableListOf<String>()
+                                for (i in 0 until top.node.ifBody.size) {
+                                    ifBodyStatementString.add(resultStack.pop())
+                                }
+
+                                top.node.expression.code.joinToString(
+                                    PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs,
+                                    PrinterConstants.EMPTY,
+                                    PrinterConstants.SEMICOLON
+                                ) +
+                                        PrinterConstants.NEW_LINE + tabs + top.node.trueLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
+                                        ifBodyStatementString.joinToString(
+                                            PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs,
+                                            PrinterConstants.NEW_LINE + tabs,
+                                        ) +
+                                        PrinterConstants.NEW_LINE + tabs + PrinterConstants.GOTO + PrinterConstants.SPACE + top.node.nextLabel + PrinterConstants.SEMICOLON +
+                                        PrinterConstants.NEW_LINE + tabs + top.node.falseLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
+                                        elseBodyStatementString.joinToString(
+                                            PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs,
+                                            PrinterConstants.NEW_LINE + tabs,
+                                        ) +
+                                        PrinterConstants.NEW_LINE + tabs + top.node.nextLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
+
+                            }
                         }
                         is TranslatedExpressionStatementNode -> {
                             var tabs = PrinterConstants.EMPTY

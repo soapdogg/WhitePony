@@ -74,11 +74,49 @@ internal class StatementTranslator (
                             stack.push(StatementTranslatorStackItem(1, top.node.body))
                         }
                         is ParsedIfNode -> {
-                            val (expression, l, t) = booleanExpressionTranslator.translate(top.node.booleanExpression, "true", "false", labelCounter, tempCounter, variableToTypeMap)
-                            labelCounter = l
-                            tempCounter = t
-                            expressionStack.push(expression)
-                            stack.push(StatementTranslatorStackItem(1, top.node.ifBody))
+                            if (top.node.elseBody == null) {
+                                val nextLabel = "_l" + labelCounter
+                                labelCounter++
+                                val trueLabel = "_l" + labelCounter
+                                labelCounter++
+                                val (expression, l, t) = booleanExpressionTranslator.translate(
+                                    top.node.booleanExpression,
+                                    trueLabel,
+                                    nextLabel,
+                                    labelCounter,
+                                    tempCounter,
+                                    variableToTypeMap
+                                )
+                                labelCounter = l
+                                tempCounter = t
+                                labelStack.push(trueLabel)
+                                labelStack.push(nextLabel)
+                                expressionStack.push(expression)
+                                stack.push(StatementTranslatorStackItem(1, top.node.ifBody))
+                            } else {
+                                val nextLabel = "_l" + labelCounter
+                                labelCounter++
+                                val trueLabel = "_l" + labelCounter
+                                labelCounter++
+                                val falseLabel = "_l" + labelCounter
+                                labelCounter++
+                                val (expression, l, t) = booleanExpressionTranslator.translate(
+                                    top.node.booleanExpression,
+                                    trueLabel,
+                                    falseLabel,
+                                    labelCounter,
+                                    tempCounter,
+                                    variableToTypeMap
+                                )
+                                labelCounter = l
+                                tempCounter = t
+                                labelStack.push(falseLabel)
+                                labelStack.push(trueLabel)
+                                labelStack.push(nextLabel)
+                                expressionStack.push(expression)
+                                stack.push(StatementTranslatorStackItem(1, top.node.elseBody))
+                                stack.push(StatementTranslatorStackItem(1, top.node.ifBody))
+                            }
                         }
 
                     }
@@ -127,13 +165,46 @@ internal class StatementTranslator (
                             resultStack.push(forNode)
                         }
                         is ParsedIfNode -> {
-                            val expression = expressionStack.pop()
-                            val body = resultStack.pop()
-                            val ifNode = TranslatedIfNode(
-                                expression,
-                                body
-                            )
-                            resultStack.push(ifNode)
+                            if (top.node.elseBody == null) {
+                                val nextLabel = labelStack.pop()
+                                val trueLabel = labelStack.pop()
+                                val expression = expressionStack.pop()
+                                val body = mutableListOf<ITranslatedStatementNode>()
+                                for (i in 0 until top.node.ifBody.getNumberOfStatements()) {
+                                    body.add(resultStack.pop())
+                                }
+                                val ifNode = TranslatedIfNode(
+                                    expression,
+                                    body,
+                                    listOf(),
+                                    nextLabel,
+                                    trueLabel,
+                                    nextLabel
+                                )
+                                resultStack.push(ifNode)
+                            } else {
+                                val nextLabel = labelStack.pop()
+                                val trueLabel = labelStack.pop()
+                                val falseLabel = labelStack.pop()
+                                val expression = expressionStack.pop()
+                                val ifBody = mutableListOf<ITranslatedStatementNode>()
+                                for (i in 0 until top.node.ifBody.getNumberOfStatements()) {
+                                    ifBody.add(resultStack.pop())
+                                }
+                                val elseBody = mutableListOf<ITranslatedStatementNode>()
+                                for (i in 0 until top.node.elseBody.getNumberOfStatements()) {
+                                    elseBody.add(resultStack.pop())
+                                }
+                                val ifNode = TranslatedIfNode(
+                                    expression,
+                                    ifBody,
+                                    elseBody,
+                                    nextLabel,
+                                    trueLabel,
+                                    falseLabel
+                                )
+                                resultStack.push(ifNode)
+                            }
                         }
                         is VariableDeclarationListNode -> {
                             variableTypeRecorder.recordVariableTypes(top.node, variableToTypeMap)

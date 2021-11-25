@@ -53,9 +53,10 @@ class RegressionTest {
     @Test
     fun regressionIndividualTest() {
 
+        val input = Program19
         val intermediateCode = null
-        val (parseTreeString, translatedTreeString) = recursiveCompiler.compile(Program7)
-        Assertions.assertEquals(Program7, parseTreeString)
+        val (parseTreeString, translatedTreeString) = recursiveCompiler.compile(input)
+        Assertions.assertEquals(input, parseTreeString)
         if (intermediateCode != null) {
             Assertions.assertEquals(intermediateCode, translatedTreeString)
         } else {
@@ -86,9 +87,9 @@ class RegressionTest {
                 Triple(Program14, IProgram14, 37),
                 Triple(Program15, IProgram15,44),
                 Triple(Program16, IProgram16,42),
-                Triple(Program17, null,37),
+                Triple(Program17, IProgram17,37),
                 Triple(Program18, null,42),
-                Triple(Program19, null,39),
+                Triple(Program19, IProgram19,39),
                 Triple(Program20, null,39),
                 Triple(Program21, null,152),
                 Triple(Program22, null,367)
@@ -500,6 +501,23 @@ class RegressionTest {
     else y = 2;
     return y;
 }"""
+        private const val IProgram17 =
+"""int test17() {
+    int x = -2;
+    int y = 35653;
+    int _t0 = x;
+    int _t1 = _t0 + 1;
+    if (_t1 < 0) goto _l1;
+    goto _l2;
+    _l1: ;
+    y = 1;
+    goto _l0;
+    _l2: ;
+    y = 2;
+    _l0: ;
+    int _t2 = y;
+    return _t2;
+}"""
 
         private const val Program18 =
 """int test18() {
@@ -517,6 +535,24 @@ class RegressionTest {
     int z = 234132;
     if(x < 0 || y < 1) z = 2;
     return z;
+}"""
+        private const val IProgram19 =
+"""int test19() {
+    int x = -1;
+    int y = 0;
+    int z = 234132;
+    int _t0 = x;
+    if (_t0 < 0) goto _l1;
+    goto _l2;
+    _l2: ;
+    int _t1 = y;
+    if (_t1 < 1) goto _l1;
+    goto _l0;
+    _l1: ;
+    z = 2;
+    _l0: ;
+    int _t2 = z;
+    return _t2;
 }"""
 
         private const val Program20 =
