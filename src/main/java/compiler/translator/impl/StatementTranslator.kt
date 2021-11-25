@@ -69,9 +69,6 @@ internal class StatementTranslator (
                             expressionStack.push(expression)
                             stack.push(StatementTranslatorStackItem(1, top.node.ifBody))
                         }
-                        is ParsedElseNode -> {
-                            stack.push(StatementTranslatorStackItem(1, top.node.elseBody))
-                        }
 
                     }
                 }
@@ -117,11 +114,6 @@ internal class StatementTranslator (
                                 body
                             )
                             resultStack.push(ifNode)
-                        }
-                        is ParsedElseNode -> {
-                            val body = resultStack.pop()
-                            val elseNode = TranslatedElseNode(body)
-                            resultStack.push(elseNode)
                         }
                         is VariableDeclarationListNode -> {
                             variableTypeRecorder.recordVariableTypes(top.node, variableToTypeMap)

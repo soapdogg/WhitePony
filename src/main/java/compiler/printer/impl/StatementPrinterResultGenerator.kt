@@ -77,14 +77,20 @@ internal class StatementPrinterResultGenerator(
             is ParsedIfNode -> {
                 val ifBodyString = statementStrings[0]
                 val booleanExpressionString = expressionPrinter.printNode(node.booleanExpression)
-                PrinterConstants.IF +
+                val ifString = PrinterConstants.IF +
                     booleanExpressionString +
                     PrinterConstants.SPACE +
                     ifBodyString
-            }
-            is ParsedElseNode -> {
-                val elseBodyString = statementStrings[0]
-                PrinterConstants.ELSE + PrinterConstants.SPACE + elseBodyString
+                if (node.elseBody != null) {
+                    var tabs = PrinterConstants.EMPTY
+                    for(i in 0 until numberOfTabs) {
+                        tabs += PrinterConstants.TAB
+                    }
+                    val elseBodyString = statementStrings[1]
+                    ifString + PrinterConstants.NEW_LINE + tabs + PrinterConstants.ELSE + PrinterConstants.SPACE + elseBodyString
+                } else {
+                    ifString
+                }
             }
             is VariableDeclarationListNode -> {
                 variableDeclarationListPrinter.printNode(node)

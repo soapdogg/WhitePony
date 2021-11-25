@@ -158,19 +158,6 @@ class StatementPrinterResultGeneratorTest {
     }
 
     @Test
-    fun printElseNodeTest() {
-        val node = Mockito.mock(ParsedElseNode::class.java)
-        val numberOfTabs = 0
-        val bodyString = "bodyString"
-        val statementStrings = listOf(bodyString)
-
-        val expected = PrinterConstants.ELSE + PrinterConstants.SPACE + bodyString
-
-        val actual = statementPrinterResultGenerator.generateResult(node, numberOfTabs, statementStrings)
-        Assertions.assertEquals(expected, actual)
-    }
-
-    @Test
     fun printVariableDeclarationListTest() {
         val node = Mockito.mock(VariableDeclarationListNode::class.java)
         val numberOfTabs = 0

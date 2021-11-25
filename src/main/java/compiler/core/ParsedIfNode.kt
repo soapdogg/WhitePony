@@ -3,8 +3,9 @@ package compiler.core
 data class ParsedIfNode (
     val booleanExpression: IParsedExpressionNode,
     val ifBody: IParsedStatementNode,
+    val elseBody: IParsedStatementNode?,
 ): IParsedStatementNode {
     override fun getNumberOfStatements(): Int {
-        return 1
+        return if(elseBody == null) 1 else 2
     }
 }

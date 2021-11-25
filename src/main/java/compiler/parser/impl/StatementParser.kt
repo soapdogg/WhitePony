@@ -135,17 +135,29 @@ internal class StatementParser(
                     resultStack.push(forNode)
                 }
                 StatementParserConstants.LOCATION_IF -> {
-                    val booleanExpression = expressionStack.pop()
-                    val ifBody = resultStack.pop()
-                    val ifNode = ParsedIfNode(
-                        booleanExpression,
-                        ifBody,
-                    )
-                    resultStack.push(ifNode)
+                    if (tokens[tokenPosition].type != TokenType.ELSE) {
+                        val booleanExpression = expressionStack.pop()
+                        val ifBody = resultStack.pop()
+                        val ifNode = ParsedIfNode(
+                            booleanExpression,
+                            ifBody,
+                            null
+                        )
+                        resultStack.push(ifNode)
+                    } else {
+                        val (_, positionAfterElse) = tokenTypeAsserter.assertTokenType(tokens, tokenPosition, TokenType.ELSE)
+                        tokenPosition = positionAfterElse
+                        stack.push(StatementParserConstants.LOCATION_ELSE)
+                        stack.push(StatementParserConstants.LOCATION_START)
+                    }
                 }
                 StatementParserConstants.LOCATION_ELSE -> {
+                    val booleanExpression = expressionStack.pop()
                     val elseBody = resultStack.pop()
-                    val elseNode = ParsedElseNode(
+                    val ifBody = resultStack.pop()
+                    val elseNode = ParsedIfNode(
+                        booleanExpression,
+                        ifBody,
                         elseBody
                     )
                     resultStack.push(elseNode)

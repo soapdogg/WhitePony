@@ -36,11 +36,12 @@ internal class StatementPrinterStackItemGenerator: IStatementPrinterStackItemGen
             is ParsedIfNode -> {
                 val stackItem = StatementPrinterStackItem(node.ifBody, numberOfTabs, PrinterConstants.LOCATION_1)
                 stackItems.add(stackItem)
+                if (node.elseBody != null) {
+                    val stackItem2 = StatementPrinterStackItem(node.elseBody, numberOfTabs, PrinterConstants.LOCATION_1)
+                    stackItems.add(stackItem2)
+                }
             }
-            is ParsedElseNode -> {
-                val stackItem = StatementPrinterStackItem(node.elseBody, numberOfTabs, PrinterConstants.LOCATION_1)
-                stackItems.add(stackItem)
-            }
+
         }
         return stackItems
     }

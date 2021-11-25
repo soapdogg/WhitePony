@@ -66,11 +66,6 @@ class StatementPrinterStackItemGeneratorTest {
             Mockito.`when`(ifNode.ifBody).thenReturn(ifBody)
             val ifPrinterStackItem = StatementPrinterStackItem(ifBody, numberOfTabs, PrinterConstants.LOCATION_1)
 
-            val elseNode = Mockito.mock(ParsedElseNode::class.java)
-            val elseBody = Mockito.mock(IParsedStatementNode::class.java)
-            Mockito.`when`(elseNode.elseBody).thenReturn(elseBody)
-            val elsePrinterStackItem = StatementPrinterStackItem(elseBody, numberOfTabs, PrinterConstants.LOCATION_1)
-
             return Stream.of(
                 Triple(Mockito.mock(IParsedStatementNode::class.java), numberOfTabs, null),
                 Triple(basicBlockNode, numberOfTabs, basicBlockPrinterStackItem),
@@ -78,7 +73,6 @@ class StatementPrinterStackItemGeneratorTest {
                 Triple(whileNode, numberOfTabs, whilePrinterStackItem),
                 Triple(forNode, numberOfTabs, forPrinterStackItem),
                 Triple(ifNode, numberOfTabs, ifPrinterStackItem),
-                Triple(elseNode, numberOfTabs, elsePrinterStackItem)
             )
         }
     }
