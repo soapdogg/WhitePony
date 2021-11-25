@@ -28,6 +28,33 @@ internal class BooleanExpressionTranslator(
             val top = stack.pop()
 
             when(top.node) {
+                is ParsedBinaryAndOperatorNode -> {
+                    when(top.location) {
+                        1 -> {
+                            stack.push(BooleanExpressionTranslatorStackItem(2, top.node, top.trueLabel, top.falseLabel))
+                            val trueLabel = "_l" + l
+                            l++
+                            labelStack.push(trueLabel)
+                            stack.push(BooleanExpressionTranslatorStackItem(1, top.node.leftExpression, trueLabel, top.falseLabel))
+                        }
+                        2 -> {
+                            stack.push(BooleanExpressionTranslatorStackItem(3, top.node, top.trueLabel, top.falseLabel))
+                            stack.push(BooleanExpressionTranslatorStackItem(1, top.node.rightExpression, top.trueLabel, top.falseLabel))
+                        }
+                        3 -> {
+                            val rightExpression = resultStack.pop()
+                            val leftExpression = resultStack.pop()
+                            val trueLabel = labelStack.pop()
+                            val code = leftExpression.code +
+                                    listOf(
+                                        trueLabel + PrinterConstants.COLON + PrinterConstants.SPACE
+                                    ) +
+                                    rightExpression.code
+                            val translatedBooleanExpressionNode = TranslatedBooleanExpressionNode(code)
+                            resultStack.push(translatedBooleanExpressionNode)
+                        }
+                    }
+                }
                 is ParsedBinaryOrOperatorNode -> {
                     when(top.location) {
                         1 -> {
@@ -56,8 +83,11 @@ internal class BooleanExpressionTranslator(
                         }
                     }
                 }
+                is ParsedUnaryNotOperatorNode -> {
+                    stack.push(BooleanExpressionTranslatorStackItem(1, top.node.expression, top.falseLabel, top.trueLabel))
+                }
                 is ParsedInnerExpression -> {
-                    stack.push(BooleanExpressionTranslatorStackItem(1, top.node.expression, trueLabel, falseLabel))
+                    stack.push(BooleanExpressionTranslatorStackItem(1, top.node.expression, top.trueLabel, top.falseLabel))
                 }
                 is ParsedBinaryRelationalOperatorNode -> {
                     val (leftExpression, tempAfterLeft) = expressionTranslator.translate(top.node.leftExpression, variableToTypeMap, t)

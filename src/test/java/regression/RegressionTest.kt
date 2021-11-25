@@ -88,9 +88,9 @@ class RegressionTest {
                 Triple(Program15, IProgram15,44),
                 Triple(Program16, IProgram16,42),
                 Triple(Program17, IProgram17,37),
-                Triple(Program18, null,42),
+                Triple(Program18, IProgram18,42),
                 Triple(Program19, IProgram19,39),
-                Triple(Program20, null,39),
+                Triple(Program20, IProgram20,39),
                 Triple(Program21, null,152),
                 Triple(Program22, null,367)
             )
@@ -527,6 +527,24 @@ class RegressionTest {
     if(!(x < 0 && y < 1)) z = 2;
     return z;
 }"""
+        private const val IProgram18 =
+"""int test18() {
+    int x = -1;
+    int y = 0;
+    int z = 234;
+    int _t0 = x;
+    if (_t0 < 0) goto _l2;
+    goto _l1;
+    _l2: ;
+    int _t1 = y;
+    if (_t1 < 1) goto _l0;
+    goto _l1;
+    _l1: ;
+    z = 2;
+    _l0: ;
+    int _t2 = z;
+    return _t2;
+}"""
 
         private const val Program19 =
 """int test19() {
@@ -562,6 +580,24 @@ class RegressionTest {
     int z = 234245;
     if(x < 0 && y >= 1) z = 6;
     return z;
+}"""
+        private const val IProgram20 =
+"""int test20() {
+    int x = -1;
+    int y = 0;
+    int z = 234245;
+    int _t0 = x;
+    if (_t0 < 0) goto _l2;
+    goto _l0;
+    _l2: ;
+    int _t1 = y;
+    if (_t1 >= 1) goto _l1;
+    goto _l0;
+    _l1: ;
+    z = 6;
+    _l0: ;
+    int _t2 = z;
+    return _t2;
 }"""
 
         private const val Program21 =
