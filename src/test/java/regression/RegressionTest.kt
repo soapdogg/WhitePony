@@ -53,8 +53,16 @@ class RegressionTest {
     @Test
     fun regressionIndividualTest() {
 
-        Assertions.assertDoesNotThrow {
-            recursiveCompiler.compile(Program22)
+        val intermediateCode = null
+        val (parseTreeString, translatedTreeString) = recursiveCompiler.compile(Program7)
+        Assertions.assertEquals(Program7, parseTreeString)
+        if (intermediateCode != null) {
+            Assertions.assertEquals(intermediateCode, translatedTreeString)
+        } else {
+            println(parseTreeString)
+            println()
+            println(translatedTreeString)
+            println()
         }
     }
 
@@ -68,7 +76,7 @@ class RegressionTest {
                 Triple(Program4, IProgram4, 28),
                 Triple(Program5, IProgram5,36),
                 Triple(Program6, IProgram6,44),
-                Triple(Program7, null,71),
+                Triple(Program7, IProgram7,71),
                 Triple(Program8, IProgram8,30),
                 Triple(Program9, null,100),
                 Triple(Program10, IProgram10, 22),
@@ -252,6 +260,35 @@ class RegressionTest {
     x = y + z;
     a[x] = x;
     return a[x];
+}"""
+        private const val IProgram7 =
+"""int test7() {
+    int a[10];
+    int i;
+    i = 0;
+    _l1: ;
+    int _t0 = i;
+    if (_t0 < 10) goto _l2;
+    goto _l0;
+    _l2: ;
+    int _t1 = i;
+    a[_t1] = 0;
+    i = i + 1;
+    goto _l1;
+    _l0: ;
+    int x = 0;
+    int y = 1;
+    int z = 5;
+    int _t2 = y;
+    int _t3 = z;
+    int _t4 = _t2 + _t3;
+    x = _t4;
+    int _t5 = x;
+    int _t6 = x;
+    a[_t5] = _t6;
+    int _t7 = x;
+    int _t8 = a[_t7];
+    return _t8;
 }"""
 
         private const val Program8 =

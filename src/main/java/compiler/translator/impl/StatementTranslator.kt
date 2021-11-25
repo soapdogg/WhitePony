@@ -59,6 +59,7 @@ internal class StatementTranslator (
                             val beginLabel = "_l" + labelCounter
                             labelCounter++
                             val trueLabel = "_l" + labelCounter
+                            labelCounter++
                             val (initExpression, tempAfterInit) = expressionTranslator.translate(top.node.initExpression, variableToTypeMap, tempCounter)
                             val (testExpression, l, tempAfterTest) = booleanExpressionTranslator.translate(top.node.testExpression, trueLabel, falseLabel, labelCounter, tempAfterInit, variableToTypeMap)
                             val (incrementExpression, t) = expressionTranslator.translate(top.node.incrementExpression, variableToTypeMap, tempAfterTest)
