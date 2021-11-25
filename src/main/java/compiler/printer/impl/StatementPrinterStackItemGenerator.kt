@@ -21,6 +21,12 @@ internal class StatementPrinterStackItemGenerator: IStatementPrinterStackItemGen
                     stackItems.add(stackItem)
                 }
             }
+            is TranslatedForNode -> {
+                node.body.forEach {
+                    val stackItem = StatementPrinterStackItem(it, numberOfTabs, PrinterConstants.LOCATION_1)
+                    stackItems.add(stackItem)
+                }
+            }
             is ParsedDoWhileNode -> {
                 val stackItem = StatementPrinterStackItem(node.body, numberOfTabs, PrinterConstants.LOCATION_1)
                 stackItems.add(stackItem)

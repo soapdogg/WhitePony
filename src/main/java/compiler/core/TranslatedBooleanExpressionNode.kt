@@ -1,5 +1,5 @@
 package compiler.core
 
 data class TranslatedBooleanExpressionNode(
-    val trueLabel: String
+    override val code: List<String>
 ): ITranslatedExpressionNode

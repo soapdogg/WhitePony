@@ -101,6 +101,20 @@ internal class StatementPrinterResultGenerator(
             is ParsedExpressionStatementNode -> {
                 expressionStatementPrinter.printParsedNode(node)
             }
+            is TranslatedForNode -> {
+                var tabs = PrinterConstants.EMPTY
+                for(i in 0 until numberOfTabs + 1) {
+                    tabs += PrinterConstants.TAB
+                }
+                node.initExpression.code.joinToString(PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs, PrinterConstants.EMPTY, PrinterConstants.SEMICOLON) +
+                        PrinterConstants.NEW_LINE + tabs + node.beginLabel + ":" + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
+                        node.testExpression.code.joinToString(PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs, PrinterConstants.NEW_LINE + tabs, PrinterConstants.SEMICOLON) +
+                        PrinterConstants.NEW_LINE + tabs + node.trueLabel + ":" + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
+                        statementStrings.joinToString(PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs, PrinterConstants.NEW_LINE + tabs, PrinterConstants.NEW_LINE + tabs) +
+                        node.incrementExpression.code.joinToString(PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs, PrinterConstants.EMPTY, PrinterConstants.SEMICOLON) +
+                        PrinterConstants.NEW_LINE + tabs + "goto" + PrinterConstants.SPACE + node.beginLabel + PrinterConstants.SEMICOLON +
+                        PrinterConstants.NEW_LINE + tabs + node.falseLabel + ":" + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
+            }
             is TranslatedExpressionStatementNode -> {
                 var tabs = PrinterConstants.EMPTY
                 for(i in 0 until numberOfTabs + 1) {

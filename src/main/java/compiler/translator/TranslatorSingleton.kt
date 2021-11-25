@@ -17,7 +17,7 @@ enum class TranslatorSingleton {
 
     private val expressionTranslator = ExpressionTranslator(tempGenerator, typeDeterminer)
 
-    private val booleanExpressionTranslator = BooleanExpressionTranslator()
+    private val booleanExpressionTranslator = BooleanExpressionTranslator(expressionTranslator)
 
     private val expressionStatementTranslator = ExpressionStatementTranslator(expressionTranslator)
 

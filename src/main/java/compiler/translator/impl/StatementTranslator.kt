@@ -23,6 +23,8 @@ internal class StatementTranslator (
         stack.push(StatementTranslatorStackItem(1, statementNode))
         val resultStack = Stack<ITranslatedStatementNode>()
         val expressionStack = Stack<ITranslatedExpressionNode>()
+        val labelStack = Stack<String>()
+
         var tempCounter = 0
         var labelCounter = 0
 
@@ -38,32 +40,40 @@ internal class StatementTranslator (
                             }
                         }
                         is ParsedDoWhileNode -> {
-                            val (expression, l, t) = booleanExpressionTranslator.translate(top.node.expression, labelCounter, tempCounter)
+                            val (expression, l, t) = booleanExpressionTranslator.translate(top.node.expression, "true", "false", labelCounter, tempCounter, variableToTypeMap)
                             labelCounter = l
                             tempCounter = t
                             expressionStack.push(expression)
                             stack.push(StatementTranslatorStackItem(1, top.node.body))
                         }
                         is ParsedWhileNode -> {
-                            val (expression, l, t)  = booleanExpressionTranslator.translate(top.node.expression, labelCounter, tempCounter)
+                            val (expression, l, t)  = booleanExpressionTranslator.translate(top.node.expression, "true", "false", labelCounter, tempCounter, variableToTypeMap)
                             labelCounter = l
                             tempCounter = t
                             expressionStack.push(expression)
                             stack.push(StatementTranslatorStackItem(1, top.node.body))
                         }
                         is ParsedForNode -> {
+                            val falseLabel = "_l" + labelCounter
+                            labelCounter++
+                            val beginLabel = "_l" + labelCounter
+                            labelCounter++
+                            val trueLabel = "_l" + labelCounter
                             val (initExpression, tempAfterInit) = expressionTranslator.translate(top.node.initExpression, variableToTypeMap, tempCounter)
-                            val (testExpression, l, tempAfterTest) = booleanExpressionTranslator.translate(top.node.testExpression, labelCounter, tempAfterInit)
+                            val (testExpression, l, tempAfterTest) = booleanExpressionTranslator.translate(top.node.testExpression, trueLabel, falseLabel, labelCounter, tempAfterInit, variableToTypeMap)
                             val (incrementExpression, t) = expressionTranslator.translate(top.node.incrementExpression, variableToTypeMap, tempAfterTest)
                             labelCounter = l
                             tempCounter = t
+                            labelStack.push(trueLabel)
+                            labelStack.push(beginLabel)
+                            labelStack.push(falseLabel)
                             expressionStack.push(incrementExpression)
                             expressionStack.push(testExpression)
                             expressionStack.push(initExpression)
                             stack.push(StatementTranslatorStackItem(1, top.node.body))
                         }
                         is ParsedIfNode -> {
-                            val (expression, l, t) = booleanExpressionTranslator.translate(top.node.booleanExpression, labelCounter, tempCounter)
+                            val (expression, l, t) = booleanExpressionTranslator.translate(top.node.booleanExpression, "true", "false", labelCounter, tempCounter, variableToTypeMap)
                             labelCounter = l
                             tempCounter = t
                             expressionStack.push(expression)
@@ -94,15 +104,24 @@ internal class StatementTranslator (
                             resultStack.push(whileNode)
                         }
                         is ParsedForNode -> {
+                            val falseLabel = labelStack.pop()
+                            val beginLabel = labelStack.pop()
+                            val trueLabel = labelStack.pop()
                             val initExpression = expressionStack.pop()
                             val testExpression = expressionStack.pop()
                             val incrementExpression = expressionStack.pop()
-                            val body = resultStack.pop()
+                            val body = mutableListOf<ITranslatedStatementNode>()
+                            for (i in 0 until top.node.body.getNumberOfStatements()) {
+                                body.add(resultStack.pop())
+                            }
                             val forNode = TranslatedForNode(
                                 initExpression,
                                 testExpression,
                                 incrementExpression,
-                                body
+                                body,
+                                falseLabel,
+                                beginLabel,
+                                trueLabel
                             )
                             resultStack.push(forNode)
                         }
