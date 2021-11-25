@@ -64,12 +64,6 @@ internal class StatementParser(
                             stack.push(StatementParserConstants.LOCATION_IF)
                             stack.push(StatementParserConstants.LOCATION_START)
                         }
-                        TokenType.ELSE -> {
-                            val (_, positionAfterElse) = tokenTypeAsserter.assertTokenType(tokens, tokenPosition, TokenType.ELSE)
-                            tokenPosition = positionAfterElse
-                            stack.push(StatementParserConstants.LOCATION_ELSE)
-                            stack.push(StatementParserConstants.LOCATION_START)
-                        }
                         TokenType.LEFT_BRACE -> {
                             val (_, positionAfterLeftBrace) = tokenTypeAsserter.assertTokenType(tokens, tokenPosition, TokenType.LEFT_BRACE)
                             if (tokens[positionAfterLeftBrace].type != TokenType.RIGHT_BRACE) {

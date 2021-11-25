@@ -1,6 +1,5 @@
 package compiler.parser.impl
 
-import compiler.core.ParsedBasicBlockNode
 import compiler.core.ParsedFunctionDeclarationNode
 import compiler.core.Token
 import compiler.core.TokenType

@@ -81,7 +81,7 @@ class RegressionTest {
                 Triple(Program9, null,100),
                 Triple(Program10, IProgram10, 22),
                 Triple(Program11, IProgram11, 22),
-                Triple(Program12,null, 32),
+                Triple(Program12, IProgram12, 32),
                 Triple(Program13, IProgram13, 30),
                 Triple(Program14, IProgram14, 37),
                 Triple(Program15, IProgram15,44),
@@ -379,6 +379,21 @@ class RegressionTest {
     int b = 945;
     int c = 93483;
     return a + b * b + c - 23;
+}"""
+        private const val IProgram12 =
+"""int test12() {
+    int a = 3;
+    int b = 945;
+    int c = 93483;
+    int _t0 = a;
+    int _t1 = b;
+    int _t2 = b;
+    int _t3 = _t1 * _t2;
+    int _t4 = _t0 + _t3;
+    int _t5 = c;
+    int _t6 = _t4 + _t5;
+    int _t7 = _t6 - 23;
+    return _t7;
 }"""
 
         private const val Program13 =
