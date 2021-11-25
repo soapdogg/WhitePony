@@ -29,9 +29,8 @@ internal class StatementParser(
         val numberOfStatementsBlockStack = Stack<Int>()
 
         while(stack.isNotEmpty()) {
-            val top = stack.pop()
 
-            when(top) {
+            when(stack.pop()) {
                 StatementParserConstants.LOCATION_START -> {
                     when (tokens[tokenPosition].type) {
                         TokenType.DO -> {

@@ -25,18 +25,11 @@ enum class PrinterSingleton {
         expressionStatementPrinter
     )
 
-    private val statementPrinterStackItemGenerator = StatementPrinterStackItemGenerator()
-
-    private val statementPrinterResultGenerator = StatementPrinterResultGenerator(
+    private val statementPrinter = StatementPrinter(
         variableDeclarationListPrinter,
         returnStatementPrinter,
         expressionStatementPrinter,
         expressionPrinter
-    )
-
-    private val statementPrinter = StatementPrinter(
-        statementPrinterStackItemGenerator,
-        statementPrinterResultGenerator
     )
     private val functionDeclarationPrinter = FunctionDeclarationPrinter(statementPrinter)
 
