@@ -40,10 +40,13 @@ internal class StatementTranslator (
                             }
                         }
                         is ParsedDoWhileNode -> {
-                            val (expression, l, t) = booleanExpressionTranslator.translate(top.node.expression, "true", "false", labelCounter, tempCounter, variableToTypeMap)
-                            labelCounter = l
-                            tempCounter = t
-                            expressionStack.push(expression)
+                            val falseLabel = "_l" + labelCounter
+                            labelCounter++
+                            val trueLabel = "_l" + labelCounter
+                            labelCounter++
+                            labelStack.push(trueLabel)
+                            labelStack.push(falseLabel)
+
                             stack.push(StatementTranslatorStackItem(1, top.node.body))
                         }
                         is ParsedWhileNode -> {
@@ -134,11 +137,20 @@ internal class StatementTranslator (
 
                     when(top.node) {
                         is ParsedDoWhileNode -> {
-                            val expression = expressionStack.pop()
-                            val body = resultStack.pop()
+                            val falseLabel = labelStack.pop()
+                            val trueLabel = labelStack.pop()
+                            val (expression, l, t) = booleanExpressionTranslator.translate(top.node.expression, trueLabel, falseLabel, labelCounter, tempCounter, variableToTypeMap)
+                            labelCounter = l
+                            tempCounter = t
+                            val body = mutableListOf<ITranslatedStatementNode>()
+                            for (i in 0 until top.node.body.getNumberOfStatements()) {
+                                body.add(resultStack.pop())
+                            }
                             val doWhile = TranslatedDoWhileNode(
                                 expression,
-                                body
+                                body,
+                                falseLabel,
+                                trueLabel
                             )
                             resultStack.push(doWhile)
                         }

@@ -49,7 +49,7 @@ class RegressionTest {
     @Test
     fun regressionIndividualTest() {
 
-        val input = Program23
+        val input = Program24
         val intermediateCode = null
         val (parseTreeString, translatedTreeString) = recursiveCompiler.compile(input)
         Assertions.assertEquals(input, parseTreeString)
@@ -89,7 +89,8 @@ class RegressionTest {
                 Triple(Program20, IProgram20, 39),
                 Triple(Program21, null, 152),
                 Triple(Program22, null, 367),
-                Triple(Program23, IProgram23, 0)
+                Triple(Program23, IProgram23, 0),
+                Triple(Program24, IProgram24, 0)
             )
         }
 
@@ -709,6 +710,53 @@ double fft() {
     a[_t6] = _t7;
     int _t8 = a[0];
     return _t8;
+}"""
+
+        private const val Program24 =
+"""int test24() {
+    int a[10];
+    int i = 0;
+    do {
+        a[i] = 1;
+        a[i] = i;
+        ++i;
+    } while (i < 10);
+    int x = 0;
+    int y = 1;
+    int z = 5;
+    x = y + z;
+    a[x] = x;
+    return a[x - 1];
+}"""
+        private const val IProgram24 =
+"""int test24() {
+    int a[10];
+    int i = 0;
+    _l1: ;
+    int _t0 = i;
+    a[_t0] = 1;
+    int _t1 = i;
+    int _t2 = i;
+    a[_t1] = _t2;
+    i = i + 1;
+    int _t3 = i;
+    if (_t3 < 10) goto _l1;
+    goto _l0;
+    _l0: ;
+    int x = 0;
+    int y = 1;
+    int z = 5;
+    int _t4 = y;
+    int _t5 = z;
+    int _t6 = _t4 + _t5;
+    x = _t6;
+    int _t7 = x;
+    int _t8 = x;
+    a[_t7] = _t8;
+    int _t9 = x;
+    int _t10 = _t9 - 1;
+    int _t11 = a[_t10];
+    return _t11;
 }"""
     }
 }

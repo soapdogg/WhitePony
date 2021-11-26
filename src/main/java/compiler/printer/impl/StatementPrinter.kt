@@ -15,11 +15,6 @@ internal class StatementPrinter(
     private val expressionPrinter: IExpressionPrinter
 ): IStatementPrinter {
     override fun printNode(node: IStatementNode, numberOfTabs: Int): String {
-
-        return printParseNode(node, numberOfTabs)
-    }
-
-    private fun printParseNode(node: IStatementNode, numberOfTabs: Int): String {
         val stack = Stack<StatementPrinterStackItem>()
         val resultStack = Stack<String>()
         stack.push(StatementPrinterStackItem(node, numberOfTabs, PrinterConstants.LOCATION_1))
@@ -46,6 +41,12 @@ internal class StatementPrinter(
                             }
                         }
                         is TranslatedForNode -> {
+                            top.node.body.forEach {
+                                val stackItem = StatementPrinterStackItem(it, top.numberOfTabs, PrinterConstants.LOCATION_1)
+                                stackItems.add(stackItem)
+                            }
+                        }
+                        is TranslatedDoWhileNode -> {
                             top.node.body.forEach {
                                 val stackItem = StatementPrinterStackItem(it, top.numberOfTabs, PrinterConstants.LOCATION_1)
                                 stackItems.add(stackItem)
@@ -224,6 +225,30 @@ internal class StatementPrinter(
                                     ) +
                                     PrinterConstants.NEW_LINE + tabs + PrinterConstants.GOTO + PrinterConstants.SPACE + top.node.beginLabel + PrinterConstants.SEMICOLON +
                                     PrinterConstants.NEW_LINE + tabs + top.node.falseLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
+                        }
+                        is TranslatedDoWhileNode -> {
+                            var tabs = PrinterConstants.EMPTY
+                            for (i in 0 until numberOfTabs + 1) {
+                                tabs += PrinterConstants.TAB
+                            }
+                            val bodyStatementStrings = mutableListOf<String>()
+                            for (i in 0 until top.node.body.size) {
+                                bodyStatementStrings.add(resultStack.pop())
+                            }
+                            bodyStatementStrings.reverse()
+                            top.node.trueLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
+                                    bodyStatementStrings.joinToString(
+                                        PrinterConstants.NEW_LINE + tabs,
+                                        PrinterConstants.NEW_LINE + tabs,
+                                        PrinterConstants.EMPTY
+                                    ) +
+                                    top.node.expressionNode.code.joinToString(
+                                        PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs,
+                                        PrinterConstants.NEW_LINE + tabs,
+                                        PrinterConstants.SEMICOLON
+                                    ) +
+                                    PrinterConstants.NEW_LINE + tabs + top.node.falseLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
+
                         }
                         is TranslatedWhileNode -> {
                             var tabs = PrinterConstants.EMPTY
