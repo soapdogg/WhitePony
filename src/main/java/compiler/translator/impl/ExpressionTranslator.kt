@@ -6,17 +6,21 @@ import compiler.core.nodes.parsed.*
 import compiler.core.nodes.translated.TranslatedExpressionNode
 import compiler.core.stack.ExpressionTranslatorStackItem
 import compiler.core.stack.Stack
+import compiler.translator.impl.internal.*
 import compiler.translator.impl.internal.IConstantExpressionTranslator
 import compiler.translator.impl.internal.IExpressionTranslator
 import compiler.translator.impl.internal.IInnerExpressionTranslator
 import compiler.translator.impl.internal.ITempGenerator
 import compiler.translator.impl.internal.ITypeDeterminer
+import compiler.translator.impl.internal.IVariableExpressionTranslator
 
 internal class ExpressionTranslator(
     private val innerExpressionTranslator: IInnerExpressionTranslator,
+    private val variableExpressionTranslator: IVariableExpressionTranslator,
     private val constantExpressionTranslator: IConstantExpressionTranslator,
     private val tempGenerator: ITempGenerator,
-    private val typeDeterminer: ITypeDeterminer
+    private val typeDeterminer: ITypeDeterminer,
+    private val tempDeclarationCodeGenerator: ITempDeclarationCodeGenerator
 ): IExpressionTranslator {
     override fun translate(
         expressionNode: IParsedExpressionNode,
@@ -107,19 +111,19 @@ internal class ExpressionTranslator(
                                 val (address, tc) = tempGenerator.generateTempVariable(t)
                                 t = tc
                                 val type = variableToTypeMap.getValue(top.node.leftExpression.value)
+                                val rValue = top.node.leftExpression.value +
+                                        PrinterConstants.SPACE +
+                                        top.node.operator +
+                                        PrinterConstants.SPACE +
+                                        rightExpression.address
+                                val tempDeclarationCode = tempDeclarationCodeGenerator.generateTempDeclarationCode(
+                                    type,
+                                    address,
+                                    rValue
+                                )
                                 val code = rightExpression.code +
                                         listOf(
-                                            type +
-                                                    PrinterConstants.SPACE +
-                                                    address +
-                                                    PrinterConstants.SPACE +
-                                                    PrinterConstants.EQUALS +
-                                                    PrinterConstants.SPACE +
-                                                    top.node.leftExpression.value +
-                                                    PrinterConstants.SPACE +
-                                                    top.node.operator +
-                                                    PrinterConstants.SPACE +
-                                                    rightExpression.address,
+                                            tempDeclarationCode,
                                             top.node.leftExpression.value +
                                                     PrinterConstants.SPACE +
                                                     PrinterConstants.EQUALS +
@@ -150,19 +154,17 @@ internal class ExpressionTranslator(
                                 val (address, tc) = tempGenerator.generateTempVariable(t)
                                 t = tc
                                 val type = variableToTypeMap.getValue(top.node.leftExpression.leftExpression.value)
+                                val rValue = top.node.leftExpression.leftExpression.value +
+                                        PrinterConstants.LEFT_BRACKET +
+                                        insideArrayExpression.address +
+                                        PrinterConstants.RIGHT_BRACKET
+                                val tempDeclarationCode = tempDeclarationCodeGenerator.generateTempDeclarationCode(
+                                    type,
+                                    address,
+                                    rValue
+                                )
                                 val code = insideArrayExpression.code +
-                                        listOf(
-                                            type +
-                                                PrinterConstants.SPACE +
-                                                address +
-                                                PrinterConstants.SPACE +
-                                                PrinterConstants.EQUALS +
-                                                PrinterConstants.SPACE +
-                                                top.node.leftExpression.leftExpression.value +
-                                                PrinterConstants.LEFT_BRACKET +
-                                                insideArrayExpression.address +
-                                                PrinterConstants.RIGHT_BRACKET
-                                        ) +
+                                        listOf(tempDeclarationCode) +
                                     rightExpression.code +
                                         listOf(address +
                                             PrinterConstants.SPACE +
@@ -209,21 +211,20 @@ internal class ExpressionTranslator(
                             val (address, tc) = tempGenerator.generateTempVariable(t)
                             t = tc
                             val type = typeDeterminer.determineType(leftExpression.type, rightExpression.type)
+                            val rValue = leftExpression.address +
+                                    PrinterConstants.SPACE +
+                                    top.node.operator +
+                                    PrinterConstants.SPACE +
+                                    rightExpression.address
+                            val tempDeclarationCode = tempDeclarationCodeGenerator.generateTempDeclarationCode(
+                                type,
+                                address,
+                                rValue
+                            )
+
                             val code = leftExpression.code +
                                 rightExpression.code +
-                                listOf(
-                                    type +
-                                        PrinterConstants.SPACE +
-                                        address +
-                                        PrinterConstants.SPACE +
-                                        PrinterConstants.EQUALS +
-                                        PrinterConstants.SPACE +
-                                        leftExpression.address +
-                                        PrinterConstants.SPACE +
-                                        top.node.operator +
-                                        PrinterConstants.SPACE +
-                                        rightExpression.address
-                                )
+                                listOf(tempDeclarationCode)
 
                             val translatedBinaryOperatorNode = TranslatedExpressionNode(
                                 address,
@@ -245,8 +246,17 @@ internal class ExpressionTranslator(
                             val (address, tc) = tempGenerator.generateTempVariable(t)
                             t = tc
                             val type = variableToTypeMap.getValue(top.node.leftExpression.value)
+                            val rValue = top.node.leftExpression.value +
+                                    PrinterConstants.LEFT_BRACKET +
+                                    rightExpression.address +
+                                    PrinterConstants.RIGHT_BRACKET
+                            val tempDeclarationCode = tempDeclarationCodeGenerator.generateTempDeclarationCode(
+                                type,
+                                address,
+                                rValue
+                            )
                             val code = rightExpression.code +
-                                    listOf(type + PrinterConstants.SPACE + address + PrinterConstants.SPACE + PrinterConstants.EQUALS + PrinterConstants.SPACE + top.node.leftExpression.value + PrinterConstants.LEFT_BRACKET + rightExpression.address + PrinterConstants.RIGHT_BRACKET)
+                                    listOf(tempDeclarationCode)
                             val translatedExpressionNode = TranslatedExpressionNode(
                                 address,
                                 code,
@@ -269,17 +279,15 @@ internal class ExpressionTranslator(
                             } else {
                                 val (address, tc) = tempGenerator.generateTempVariable(t)
                                 t = tc
+                                val rValue = top.node.operator +
+                                        expression.address
+                                val tempDeclarationCode = tempDeclarationCodeGenerator.generateTempDeclarationCode(
+                                    expression.type,
+                                    address,
+                                    rValue
+                                )
                                 val code = expression.code +
-                                        listOf(
-                                            expression.type +
-                                                    PrinterConstants.SPACE +
-                                                    address +
-                                                    PrinterConstants.SPACE +
-                                                    PrinterConstants.EQUALS +
-                                                    PrinterConstants.SPACE +
-                                                    top.node.operator +
-                                                    expression.address
-                                        )
+                                        listOf(tempDeclarationCode)
                                 val translatedExpressionNode = TranslatedExpressionNode(
                                     address,
                                     code,
@@ -321,18 +329,18 @@ internal class ExpressionTranslator(
                                 val (address, tc) = tempGenerator.generateTempVariable(t)
                                 t = tc
                                 val type = variableToTypeMap.getValue(top.node.expression.leftExpression.value)
+                                val rValue = top.node.expression.leftExpression.value +
+                                        PrinterConstants.LEFT_BRACKET +
+                                        insideExpression.address +
+                                        PrinterConstants.RIGHT_BRACKET
+                                val tempDeclarationCode = tempDeclarationCodeGenerator.generateTempDeclarationCode(
+                                    type,
+                                    address,
+                                    rValue
+                                )
                                 val code = insideExpression.code +
                                         listOf(
-                                            type +
-                                                    PrinterConstants.SPACE +
-                                                    address +
-                                                    PrinterConstants.SPACE +
-                                                    PrinterConstants.EQUALS +
-                                                    PrinterConstants.SPACE +
-                                                    top.node.expression.leftExpression.value +
-                                                    PrinterConstants.LEFT_BRACKET +
-                                                    insideExpression.address +
-                                                    PrinterConstants.RIGHT_BRACKET,
+                                            tempDeclarationCode,
                                             address +
                                                     PrinterConstants.SPACE +
                                                     PrinterConstants.EQUALS +
@@ -366,14 +374,13 @@ internal class ExpressionTranslator(
                         val (address, tc) = tempGenerator.generateTempVariable(t)
                         t = tc
                         val type = variableToTypeMap.getValue(top.node.expression.value)
+                        val tempDeclarationCode = tempDeclarationCodeGenerator.generateTempDeclarationCode(
+                            type,
+                            address,
+                            top.node.expression.value
+                        )
                         val code = listOf(
-                            type +
-                                    PrinterConstants.SPACE +
-                                    address +
-                                    PrinterConstants.SPACE +
-                                    PrinterConstants.EQUALS +
-                                    PrinterConstants.SPACE +
-                                    top.node.expression.value,
+                            tempDeclarationCode,
                             top.node.expression.value +
                                     PrinterConstants.SPACE +
                                     PrinterConstants.EQUALS +
@@ -401,18 +408,18 @@ internal class ExpressionTranslator(
                                 val (address, tc) = tempGenerator.generateTempVariable(t)
                                 t = tc
                                 val type = variableToTypeMap.getValue(top.node.expression.leftExpression.value)
+                                val rValue = top.node.expression.leftExpression.value +
+                                        PrinterConstants.LEFT_BRACKET +
+                                        insideExpression.address +
+                                        PrinterConstants.RIGHT_BRACKET
+                                val tempDeclarationCode = tempDeclarationCodeGenerator.generateTempDeclarationCode(
+                                    type,
+                                    address,
+                                    rValue
+                                )
                                 val code = insideExpression.code +
                                         listOf(
-                                            type +
-                                                    PrinterConstants.SPACE +
-                                                    address +
-                                                    PrinterConstants.SPACE +
-                                                    PrinterConstants.EQUALS +
-                                                    PrinterConstants.SPACE +
-                                                    top.node.expression.leftExpression.value +
-                                                    PrinterConstants.LEFT_BRACKET +
-                                                    insideExpression.address +
-                                                    PrinterConstants.RIGHT_BRACKET,
+                                            tempDeclarationCode,
                                             address +
                                                     PrinterConstants.SPACE +
                                                     PrinterConstants.EQUALS +
@@ -454,16 +461,12 @@ internal class ExpressionTranslator(
                     innerExpressionTranslator.translate(top.node, stack)
                 }
                 is ParsedVariableExpressionNode -> {
-                    val (address, tc) = tempGenerator.generateTempVariable(t)
-                    t = tc
-                    val type = variableToTypeMap.getValue(top.node.value)
-                    val code = type + PrinterConstants.SPACE + address + PrinterConstants.SPACE + PrinterConstants.EQUALS + PrinterConstants.SPACE + top.node.value
-                    val translatedVariableExpressionNode = TranslatedExpressionNode(
-                        address,
-                        listOf(code),
-                        type
+                    t = variableExpressionTranslator.translate(
+                        top.node,
+                        variableToTypeMap,
+                        t,
+                        resultStack
                     )
-                    resultStack.push(translatedVariableExpressionNode)
                 }
                 is ParsedConstantExpressionNode -> {
                     constantExpressionTranslator.translate(top.node, resultStack)
