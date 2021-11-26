@@ -6,8 +6,8 @@ import compiler.core.nodes.translated.TranslatedBooleanExpressionNode
 interface IBooleanExpressionTranslator {
     fun translate(
         expressionNode: IParsedExpressionNode,
-        trueLabel: String,
-        falseLabel: String,
+        topTrueLabel: String,
+        topFalseLabel: String,
         labelCounter: Int,
         tempCounter: Int,
         variableToTypeMap: Map<String, String>

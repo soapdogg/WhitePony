@@ -1,6 +1,6 @@
 package compiler.core.nodes.parsed
 
-data class ParsedConstantNode(
+data class ParsedConstantExpressionNode(
     override val value: String,
     val type: String
 ): IParsedValueExpressionNode

@@ -13,15 +13,15 @@ internal class BooleanExpressionTranslator(
 ): IBooleanExpressionTranslator {
     override fun translate(
         expressionNode: IParsedExpressionNode,
-        trueLabel: String,
-        falseLabel: String,
+        topTrueLabel: String,
+        topFalseLabel: String,
         labelCounter: Int,
         tempCounter: Int,
         variableToTypeMap: Map<String, String>
     ): Triple<TranslatedBooleanExpressionNode, Int, Int> {
 
         val stack = Stack<BooleanExpressionTranslatorStackItem>()
-        stack.push(BooleanExpressionTranslatorStackItem(1, expressionNode, trueLabel, falseLabel))
+        stack.push(BooleanExpressionTranslatorStackItem(1, expressionNode, topTrueLabel, topFalseLabel))
         val resultStack = Stack<TranslatedBooleanExpressionNode>()
         val labelStack = Stack<String>()
         var l = labelCounter

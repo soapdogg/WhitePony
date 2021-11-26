@@ -241,7 +241,7 @@ internal class ExpressionParser: IExpressionParser {
     ): Pair<IParsedExpressionNode, Int> {
         val constantToken = tokens[startingPosition]
         val type = if (constantToken.type == TokenType.INTEGER) "int" else "double"
-        val constantNode = ParsedConstantNode(constantToken.value, type)
+        val constantNode = ParsedConstantExpressionNode(constantToken.value, type)
         return Pair(constantNode, startingPosition + 1)
     }
 
