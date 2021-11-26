@@ -1,8 +1,7 @@
 package compiler.translator.impl.internal
 
-import compiler.core.IParsedStatementNode
-import compiler.core.ITranslatedStatementNode
-import compiler.core.TranslatedBasicBlockNode
+import compiler.core.nodes.parsed.IParsedStatementNode
+import compiler.core.nodes.translated.TranslatedBasicBlockNode
 
 internal interface IStatementTranslator {
     fun translate(

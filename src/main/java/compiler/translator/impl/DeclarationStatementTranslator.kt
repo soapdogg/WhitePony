@@ -1,6 +1,9 @@
 package compiler.translator.impl
 
-import compiler.core.*
+import compiler.core.nodes.parsed.IParsedDeclarationStatementNode
+import compiler.core.nodes.translated.ITranslatedDeclarationStatementNode
+import compiler.core.nodes.parsed.ParsedFunctionDeclarationNode
+import compiler.core.nodes.VariableDeclarationListNode
 import compiler.translator.impl.internal.IDeclarationStatementTranslator
 import compiler.translator.impl.internal.IFunctionDeclarationTranslator
 import compiler.translator.impl.internal.IVariableTypeRecorder

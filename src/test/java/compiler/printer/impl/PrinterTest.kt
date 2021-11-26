@@ -1,7 +1,7 @@
 package compiler.printer.impl
 
-import compiler.core.IParsedDeclarationStatementNode
-import compiler.core.ParsedProgramRootNode
+import compiler.core.nodes.parsed.IParsedDeclarationStatementNode
+import compiler.core.nodes.parsed.ParsedProgramRootNode
 import compiler.printer.impl.internal.IDeclarationStatementPrinter
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test

@@ -1,7 +1,10 @@
 package compiler.translator.impl
 
-import compiler.core.*
 import compiler.core.constants.PrinterConstants
+import compiler.core.nodes.parsed.*
+import compiler.core.nodes.translated.TranslatedBooleanExpressionNode
+import compiler.core.stack.BooleanExpressionTranslatorStackItem
+import compiler.core.stack.Stack
 import compiler.translator.impl.internal.IBooleanExpressionTranslator
 import compiler.translator.impl.internal.IExpressionTranslator
 
@@ -86,7 +89,7 @@ internal class BooleanExpressionTranslator(
                 is ParsedUnaryNotOperatorNode -> {
                     stack.push(BooleanExpressionTranslatorStackItem(1, top.node.expression, top.falseLabel, top.trueLabel))
                 }
-                is ParsedInnerExpression -> {
+                is ParsedInnerExpressionNode -> {
                     stack.push(BooleanExpressionTranslatorStackItem(1, top.node.expression, top.trueLabel, top.falseLabel))
                 }
                 is ParsedBinaryRelationalOperatorNode -> {

@@ -1,7 +1,7 @@
 package compiler.tokenizer
 
-import compiler.core.TokenType
-import compiler.core.TokenTypeRegexPattern
+import compiler.core.tokenizer.TokenType
+import compiler.core.tokenizer.TokenTypeRegexPattern
 import compiler.core.constants.TokenizerConstants
 import compiler.tokenizer.impl.MatchFinder
 import compiler.tokenizer.impl.Tokenizer

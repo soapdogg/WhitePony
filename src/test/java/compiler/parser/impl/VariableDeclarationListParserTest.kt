@@ -1,8 +1,8 @@
 package compiler.parser.impl
 
-import compiler.core.Token
-import compiler.core.TokenType
-import compiler.core.VariableDeclarationNode
+import compiler.core.tokenizer.Token
+import compiler.core.tokenizer.TokenType
+import compiler.core.nodes.VariableDeclarationNode
 import compiler.parser.impl.internal.ITokenTypeAsserter
 import compiler.parser.impl.internal.IVariableDeclarationParser
 import org.junit.jupiter.api.Assertions

@@ -1,6 +1,6 @@
 package compiler.tokenizer.impl
 
-import compiler.core.Token
+import compiler.core.tokenizer.Token
 import compiler.core.constants.TokenizerConstants
 import compiler.tokenizer.ITokenizer
 import compiler.tokenizer.impl.internal.IWordTokenizer

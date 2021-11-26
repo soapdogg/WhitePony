@@ -1,7 +1,9 @@
 package compiler.parser.impl
 
-import compiler.core.*
 import compiler.core.constants.TokenizerConstants
+import compiler.core.nodes.parsed.*
+import compiler.core.tokenizer.Token
+import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.internal.IExpressionParser
 
 internal class ExpressionParser: IExpressionParser {
@@ -273,6 +275,6 @@ internal class ExpressionParser: IExpressionParser {
         startingPosition: Int
     ): Pair<IParsedExpressionNode, Int> {
         val (innerExpression, positionAfterInnerExpression) = parse(tokens, startingPosition + 1,)
-        return Pair(ParsedInnerExpression(innerExpression), positionAfterInnerExpression + 1)
+        return Pair(ParsedInnerExpressionNode(innerExpression), positionAfterInnerExpression + 1)
     }
 }

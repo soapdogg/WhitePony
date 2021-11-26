@@ -1,7 +1,7 @@
 package compiler.parser.impl
 
-import compiler.core.IParsedDeclarationStatementNode
-import compiler.core.Token
+import compiler.core.nodes.parsed.IParsedDeclarationStatementNode
+import compiler.core.tokenizer.Token
 import compiler.parser.impl.internal.IDeclarationStatementParser
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test

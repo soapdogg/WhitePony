@@ -1,6 +1,6 @@
 package compiler.printer.impl
 
-import compiler.core.ParsedReturnNode
+import compiler.core.nodes.parsed.ParsedReturnNode
 import compiler.core.constants.PrinterConstants
 import compiler.printer.impl.internal.IExpressionStatementPrinter
 import compiler.printer.impl.internal.IReturnStatementPrinter

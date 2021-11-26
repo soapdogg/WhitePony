@@ -1,7 +1,7 @@
 package compiler.printer.impl
 
-import compiler.core.ParsedFunctionDeclarationNode
-import compiler.core.VariableDeclarationListNode
+import compiler.core.nodes.parsed.ParsedFunctionDeclarationNode
+import compiler.core.nodes.VariableDeclarationListNode
 import compiler.printer.impl.internal.IFunctionDeclarationPrinter
 import compiler.printer.impl.internal.IVariableDeclarationListPrinter
 import org.junit.jupiter.api.Assertions

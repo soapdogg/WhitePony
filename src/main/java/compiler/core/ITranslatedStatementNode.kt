@@ -1,3 +1,0 @@
-package compiler.core
-
-interface ITranslatedStatementNode: IStatementNode

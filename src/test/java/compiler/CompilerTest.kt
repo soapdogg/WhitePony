@@ -1,13 +1,12 @@
 package compiler
 
-import compiler.core.ParsedProgramRootNode
-import compiler.core.Token
-import compiler.core.TranslatedProgramRootNode
+import compiler.core.nodes.parsed.ParsedProgramRootNode
+import compiler.core.tokenizer.Token
+import compiler.core.nodes.translated.TranslatedProgramRootNode
 import compiler.parser.IParser
 import compiler.printer.IPrinter
 import compiler.tokenizer.ITokenizer
 import compiler.translator.ITranslator
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 

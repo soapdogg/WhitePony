@@ -1,6 +1,6 @@
 package compiler.printer.impl
 
-import compiler.core.IFunctionDeclarationNode
+import compiler.core.nodes.IFunctionDeclarationNode
 import compiler.core.constants.PrinterConstants
 import compiler.printer.impl.internal.IFunctionDeclarationPrinter
 import compiler.printer.impl.internal.IStatementPrinter

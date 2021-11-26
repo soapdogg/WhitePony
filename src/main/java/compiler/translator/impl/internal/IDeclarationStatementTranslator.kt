@@ -1,7 +1,7 @@
 package compiler.translator.impl.internal
 
-import compiler.core.IParsedDeclarationStatementNode
-import compiler.core.ITranslatedDeclarationStatementNode
+import compiler.core.nodes.parsed.IParsedDeclarationStatementNode
+import compiler.core.nodes.translated.ITranslatedDeclarationStatementNode
 
 internal interface IDeclarationStatementTranslator {
     fun translate(

@@ -1,6 +1,6 @@
 package compiler.printer.impl
 
-import compiler.core.ArrayNode
+import compiler.core.nodes.ArrayNode
 import compiler.core.constants.PrinterConstants
 import compiler.printer.impl.internal.IArrayPrinter
 import compiler.printer.impl.internal.IExpressionPrinter

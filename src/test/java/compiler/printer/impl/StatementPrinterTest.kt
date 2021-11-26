@@ -1,6 +1,4 @@
 package compiler.printer.impl
 
 
-class StatementPrinterTest {
-
-}
+class StatementPrinterTest

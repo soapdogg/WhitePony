@@ -1,7 +1,7 @@
 package compiler.tokenizer.impl
 
-import compiler.core.Token
-import compiler.core.TokenTypeRegexPattern
+import compiler.core.tokenizer.Token
+import compiler.core.tokenizer.TokenTypeRegexPattern
 import compiler.tokenizer.impl.internal.IMatchFinder
 
 internal class MatchFinder (

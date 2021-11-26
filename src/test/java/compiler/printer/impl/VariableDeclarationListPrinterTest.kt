@@ -1,7 +1,7 @@
 package compiler.printer.impl
 
-import compiler.core.VariableDeclarationListNode
-import compiler.core.VariableDeclarationNode
+import compiler.core.nodes.VariableDeclarationListNode
+import compiler.core.nodes.VariableDeclarationNode
 import compiler.core.constants.PrinterConstants
 import compiler.printer.impl.internal.IVariableDeclarationPrinter
 import org.junit.jupiter.api.Assertions

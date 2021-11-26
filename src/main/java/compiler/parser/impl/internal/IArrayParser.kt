@@ -1,7 +1,7 @@
 package compiler.parser.impl.internal
 
-import compiler.core.ArrayNode
-import compiler.core.Token
+import compiler.core.nodes.ArrayNode
+import compiler.core.tokenizer.Token
 
 internal interface IArrayParser {
     fun parse(

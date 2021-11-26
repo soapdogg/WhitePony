@@ -1,6 +1,10 @@
 package compiler.translator.impl
 
-import compiler.core.*
+import compiler.core.nodes.*
+import compiler.core.nodes.parsed.*
+import compiler.core.nodes.translated.*
+import compiler.core.stack.Stack
+import compiler.core.stack.StatementTranslatorStackItem
 import compiler.translator.impl.internal.*
 import compiler.translator.impl.internal.IExpressionStatementTranslator
 import compiler.translator.impl.internal.IExpressionTranslator

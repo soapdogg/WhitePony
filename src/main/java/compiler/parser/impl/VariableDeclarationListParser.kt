@@ -1,6 +1,9 @@
 package compiler.parser.impl
 
-import compiler.core.*
+import compiler.core.nodes.VariableDeclarationListNode
+import compiler.core.nodes.VariableDeclarationNode
+import compiler.core.tokenizer.Token
+import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.internal.ITokenTypeAsserter
 import compiler.parser.impl.internal.IVariableDeclarationListParser
 import compiler.parser.impl.internal.IVariableDeclarationParser

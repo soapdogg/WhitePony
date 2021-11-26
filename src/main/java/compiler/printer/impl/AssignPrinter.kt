@@ -1,6 +1,6 @@
 package compiler.printer.impl
 
-import compiler.core.AssignNode
+import compiler.core.nodes.AssignNode
 import compiler.core.constants.PrinterConstants
 import compiler.printer.impl.internal.IAssignPrinter
 import compiler.printer.impl.internal.IExpressionPrinter

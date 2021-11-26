@@ -1,7 +1,10 @@
 package compiler.printer.impl
 
-import compiler.core.*
 import compiler.core.constants.PrinterConstants
+import compiler.core.nodes.*
+import compiler.core.nodes.parsed.*
+import compiler.core.stack.ExpressionPrinterStackItem
+import compiler.core.stack.Stack
 import compiler.printer.impl.internal.IExpressionPrinter
 
 internal class ExpressionPrinter: IExpressionPrinter {
@@ -113,7 +116,7 @@ internal class ExpressionPrinter: IExpressionPrinter {
                         }
                         PrinterConstants.LOCATION_2 -> {
                             val result = when(top.node) {
-                                is ParsedInnerExpression -> {
+                                is ParsedInnerExpressionNode -> {
                                     val expressionString = resultStack.pop()
                                     PrinterConstants.LEFT_PARENTHESES +
                                             expressionString +

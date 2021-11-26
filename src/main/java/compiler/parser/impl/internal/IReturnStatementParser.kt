@@ -1,7 +1,7 @@
 package compiler.parser.impl.internal
 
-import compiler.core.ParsedReturnNode
-import compiler.core.Token
+import compiler.core.nodes.parsed.ParsedReturnNode
+import compiler.core.tokenizer.Token
 
 internal interface IReturnStatementParser {
     fun parse(

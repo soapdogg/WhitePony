@@ -1,12 +1,10 @@
 package compiler.parser.impl
 
-import compiler.core.Token
-import compiler.core.TokenType
+import compiler.core.tokenizer.Token
+import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.internal.ITokenTypeAsserter
 
-internal class TokenTypeAsserter(
-
-): ITokenTypeAsserter {
+internal class TokenTypeAsserter : ITokenTypeAsserter {
     override fun assertTokenType(
         tokens: List<Token>,
         position: Int,

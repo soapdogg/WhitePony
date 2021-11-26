@@ -1,7 +1,7 @@
 package compiler.printer.impl
 
-import compiler.core.ParsedBasicBlockNode
-import compiler.core.ParsedFunctionDeclarationNode
+import compiler.core.nodes.parsed.ParsedBasicBlockNode
+import compiler.core.nodes.parsed.ParsedFunctionDeclarationNode
 import compiler.core.constants.PrinterConstants
 import compiler.printer.impl.internal.IStatementPrinter
 import org.junit.jupiter.api.Assertions

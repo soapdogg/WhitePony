@@ -1,8 +1,8 @@
 package compiler.translator.impl
 
-import compiler.core.ParsedFunctionDeclarationNode
-import compiler.core.TranslatedFunctionDeclarationNode
-import compiler.core.VariableDeclarationListNode
+import compiler.core.nodes.parsed.ParsedFunctionDeclarationNode
+import compiler.core.nodes.translated.TranslatedFunctionDeclarationNode
+import compiler.core.nodes.VariableDeclarationListNode
 import compiler.translator.impl.internal.IFunctionDeclarationTranslator
 import compiler.translator.impl.internal.IVariableTypeRecorder
 import org.junit.jupiter.api.Assertions

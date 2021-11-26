@@ -1,7 +1,10 @@
 package compiler.parser.impl
 
-import compiler.core.*
 import compiler.core.constants.StatementParserConstants
+import compiler.core.nodes.parsed.*
+import compiler.core.stack.Stack
+import compiler.core.tokenizer.Token
+import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.internal.IExpressionParser
 import compiler.parser.impl.internal.IExpressionStatementParser
 import compiler.parser.impl.internal.IReturnStatementParser

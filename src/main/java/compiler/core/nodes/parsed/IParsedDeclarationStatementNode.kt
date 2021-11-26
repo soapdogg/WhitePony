@@ -1,0 +1,5 @@
+package compiler.core.nodes.parsed
+
+import compiler.core.nodes.IDeclarationStatementNode
+
+interface IParsedDeclarationStatementNode : IDeclarationStatementNode

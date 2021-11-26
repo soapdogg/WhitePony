@@ -1,8 +1,8 @@
 package compiler.parser.impl
 
-import compiler.core.IParsedExpressionNode
-import compiler.core.Token
-import compiler.core.TokenType
+import compiler.core.nodes.parsed.IParsedExpressionNode
+import compiler.core.tokenizer.Token
+import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.internal.IExpressionParser
 import compiler.parser.impl.internal.ITokenTypeAsserter
 import org.junit.jupiter.api.Assertions

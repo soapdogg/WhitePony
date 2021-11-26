@@ -1,7 +1,7 @@
 package compiler.parser.impl
 
-import compiler.core.Token
-import compiler.core.TokenType
+import compiler.core.tokenizer.Token
+import compiler.core.tokenizer.TokenType
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito

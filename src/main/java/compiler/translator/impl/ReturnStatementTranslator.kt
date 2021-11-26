@@ -1,7 +1,7 @@
 package compiler.translator.impl
 
-import compiler.core.ParsedReturnNode
-import compiler.core.TranslatedReturnNode
+import compiler.core.nodes.parsed.ParsedReturnNode
+import compiler.core.nodes.translated.TranslatedReturnNode
 import compiler.translator.impl.internal.IExpressionStatementTranslator
 import compiler.translator.impl.internal.IReturnStatementTranslator
 

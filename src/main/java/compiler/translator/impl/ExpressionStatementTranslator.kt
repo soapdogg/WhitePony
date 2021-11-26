@@ -1,7 +1,7 @@
 package compiler.translator.impl
 
-import compiler.core.ParsedExpressionStatementNode
-import compiler.core.TranslatedExpressionStatementNode
+import compiler.core.nodes.parsed.ParsedExpressionStatementNode
+import compiler.core.nodes.translated.TranslatedExpressionStatementNode
 import compiler.translator.impl.internal.IExpressionStatementTranslator
 import compiler.translator.impl.internal.IExpressionTranslator
 

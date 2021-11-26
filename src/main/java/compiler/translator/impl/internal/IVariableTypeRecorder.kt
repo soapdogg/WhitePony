@@ -1,6 +1,6 @@
 package compiler.translator.impl.internal
 
-import compiler.core.VariableDeclarationListNode
+import compiler.core.nodes.VariableDeclarationListNode
 
 interface IVariableTypeRecorder {
     fun recordVariableTypes(

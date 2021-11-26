@@ -1,7 +1,7 @@
 package compiler.printer.impl
 
-import compiler.core.IParsedExpressionNode
-import compiler.core.ParsedExpressionStatementNode
+import compiler.core.nodes.parsed.IParsedExpressionNode
+import compiler.core.nodes.parsed.ParsedExpressionStatementNode
 import compiler.core.constants.PrinterConstants
 import compiler.printer.impl.internal.IExpressionPrinter
 import org.junit.jupiter.api.Assertions

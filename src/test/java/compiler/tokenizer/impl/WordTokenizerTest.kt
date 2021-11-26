@@ -1,6 +1,6 @@
 package compiler.tokenizer.impl
 
-import compiler.core.Token
+import compiler.core.tokenizer.Token
 import compiler.tokenizer.impl.internal.IMatchFinder
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test

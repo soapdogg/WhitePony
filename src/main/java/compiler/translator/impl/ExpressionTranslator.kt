@@ -1,12 +1,14 @@
 package compiler.translator.impl
 
-import compiler.core.*
 import compiler.core.constants.PrinterConstants
 import compiler.core.constants.TokenizerConstants
+import compiler.core.nodes.parsed.*
+import compiler.core.nodes.translated.TranslatedExpressionNode
+import compiler.core.stack.ExpressionTranslatorStackItem
+import compiler.core.stack.Stack
 import compiler.translator.impl.internal.IExpressionTranslator
 import compiler.translator.impl.internal.ITempGenerator
 import compiler.translator.impl.internal.ITypeDeterminer
-import kotlin.math.exp
 
 internal class ExpressionTranslator(
     private val tempGenerator: ITempGenerator,
@@ -444,7 +446,7 @@ internal class ExpressionTranslator(
                         }
                     }
                 }
-                is ParsedInnerExpression -> {
+                is ParsedInnerExpressionNode -> {
                     stack.push(ExpressionTranslatorStackItem(1, top.node.expression))
                 }
                 is ParsedVariableExpressionNode -> {

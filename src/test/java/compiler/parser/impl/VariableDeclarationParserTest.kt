@@ -1,9 +1,9 @@
 package compiler.parser.impl
 
-import compiler.core.ArrayNode
-import compiler.core.AssignNode
-import compiler.core.Token
-import compiler.core.TokenType
+import compiler.core.nodes.ArrayNode
+import compiler.core.nodes.AssignNode
+import compiler.core.tokenizer.Token
+import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.internal.IArrayParser
 import compiler.parser.impl.internal.IAssignParser
 import compiler.parser.impl.internal.ITokenTypeAsserter

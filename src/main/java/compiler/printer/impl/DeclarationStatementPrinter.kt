@@ -1,6 +1,8 @@
 package compiler.printer.impl
 
-import compiler.core.*
+import compiler.core.nodes.IDeclarationStatementNode
+import compiler.core.nodes.IFunctionDeclarationNode
+import compiler.core.nodes.VariableDeclarationListNode
 import compiler.printer.impl.internal.IDeclarationStatementPrinter
 import compiler.printer.impl.internal.IFunctionDeclarationPrinter
 import compiler.printer.impl.internal.IVariableDeclarationListPrinter

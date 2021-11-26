@@ -1,7 +1,7 @@
 package compiler.translator.impl.internal
 
-import compiler.core.ParsedReturnNode
-import compiler.core.TranslatedReturnNode
+import compiler.core.nodes.parsed.ParsedReturnNode
+import compiler.core.nodes.translated.TranslatedReturnNode
 
 internal interface IReturnStatementTranslator {
     fun translate(

@@ -1,8 +1,8 @@
 package compiler.translator.impl
 
-import compiler.core.IParsedDeclarationStatementNode
-import compiler.core.ITranslatedDeclarationStatementNode
-import compiler.core.ParsedProgramRootNode
+import compiler.core.nodes.parsed.IParsedDeclarationStatementNode
+import compiler.core.nodes.translated.ITranslatedDeclarationStatementNode
+import compiler.core.nodes.parsed.ParsedProgramRootNode
 import compiler.translator.impl.internal.IDeclarationStatementTranslator
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test

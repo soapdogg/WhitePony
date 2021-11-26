@@ -1,7 +1,7 @@
 package compiler.translator.impl.internal
 
-import compiler.core.IParsedExpressionNode
-import compiler.core.TranslatedBooleanExpressionNode
+import compiler.core.nodes.parsed.IParsedExpressionNode
+import compiler.core.nodes.translated.TranslatedBooleanExpressionNode
 
 interface IBooleanExpressionTranslator {
     fun translate(

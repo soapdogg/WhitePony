@@ -1,8 +1,7 @@
 package compiler.translator.impl.internal
 
-import compiler.core.IParsedExpressionNode
-import compiler.core.ITranslatedExpressionNode
-import compiler.core.TranslatedExpressionNode
+import compiler.core.nodes.parsed.IParsedExpressionNode
+import compiler.core.nodes.translated.TranslatedExpressionNode
 
 internal interface IExpressionTranslator {
     fun translate(

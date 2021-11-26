@@ -1,8 +1,8 @@
 package compiler.parser.impl
 
-import compiler.core.IParsedDeclarationStatementNode
-import compiler.core.ParsedProgramRootNode
-import compiler.core.Token
+import compiler.core.nodes.parsed.IParsedDeclarationStatementNode
+import compiler.core.nodes.parsed.ParsedProgramRootNode
+import compiler.core.tokenizer.Token
 import compiler.parser.IParser
 import compiler.parser.impl.internal.IDeclarationStatementParser
 

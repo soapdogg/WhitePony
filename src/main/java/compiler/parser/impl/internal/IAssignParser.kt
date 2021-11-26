@@ -1,7 +1,7 @@
 package compiler.parser.impl.internal
 
-import compiler.core.AssignNode
-import compiler.core.Token
+import compiler.core.nodes.AssignNode
+import compiler.core.tokenizer.Token
 
 internal interface IAssignParser {
     fun parse(

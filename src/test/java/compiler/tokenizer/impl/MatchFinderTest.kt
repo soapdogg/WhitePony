@@ -1,7 +1,7 @@
 package compiler.tokenizer.impl
 
-import compiler.core.TokenType
-import compiler.core.TokenTypeRegexPattern
+import compiler.core.tokenizer.TokenType
+import compiler.core.tokenizer.TokenTypeRegexPattern
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

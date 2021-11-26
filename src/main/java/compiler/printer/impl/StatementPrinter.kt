@@ -1,7 +1,11 @@
 package compiler.printer.impl
 
-import compiler.core.*
 import compiler.core.constants.PrinterConstants
+import compiler.core.nodes.*
+import compiler.core.nodes.parsed.*
+import compiler.core.nodes.translated.*
+import compiler.core.stack.Stack
+import compiler.core.stack.StatementPrinterStackItem
 import compiler.printer.impl.internal.IExpressionPrinter
 import compiler.printer.impl.internal.IExpressionStatementPrinter
 import compiler.printer.impl.internal.IReturnStatementPrinter

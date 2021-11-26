@@ -1,8 +1,8 @@
 package compiler.printer.impl
 
-import compiler.core.ArrayNode
-import compiler.core.AssignNode
-import compiler.core.VariableDeclarationNode
+import compiler.core.nodes.ArrayNode
+import compiler.core.nodes.AssignNode
+import compiler.core.nodes.VariableDeclarationNode
 import compiler.printer.impl.internal.IArrayPrinter
 import compiler.printer.impl.internal.IAssignPrinter
 import org.junit.jupiter.api.Assertions

@@ -1,7 +1,7 @@
 package compiler.parser.impl.internal
 
-import compiler.core.Token
-import compiler.core.VariableDeclarationNode
+import compiler.core.tokenizer.Token
+import compiler.core.nodes.VariableDeclarationNode
 
 internal interface IVariableDeclarationParser {
     fun parse(

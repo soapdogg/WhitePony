@@ -1,6 +1,9 @@
 package compiler.parser.impl
 
-import compiler.core.*
+import compiler.core.nodes.parsed.ParsedFunctionDeclarationNode
+import compiler.core.nodes.VariableDeclarationListNode
+import compiler.core.tokenizer.Token
+import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.internal.IFunctionDeclarationParser
 import compiler.parser.impl.internal.IVariableDeclarationListParser
 import org.junit.jupiter.api.Assertions

@@ -1,8 +1,8 @@
 package compiler.translator.impl
 
-import compiler.core.ParsedBasicBlockNode
-import compiler.core.ParsedFunctionDeclarationNode
-import compiler.core.TranslatedBasicBlockNode
+import compiler.core.nodes.parsed.ParsedBasicBlockNode
+import compiler.core.nodes.parsed.ParsedFunctionDeclarationNode
+import compiler.core.nodes.translated.TranslatedBasicBlockNode
 import compiler.translator.impl.internal.IStatementTranslator
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test

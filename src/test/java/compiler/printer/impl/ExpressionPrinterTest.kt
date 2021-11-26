@@ -1,7 +1,7 @@
 package compiler.printer.impl
 
-import compiler.core.*
 import compiler.core.constants.PrinterConstants
+import compiler.core.nodes.parsed.*
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor
@@ -32,8 +32,8 @@ class ExpressionPrinterTest {
             val value = "value"
             Mockito.`when`(parsedValueExpressionNode.value).thenReturn(value)
 
-            val parsedInnerExpression = Mockito.mock(ParsedInnerExpression::class.java)
-            Mockito.`when`(parsedInnerExpression.expression).thenReturn(parsedValueExpressionNode)
+            val parsedInnerExpressionNode = Mockito.mock(ParsedInnerExpressionNode::class.java)
+            Mockito.`when`(parsedInnerExpressionNode.expression).thenReturn(parsedValueExpressionNode)
             val expectedInnerExpressionString = PrinterConstants.LEFT_PARENTHESES +
                     value +
                     PrinterConstants.RIGHT_PARENTHESES
@@ -107,7 +107,7 @@ class ExpressionPrinterTest {
 
             return Stream.of(
                 Pair(parsedValueExpressionNode, value),
-                Pair(parsedInnerExpression, expectedInnerExpressionString),
+                Pair(parsedInnerExpressionNode, expectedInnerExpressionString),
                 Pair(parsedUnaryOperator, expectedUnaryOperatorString),
                 Pair(parsedUnaryNotOperator, expectedUnaryNotOperatorString),
                 Pair(parsedUnaryPreOperator, expectedUnaryPreOperatorString),

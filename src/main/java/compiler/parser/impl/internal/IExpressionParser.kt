@@ -1,7 +1,7 @@
 package compiler.parser.impl.internal
 
-import compiler.core.IParsedExpressionNode
-import compiler.core.Token
+import compiler.core.nodes.parsed.IParsedExpressionNode
+import compiler.core.tokenizer.Token
 
 internal interface IExpressionParser {
     fun parse(

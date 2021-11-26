@@ -1,8 +1,8 @@
 package compiler.parser.impl
 
-import compiler.core.ParsedExpressionStatementNode
-import compiler.core.Token
-import compiler.core.TokenType
+import compiler.core.nodes.parsed.ParsedExpressionStatementNode
+import compiler.core.tokenizer.Token
+import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.internal.IExpressionParser
 import compiler.parser.impl.internal.IExpressionStatementParser
 import compiler.parser.impl.internal.ITokenTypeAsserter

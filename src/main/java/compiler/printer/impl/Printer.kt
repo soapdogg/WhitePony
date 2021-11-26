@@ -1,6 +1,6 @@
 package compiler.printer.impl
 
-import compiler.core.IProgramRootNode
+import compiler.core.nodes.IProgramRootNode
 import compiler.printer.IPrinter
 import compiler.printer.impl.internal.IDeclarationStatementPrinter
 

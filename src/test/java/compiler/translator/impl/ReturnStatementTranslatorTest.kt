@@ -1,8 +1,8 @@
 package compiler.translator.impl
 
-import compiler.core.ParsedExpressionStatementNode
-import compiler.core.ParsedReturnNode
-import compiler.core.TranslatedExpressionStatementNode
+import compiler.core.nodes.parsed.ParsedExpressionStatementNode
+import compiler.core.nodes.parsed.ParsedReturnNode
+import compiler.core.nodes.translated.TranslatedExpressionStatementNode
 import compiler.translator.impl.internal.IExpressionStatementTranslator
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test

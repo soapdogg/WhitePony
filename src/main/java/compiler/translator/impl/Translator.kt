@@ -1,7 +1,7 @@
 package compiler.translator.impl
 
-import compiler.core.ParsedProgramRootNode
-import compiler.core.TranslatedProgramRootNode
+import compiler.core.nodes.parsed.ParsedProgramRootNode
+import compiler.core.nodes.translated.TranslatedProgramRootNode
 import compiler.translator.ITranslator
 import compiler.translator.impl.internal.IDeclarationStatementTranslator
 

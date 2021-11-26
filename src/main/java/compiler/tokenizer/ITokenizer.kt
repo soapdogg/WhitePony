@@ -1,6 +1,6 @@
 package compiler.tokenizer
 
-import compiler.core.Token
+import compiler.core.tokenizer.Token
 
 interface ITokenizer {
     fun tokenize(input: String): List<Token>

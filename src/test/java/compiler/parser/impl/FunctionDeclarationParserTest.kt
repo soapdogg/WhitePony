@@ -1,8 +1,8 @@
 package compiler.parser.impl
 
-import compiler.core.ParsedBasicBlockNode
-import compiler.core.Token
-import compiler.core.TokenType
+import compiler.core.nodes.parsed.ParsedBasicBlockNode
+import compiler.core.tokenizer.Token
+import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.internal.IStatementParser
 import compiler.parser.impl.internal.ITokenTypeAsserter
 import org.junit.jupiter.api.Assertions
@@ -35,10 +35,12 @@ class FunctionDeclarationParserTest {
         Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, positionAfterType, TokenType.IDENTIFIER)).thenReturn(Pair(identifierToken, positionAfterIdentifier))
 
         val positionAfterLeftParentheses = positionAfterIdentifier + 1
-        Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, positionAfterIdentifier, TokenType.LEFT_PARENTHESES)).thenReturn(Pair(Mockito.mock(Token::class.java), positionAfterLeftParentheses))
+        Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, positionAfterIdentifier, TokenType.LEFT_PARENTHESES)).thenReturn(Pair(Mockito.mock(
+            Token::class.java), positionAfterLeftParentheses))
 
         val positionAfterRightParentheses = positionAfterLeftParentheses + 1
-        Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, positionAfterLeftParentheses, TokenType.RIGHT_PARENTHESES)).thenReturn(Pair(Mockito.mock(Token::class.java), positionAfterRightParentheses))
+        Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, positionAfterLeftParentheses, TokenType.RIGHT_PARENTHESES)).thenReturn(Pair(Mockito.mock(
+            Token::class.java), positionAfterRightParentheses))
 
         val identifierValue = "value"
         Mockito.`when`(identifierToken.value).thenReturn(identifierValue)

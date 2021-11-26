@@ -1,7 +1,7 @@
 package compiler.parser.impl.internal
 
-import compiler.core.ParsedFunctionDeclarationNode
-import compiler.core.Token
+import compiler.core.nodes.parsed.ParsedFunctionDeclarationNode
+import compiler.core.tokenizer.Token
 
 internal interface IFunctionDeclarationParser {
     fun parse(

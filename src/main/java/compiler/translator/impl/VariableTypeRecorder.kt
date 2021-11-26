@@ -1,6 +1,6 @@
 package compiler.translator.impl
 
-import compiler.core.VariableDeclarationListNode
+import compiler.core.nodes.VariableDeclarationListNode
 import compiler.translator.impl.internal.IVariableTypeRecorder
 
 internal class VariableTypeRecorder: IVariableTypeRecorder {
