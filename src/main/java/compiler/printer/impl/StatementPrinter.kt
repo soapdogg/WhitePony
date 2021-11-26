@@ -51,6 +51,12 @@ internal class StatementPrinter(
                                 stackItems.add(stackItem)
                             }
                         }
+                        is TranslatedWhileNode -> {
+                            top.node.body.forEach {
+                                val stackItem = StatementPrinterStackItem(it, top.numberOfTabs, PrinterConstants.LOCATION_1)
+                                stackItems.add(stackItem)
+                            }
+                        }
                         is TranslatedIfNode -> {
                             top.node.ifBody.forEach {
                                 val stackItem = StatementPrinterStackItem(it, top.numberOfTabs, PrinterConstants.LOCATION_1)
@@ -193,6 +199,7 @@ internal class StatementPrinter(
                             for (i in 0 until top.node.body.size) {
                                 bodyStatementStrings.add(resultStack.pop())
                             }
+                            bodyStatementStrings.reverse()
                             top.node.initExpression.code.joinToString(
                                 PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs,
                                 PrinterConstants.EMPTY,
@@ -218,6 +225,31 @@ internal class StatementPrinter(
                                     PrinterConstants.NEW_LINE + tabs + PrinterConstants.GOTO + PrinterConstants.SPACE + top.node.beginLabel + PrinterConstants.SEMICOLON +
                                     PrinterConstants.NEW_LINE + tabs + top.node.falseLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
                         }
+                        is TranslatedWhileNode -> {
+                            var tabs = PrinterConstants.EMPTY
+                            for (i in 0 until numberOfTabs + 1) {
+                                tabs += PrinterConstants.TAB
+                            }
+                            val bodyStatementStrings = mutableListOf<String>()
+                            for (i in 0 until top.node.body.size) {
+                                bodyStatementStrings.add(resultStack.pop())
+                            }
+                            bodyStatementStrings.reverse()
+                            top.node.beginLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
+                                    top.node.expression.code.joinToString(
+                                        PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs,
+                                        PrinterConstants.NEW_LINE + tabs,
+                                        PrinterConstants.SEMICOLON
+                                    ) +
+                                    PrinterConstants.NEW_LINE + tabs + top.node.trueLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
+                                    bodyStatementStrings.joinToString(
+                                        PrinterConstants.NEW_LINE + tabs,
+                                        PrinterConstants.NEW_LINE + tabs,
+                                        PrinterConstants.EMPTY
+                                    ) +
+                                    PrinterConstants.NEW_LINE + tabs + PrinterConstants.GOTO + PrinterConstants.SPACE + top.node.beginLabel + PrinterConstants.SEMICOLON +
+                                    PrinterConstants.NEW_LINE + tabs + top.node.falseLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
+                        }
                         is TranslatedIfNode -> {
                             var tabs = PrinterConstants.EMPTY
                             for (i in 0 until numberOfTabs + 1) {
@@ -228,6 +260,7 @@ internal class StatementPrinter(
                                 for (i in 0 until top.node.ifBody.size) {
                                     ifBodyStatementString.add(resultStack.pop())
                                 }
+                                ifBodyStatementString.reverse()
                                 top.node.expression.code.joinToString(
                                     PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs,
                                     PrinterConstants.EMPTY,
@@ -244,10 +277,12 @@ internal class StatementPrinter(
                                 for (i in 0 until top.node.elseBody.size) {
                                     elseBodyStatementString.add(resultStack.pop())
                                 }
+                                elseBodyStatementString.reverse()
                                 val ifBodyStatementString = mutableListOf<String>()
                                 for (i in 0 until top.node.ifBody.size) {
                                     ifBodyStatementString.add(resultStack.pop())
                                 }
+                                ifBodyStatementString.reverse()
 
                                 top.node.expression.code.joinToString(
                                     PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs,

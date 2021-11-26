@@ -7,6 +7,6 @@ data class ParsedForNode(
     val body: IParsedStatementNode
 ): IParsedStatementNode {
     override fun getNumberOfStatements(): Int {
-        return 1
+        return body.getNumberOfStatements()
     }
 }

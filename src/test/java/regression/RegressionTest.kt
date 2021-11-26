@@ -33,10 +33,6 @@ class RegressionTest {
         val triple = arguments.get(0) as Triple<*, *, *>
         val input = triple.first as String
         val intermediateCode = triple.second as String?
-        val expectedSize = triple.third as Int
-        val result = tokenizer.tokenize(input)
-
-        Assertions.assertEquals(expectedSize, result.size)
 
         val (parseTreeString, translatedTreeString) = recursiveCompiler.compile(input)
         Assertions.assertEquals(input, parseTreeString)
@@ -53,7 +49,7 @@ class RegressionTest {
     @Test
     fun regressionIndividualTest() {
 
-        val input = Program19
+        val input = Program23
         val intermediateCode = null
         val (parseTreeString, translatedTreeString) = recursiveCompiler.compile(input)
         Assertions.assertEquals(input, parseTreeString)
@@ -75,24 +71,25 @@ class RegressionTest {
                 Triple(Program2, IProgram2, 37),
                 Triple(Program3, IProgram3, 34),
                 Triple(Program4, IProgram4, 28),
-                Triple(Program5, IProgram5,36),
-                Triple(Program6, IProgram6,44),
-                Triple(Program7, IProgram7,71),
-                Triple(Program8, IProgram8,30),
-                Triple(Program9, null,100),
+                Triple(Program5, IProgram5, 36),
+                Triple(Program6, IProgram6, 44),
+                Triple(Program7, IProgram7, 71),
+                Triple(Program8, IProgram8, 30),
+                Triple(Program9, null, 100),
                 Triple(Program10, IProgram10, 22),
                 Triple(Program11, IProgram11, 22),
                 Triple(Program12, IProgram12, 32),
                 Triple(Program13, IProgram13, 30),
                 Triple(Program14, IProgram14, 37),
-                Triple(Program15, IProgram15,44),
-                Triple(Program16, IProgram16,42),
-                Triple(Program17, IProgram17,37),
-                Triple(Program18, IProgram18,42),
-                Triple(Program19, IProgram19,39),
-                Triple(Program20, IProgram20,39),
-                Triple(Program21, null,152),
-                Triple(Program22, null,367)
+                Triple(Program15, IProgram15, 44),
+                Triple(Program16, IProgram16, 42),
+                Triple(Program17, IProgram17, 37),
+                Triple(Program18, IProgram18, 42),
+                Triple(Program19, IProgram19, 39),
+                Triple(Program20, IProgram20, 39),
+                Triple(Program21, null, 152),
+                Triple(Program22, null, 367),
+                Triple(Program23, IProgram23, 0)
             )
         }
 
@@ -665,6 +662,53 @@ double fft() {
     double sum = 0.0;
     for (i = 0; i < 1023; i++) sum += 11.1 * data_real[i];
     return sum;
+}"""
+
+
+        private const val Program23 =
+"""int test23() {
+    int a[10];
+    int i = 0;
+    while (i < 10) {
+        a[i] = 1;
+        a[i] = 0;
+        ++i;
+    }
+    int x = 0;
+    int y = 1;
+    int z = 5;
+    x = y + z;
+    a[x] = x;
+    return a[0];
+}"""
+        private const val IProgram23 =
+"""int test23() {
+    int a[10];
+    int i = 0;
+    _l1: ;
+    int _t0 = i;
+    if (_t0 < 10) goto _l2;
+    goto _l0;
+    _l2: ;
+    int _t1 = i;
+    a[_t1] = 1;
+    int _t2 = i;
+    a[_t2] = 0;
+    i = i + 1;
+    goto _l1;
+    _l0: ;
+    int x = 0;
+    int y = 1;
+    int z = 5;
+    int _t3 = y;
+    int _t4 = z;
+    int _t5 = _t3 + _t4;
+    x = _t5;
+    int _t6 = x;
+    int _t7 = x;
+    a[_t6] = _t7;
+    int _t8 = a[0];
+    return _t8;
 }"""
     }
 }

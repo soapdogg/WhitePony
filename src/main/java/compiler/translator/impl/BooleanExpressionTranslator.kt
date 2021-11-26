@@ -106,18 +106,14 @@ internal class BooleanExpressionTranslator(
                                         rightExpression.address +
                                         PrinterConstants.RIGHT_PARENTHESES +
                                         PrinterConstants.SPACE +
-                                        "goto" +
+                                        PrinterConstants.GOTO +
                                         PrinterConstants.SPACE +
                                         top.trueLabel,
-                                "goto" +
+                                PrinterConstants.GOTO +
                                         PrinterConstants.SPACE +
                                         top.falseLabel
                             )
                     val translatedBooleanExpressionNode = TranslatedBooleanExpressionNode(code)
-                    resultStack.push(translatedBooleanExpressionNode)
-                }
-                else -> {
-                    val translatedBooleanExpressionNode = TranslatedBooleanExpressionNode(listOf(expressionNode.toString()))
                     resultStack.push(translatedBooleanExpressionNode)
                 }
             }

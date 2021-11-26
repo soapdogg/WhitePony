@@ -47,9 +47,18 @@ internal class StatementTranslator (
                             stack.push(StatementTranslatorStackItem(1, top.node.body))
                         }
                         is ParsedWhileNode -> {
-                            val (expression, l, t)  = booleanExpressionTranslator.translate(top.node.expression, "true", "false", labelCounter, tempCounter, variableToTypeMap)
+                            val falseLabel = "_l" + labelCounter
+                            labelCounter++
+                            val beginLabel = "_l" + labelCounter
+                            labelCounter++
+                            val trueLabel = "_l" + labelCounter
+                            labelCounter++
+                            val (expression, l, t)  = booleanExpressionTranslator.translate(top.node.expression, trueLabel, falseLabel, labelCounter, tempCounter, variableToTypeMap)
                             labelCounter = l
                             tempCounter = t
+                            labelStack.push(trueLabel)
+                            labelStack.push(beginLabel)
+                            labelStack.push(falseLabel)
                             expressionStack.push(expression)
                             stack.push(StatementTranslatorStackItem(1, top.node.body))
                         }
@@ -134,11 +143,20 @@ internal class StatementTranslator (
                             resultStack.push(doWhile)
                         }
                         is ParsedWhileNode -> {
+                            val falseLabel = labelStack.pop()
+                            val beginLabel = labelStack.pop()
+                            val trueLabel = labelStack.pop()
                             val expression = expressionStack.pop()
-                            val body = resultStack.pop()
+                            val body = mutableListOf<ITranslatedStatementNode>()
+                            for (i in 0 until top.node.body.getNumberOfStatements()) {
+                                body.add(resultStack.pop())
+                            }
                             val whileNode = TranslatedWhileNode(
                                 expression,
-                                body
+                                body,
+                                falseLabel,
+                                beginLabel,
+                                trueLabel
                             )
                             resultStack.push(whileNode)
                         }
