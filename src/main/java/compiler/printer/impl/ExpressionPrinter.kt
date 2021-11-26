@@ -4,6 +4,7 @@ import compiler.core.constants.PrinterConstants
 import compiler.core.nodes.*
 import compiler.core.nodes.parsed.*
 import compiler.core.stack.ExpressionPrinterStackItem
+import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
 import compiler.printer.impl.internal.IExpressionPrinter
 
@@ -16,7 +17,7 @@ internal class ExpressionPrinter: IExpressionPrinter {
     private fun printParsedNode(node: IExpressionNode): String {
         val stack = Stack<ExpressionPrinterStackItem>()
         val resultStack = Stack<String>()
-        stack.push(ExpressionPrinterStackItem(node, PrinterConstants.LOCATION_1))
+        stack.push(ExpressionPrinterStackItem(node, LocationConstants.LOCATION_1))
 
         while(stack.isNotEmpty()) {
             val top = stack.pop()
@@ -24,15 +25,15 @@ internal class ExpressionPrinter: IExpressionPrinter {
             when(top.node) {
                 is IParsedBinaryExpressionNode -> {
                     when(top.location) {
-                        PrinterConstants.LOCATION_1 -> {
-                            stack.push(ExpressionPrinterStackItem(top.node, PrinterConstants.LOCATION_2))
-                            stack.push(ExpressionPrinterStackItem(top.node.leftExpression, PrinterConstants.LOCATION_1))
+                        LocationConstants.LOCATION_1 -> {
+                            stack.push(ExpressionPrinterStackItem(top.node, LocationConstants.LOCATION_2))
+                            stack.push(ExpressionPrinterStackItem(top.node.leftExpression, LocationConstants.LOCATION_1))
                         }
-                        PrinterConstants.LOCATION_2 -> {
-                            stack.push(ExpressionPrinterStackItem(top.node, PrinterConstants.LOCATION_3))
-                            stack.push(ExpressionPrinterStackItem(top.node.rightExpression, PrinterConstants.LOCATION_1))
+                        LocationConstants.LOCATION_2 -> {
+                            stack.push(ExpressionPrinterStackItem(top.node, LocationConstants.LOCATION_3))
+                            stack.push(ExpressionPrinterStackItem(top.node.rightExpression, LocationConstants.LOCATION_1))
                         }
-                        PrinterConstants.LOCATION_3 -> {
+                        LocationConstants.LOCATION_3 -> {
                             val result = when(top.node) {
                                 is ParsedBinaryAssignNode -> {
                                     val rightExpressionString = resultStack.pop()
@@ -110,11 +111,11 @@ internal class ExpressionPrinter: IExpressionPrinter {
                 }
                 is IParsedUnaryExpressionNode -> {
                     when(top.location) {
-                        PrinterConstants.LOCATION_1 -> {
-                            stack.push(ExpressionPrinterStackItem(top.node, PrinterConstants.LOCATION_2))
-                            stack.push(ExpressionPrinterStackItem(top.node.expression, PrinterConstants.LOCATION_1))
+                        LocationConstants.LOCATION_1 -> {
+                            stack.push(ExpressionPrinterStackItem(top.node, LocationConstants.LOCATION_2))
+                            stack.push(ExpressionPrinterStackItem(top.node.expression, LocationConstants.LOCATION_1))
                         }
-                        PrinterConstants.LOCATION_2 -> {
+                        LocationConstants.LOCATION_2 -> {
                             val result = when(top.node) {
                                 is ParsedInnerExpressionNode -> {
                                     val expressionString = resultStack.pop()

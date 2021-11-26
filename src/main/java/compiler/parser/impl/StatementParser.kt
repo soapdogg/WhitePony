@@ -1,6 +1,6 @@
 package compiler.parser.impl
 
-import compiler.core.constants.StatementParserConstants
+import compiler.core.stack.StatementParserLocations
 import compiler.core.nodes.parsed.*
 import compiler.core.stack.Stack
 import compiler.core.tokenizer.Token
@@ -27,20 +27,20 @@ internal class StatementParser(
         val stack = Stack<Int>()
         val resultStack = Stack<IParsedStatementNode>()
         val expressionStack = Stack<IParsedExpressionNode>()
-        stack.push(StatementParserConstants.LOCATION_START)
+        stack.push(StatementParserLocations.LOCATION_START)
         var tokenPosition = startingPosition
         val numberOfStatementsBlockStack = Stack<Int>()
 
         while(stack.isNotEmpty()) {
 
             when(stack.pop()) {
-                StatementParserConstants.LOCATION_START -> {
+                StatementParserLocations.LOCATION_START -> {
                     when (tokens[tokenPosition].type) {
                         TokenType.DO -> {
                             val (_, positionAfterDo) = tokenTypeAsserter.assertTokenType(tokens, tokenPosition, TokenType.DO)
                             tokenPosition = positionAfterDo
-                            stack.push(StatementParserConstants.LOCATION_DO)
-                            stack.push(StatementParserConstants.LOCATION_START)
+                            stack.push(StatementParserLocations.LOCATION_DO)
+                            stack.push(StatementParserLocations.LOCATION_START)
                         }
                         TokenType.FOR -> {
                             val (_, positionAfterFor) = tokenTypeAsserter.assertTokenType(tokens, tokenPosition, TokenType.FOR)
@@ -55,24 +55,24 @@ internal class StatementParser(
                             expressionStack.push(testExpression)
                             expressionStack.push(initExpression)
                             tokenPosition = positionAfterRightParentheses
-                            stack.push(StatementParserConstants.LOCATION_FOR)
-                            stack.push(StatementParserConstants.LOCATION_START)
+                            stack.push(StatementParserLocations.LOCATION_FOR)
+                            stack.push(StatementParserLocations.LOCATION_START)
                         }
                         TokenType.IF -> {
                             val (_, positionAfterIf) = tokenTypeAsserter.assertTokenType(tokens, tokenPosition, TokenType.IF)
                             val (booleanExpression, positionAfterBooleanExpression) = expressionParser.parse(tokens, positionAfterIf)
                             tokenPosition = positionAfterBooleanExpression
                             expressionStack.push(booleanExpression)
-                            stack.push(StatementParserConstants.LOCATION_IF)
-                            stack.push(StatementParserConstants.LOCATION_START)
+                            stack.push(StatementParserLocations.LOCATION_IF)
+                            stack.push(StatementParserLocations.LOCATION_START)
                         }
                         TokenType.LEFT_BRACE -> {
                             val (_, positionAfterLeftBrace) = tokenTypeAsserter.assertTokenType(tokens, tokenPosition, TokenType.LEFT_BRACE)
                             if (tokens[positionAfterLeftBrace].type != TokenType.RIGHT_BRACE) {
                                 tokenPosition = positionAfterLeftBrace
                                 numberOfStatementsBlockStack.push(1)
-                                stack.push(StatementParserConstants.LOCATION_BASIC_BLOCK)
-                                stack.push(StatementParserConstants.LOCATION_START)
+                                stack.push(StatementParserLocations.LOCATION_BASIC_BLOCK)
+                                stack.push(StatementParserLocations.LOCATION_START)
                                 continue
                             }
                             val (_, positionAfterRightBrace) = tokenTypeAsserter.assertTokenType(tokens, positionAfterLeftBrace, TokenType.RIGHT_BRACE)
@@ -95,8 +95,8 @@ internal class StatementParser(
                             val (expression, positionAfterExpression) = expressionParser.parse(tokens, positionAfterWhile)
                             expressionStack.push(expression)
                             tokenPosition = positionAfterExpression
-                            stack.push(StatementParserConstants.LOCATION_WHILE)
-                            stack.push(StatementParserConstants.LOCATION_START)
+                            stack.push(StatementParserLocations.LOCATION_WHILE)
+                            stack.push(StatementParserLocations.LOCATION_START)
                         }
                         else -> {
                             val (expressionStatement, positionAfterExpression) = expressionStatementParser.parse(tokens, tokenPosition)
@@ -105,7 +105,7 @@ internal class StatementParser(
                         }
                     }
                 }
-                StatementParserConstants.LOCATION_DO -> {
+                StatementParserLocations.LOCATION_DO -> {
                     val body = resultStack.pop()
                     val (_, positionAfterWhile) = tokenTypeAsserter.assertTokenType(tokens, tokenPosition, TokenType.WHILE)
                     val (expression, positionAfterExpression) = expressionParser.parse(tokens, positionAfterWhile)
@@ -117,7 +117,7 @@ internal class StatementParser(
                     resultStack.push(doStatement)
                     tokenPosition = positionAfterSemicolon
                 }
-                StatementParserConstants.LOCATION_FOR -> {
+                StatementParserLocations.LOCATION_FOR -> {
                     val initExpression = expressionStack.pop()
                     val testExpression = expressionStack.pop()
                     val incrementExpression = expressionStack.pop()
@@ -130,7 +130,7 @@ internal class StatementParser(
                     )
                     resultStack.push(forNode)
                 }
-                StatementParserConstants.LOCATION_IF -> {
+                StatementParserLocations.LOCATION_IF -> {
                     if (tokens[tokenPosition].type != TokenType.ELSE) {
                         val booleanExpression = expressionStack.pop()
                         val ifBody = resultStack.pop()
@@ -143,11 +143,11 @@ internal class StatementParser(
                     } else {
                         val (_, positionAfterElse) = tokenTypeAsserter.assertTokenType(tokens, tokenPosition, TokenType.ELSE)
                         tokenPosition = positionAfterElse
-                        stack.push(StatementParserConstants.LOCATION_ELSE)
-                        stack.push(StatementParserConstants.LOCATION_START)
+                        stack.push(StatementParserLocations.LOCATION_ELSE)
+                        stack.push(StatementParserLocations.LOCATION_START)
                     }
                 }
-                StatementParserConstants.LOCATION_ELSE -> {
+                StatementParserLocations.LOCATION_ELSE -> {
                     val booleanExpression = expressionStack.pop()
                     val elseBody = resultStack.pop()
                     val ifBody = resultStack.pop()
@@ -158,18 +158,18 @@ internal class StatementParser(
                     )
                     resultStack.push(elseNode)
                 }
-                StatementParserConstants.LOCATION_WHILE -> {
+                StatementParserLocations.LOCATION_WHILE -> {
                     val expression = expressionStack.pop()
                     val body = resultStack.pop()
                     val whileNode = ParsedWhileNode(expression, body)
                     resultStack.push(whileNode)
                 }
-                StatementParserConstants.LOCATION_BASIC_BLOCK -> {
+                StatementParserLocations.LOCATION_BASIC_BLOCK -> {
                     if (tokens[tokenPosition].type != TokenType.RIGHT_BRACE) {
                         val numberOfStatementsInBlock = numberOfStatementsBlockStack.pop()
                         numberOfStatementsBlockStack.push(numberOfStatementsInBlock + 1)
-                        stack.push(StatementParserConstants.LOCATION_BASIC_BLOCK)
-                        stack.push(StatementParserConstants.LOCATION_START)
+                        stack.push(StatementParserLocations.LOCATION_BASIC_BLOCK)
+                        stack.push(StatementParserLocations.LOCATION_START)
                         continue
                     }
                     val (_, positionAfterRightBrace) = tokenTypeAsserter.assertTokenType(tokens, tokenPosition, TokenType.RIGHT_BRACE)

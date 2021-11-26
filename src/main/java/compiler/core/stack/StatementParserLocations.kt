@@ -1,6 +1,6 @@
-package compiler.core.constants
+package compiler.core.stack
 
-object StatementParserConstants {
+object StatementParserLocations {
     const val LOCATION_START = 1
     const val LOCATION_DO = 2
     const val LOCATION_FOR = 3

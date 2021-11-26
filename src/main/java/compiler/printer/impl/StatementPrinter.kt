@@ -4,6 +4,7 @@ import compiler.core.constants.PrinterConstants
 import compiler.core.nodes.*
 import compiler.core.nodes.parsed.*
 import compiler.core.nodes.translated.*
+import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
 import compiler.core.stack.StatementPrinterStackItem
 import compiler.printer.impl.internal.IExpressionPrinter
@@ -21,81 +22,81 @@ internal class StatementPrinter(
     override fun printNode(node: IStatementNode, numberOfTabs: Int): String {
         val stack = Stack<StatementPrinterStackItem>()
         val resultStack = Stack<String>()
-        stack.push(StatementPrinterStackItem(node, numberOfTabs, PrinterConstants.LOCATION_1))
+        stack.push(StatementPrinterStackItem(node, numberOfTabs, LocationConstants.LOCATION_1))
 
         while(stack.isNotEmpty()) {
             val top = stack.pop()
 
             when(top.location) {
-                PrinterConstants.LOCATION_1 -> {
-                    val returnStackItem = StatementPrinterStackItem(top.node, top.numberOfTabs, PrinterConstants.LOCATION_2)
+                LocationConstants.LOCATION_1 -> {
+                    val returnStackItem = StatementPrinterStackItem(top.node, top.numberOfTabs, LocationConstants.LOCATION_2)
                     val stackItems = mutableListOf(returnStackItem)
                     when(top.node) {
                         is ParsedBasicBlockNode -> {
                             top.node.statements.forEach {
                                 val stackItem =
-                                    StatementPrinterStackItem(it, top.numberOfTabs + 1, PrinterConstants.LOCATION_1)
+                                    StatementPrinterStackItem(it, top.numberOfTabs + 1, LocationConstants.LOCATION_1)
                                 stackItems.add(stackItem)
                             }
                         }
                         is TranslatedBasicBlockNode -> {
                             top.node.statements.forEach {
-                                val stackItem = StatementPrinterStackItem(it, top.numberOfTabs, PrinterConstants.LOCATION_1)
+                                val stackItem = StatementPrinterStackItem(it, top.numberOfTabs, LocationConstants.LOCATION_1)
                                 stackItems.add(stackItem)
                             }
                         }
                         is TranslatedForNode -> {
                             top.node.body.forEach {
-                                val stackItem = StatementPrinterStackItem(it, top.numberOfTabs, PrinterConstants.LOCATION_1)
+                                val stackItem = StatementPrinterStackItem(it, top.numberOfTabs, LocationConstants.LOCATION_1)
                                 stackItems.add(stackItem)
                             }
                         }
                         is TranslatedDoWhileNode -> {
                             top.node.body.forEach {
-                                val stackItem = StatementPrinterStackItem(it, top.numberOfTabs, PrinterConstants.LOCATION_1)
+                                val stackItem = StatementPrinterStackItem(it, top.numberOfTabs, LocationConstants.LOCATION_1)
                                 stackItems.add(stackItem)
                             }
                         }
                         is TranslatedWhileNode -> {
                             top.node.body.forEach {
-                                val stackItem = StatementPrinterStackItem(it, top.numberOfTabs, PrinterConstants.LOCATION_1)
+                                val stackItem = StatementPrinterStackItem(it, top.numberOfTabs, LocationConstants.LOCATION_1)
                                 stackItems.add(stackItem)
                             }
                         }
                         is TranslatedIfNode -> {
                             top.node.ifBody.forEach {
-                                val stackItem = StatementPrinterStackItem(it, top.numberOfTabs, PrinterConstants.LOCATION_1)
+                                val stackItem = StatementPrinterStackItem(it, top.numberOfTabs, LocationConstants.LOCATION_1)
                                 stackItems.add(stackItem)
                             }
                             top.node.elseBody.forEach {
-                                val stackItem = StatementPrinterStackItem(it, top.numberOfTabs, PrinterConstants.LOCATION_1)
+                                val stackItem = StatementPrinterStackItem(it, top.numberOfTabs, LocationConstants.LOCATION_1)
                                 stackItems.add(stackItem)
                             }
                         }
                         is ParsedDoWhileNode -> {
                             val stackItem =
-                                StatementPrinterStackItem(top.node.body, top.numberOfTabs, PrinterConstants.LOCATION_1)
+                                StatementPrinterStackItem(top.node.body, top.numberOfTabs, LocationConstants.LOCATION_1)
                             stackItems.add(stackItem)
                         }
                         is ParsedWhileNode -> {
                             val stackItem =
-                                StatementPrinterStackItem(top.node.body, top.numberOfTabs, PrinterConstants.LOCATION_1)
+                                StatementPrinterStackItem(top.node.body, top.numberOfTabs, LocationConstants.LOCATION_1)
                             stackItems.add(stackItem)
                         }
                         is ParsedForNode -> {
                             val stackItem =
-                                StatementPrinterStackItem(top.node.body, top.numberOfTabs, PrinterConstants.LOCATION_1)
+                                StatementPrinterStackItem(top.node.body, top.numberOfTabs, LocationConstants.LOCATION_1)
                             stackItems.add(stackItem)
                         }
                         is ParsedIfNode -> {
                             val stackItem =
-                                StatementPrinterStackItem(top.node.ifBody, top.numberOfTabs, PrinterConstants.LOCATION_1)
+                                StatementPrinterStackItem(top.node.ifBody, top.numberOfTabs, LocationConstants.LOCATION_1)
                             stackItems.add(stackItem)
                             if (top.node.elseBody != null) {
                                 val stackItem2 = StatementPrinterStackItem(
                                     top.node.elseBody,
                                     top.numberOfTabs,
-                                    PrinterConstants.LOCATION_1
+                                    LocationConstants.LOCATION_1
                                 )
                                 stackItems.add(stackItem2)
                             }
@@ -103,7 +104,7 @@ internal class StatementPrinter(
                     }
                     stackItems.forEach { stack.push(it) }
                 }
-                PrinterConstants.LOCATION_2 -> {
+                LocationConstants.LOCATION_2 -> {
 
                     val result = when (top.node) {
                         is IBasicBlockNode -> {
