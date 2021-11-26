@@ -27,7 +27,8 @@ object PrinterConstants {
     const val ELSE = "else"
     const val RETURN = "return"
     const val WHILE = "while"
-
+    const val INT = "int"
+    const val DOUBLE = "double"
 
 
 }

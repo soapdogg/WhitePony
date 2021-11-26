@@ -100,7 +100,7 @@ internal class ExpressionTranslator(
                             }
                             2 -> {
                                 val rightExpression = resultStack.pop()
-                                val (address, tc) = tempGenerator.generateTempVariable(tempCounter, variableToTypeMap)
+                                val (address, tc) = tempGenerator.generateTempVariable(tempCounter)
                                 tempCounter = tc
                                 val type = variableToTypeMap.getValue(top.node.leftExpression.value)
                                 val code = rightExpression.code +
@@ -143,7 +143,7 @@ internal class ExpressionTranslator(
                             3 -> {
                                 val rightExpression = resultStack.pop()
                                 val insideArrayExpression = resultStack.pop()
-                                val (address, tc) = tempGenerator.generateTempVariable(tempCounter, variableToTypeMap)
+                                val (address, tc) = tempGenerator.generateTempVariable(tempCounter)
                                 tempCounter = tc
                                 val type = variableToTypeMap.getValue(top.node.leftExpression.leftExpression.value)
                                 val code = insideArrayExpression.code +
@@ -202,7 +202,7 @@ internal class ExpressionTranslator(
                         3 -> {
                             val rightExpression = resultStack.pop()
                             val leftExpression = resultStack.pop()
-                            val (address, tc) = tempGenerator.generateTempVariable(tempCounter, variableToTypeMap)
+                            val (address, tc) = tempGenerator.generateTempVariable(tempCounter)
                             tempCounter = tc
                             val type = typeDeterminer.determineType(leftExpression.type, rightExpression.type)
                             val code = leftExpression.code +
@@ -238,7 +238,7 @@ internal class ExpressionTranslator(
                         }
                         2 -> {
                             val rightExpression = resultStack.pop()
-                            val (address, tc) = tempGenerator.generateTempVariable(tempCounter, variableToTypeMap)
+                            val (address, tc) = tempGenerator.generateTempVariable(tempCounter)
                             tempCounter = tc
                             val type = variableToTypeMap.getValue(top.node.leftExpression.value)
                             val code = rightExpression.code +
@@ -263,7 +263,7 @@ internal class ExpressionTranslator(
                             if (top.node.operator == TokenizerConstants.PLUS_OPERATOR) {
                                 resultStack.push(expression)
                             } else {
-                                val (address, tc) = tempGenerator.generateTempVariable(tempCounter, variableToTypeMap)
+                                val (address, tc) = tempGenerator.generateTempVariable(tempCounter)
                                 tempCounter = tc
                                 val code = expression.code +
                                         listOf(
@@ -314,7 +314,7 @@ internal class ExpressionTranslator(
                             }
                             2 -> {
                                 val insideExpression = resultStack.pop()
-                                val (address, tc) = tempGenerator.generateTempVariable(tempCounter, variableToTypeMap)
+                                val (address, tc) = tempGenerator.generateTempVariable(tempCounter)
                                 tempCounter = tc
                                 val type = variableToTypeMap.getValue(top.node.expression.leftExpression.value)
                                 val code = insideExpression.code +
@@ -359,7 +359,7 @@ internal class ExpressionTranslator(
                 }
                 is ParsedUnaryPostOperatorNode -> {
                     if (top.node.expression is ParsedVariableExpressionNode) {
-                        val (address, tc) = tempGenerator.generateTempVariable(tempCounter, variableToTypeMap)
+                        val (address, tc) = tempGenerator.generateTempVariable(tempCounter)
                         tempCounter = tc
                         val type = variableToTypeMap.getValue(top.node.expression.value)
                         val code = listOf(
@@ -394,7 +394,7 @@ internal class ExpressionTranslator(
                             }
                             2 -> {
                                 val insideExpression = resultStack.pop()
-                                val (address, tc) = tempGenerator.generateTempVariable(tempCounter, variableToTypeMap)
+                                val (address, tc) = tempGenerator.generateTempVariable(tempCounter)
                                 tempCounter = tc
                                 val type = variableToTypeMap.getValue(top.node.expression.leftExpression.value)
                                 val code = insideExpression.code +
@@ -450,7 +450,7 @@ internal class ExpressionTranslator(
                     stack.push(ExpressionTranslatorStackItem(1, top.node.expression))
                 }
                 is ParsedVariableExpressionNode -> {
-                    val (address, tc) = tempGenerator.generateTempVariable(tempCounter, variableToTypeMap)
+                    val (address, tc) = tempGenerator.generateTempVariable(tempCounter)
                     tempCounter = tc
                     val type = variableToTypeMap.getValue(top.node.value)
                     val code = type + PrinterConstants.SPACE + address + PrinterConstants.SPACE + PrinterConstants.EQUALS + PrinterConstants.SPACE + top.node.value
