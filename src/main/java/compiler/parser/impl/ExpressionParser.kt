@@ -128,7 +128,7 @@ internal class ExpressionParser: IExpressionParser {
             val relationalEqualsToken = tokens[currentPosition]
             currentPosition++
             val(rightExpression, positionAfterRelationalOperator) = parseRelationalOperator(tokens, currentPosition)
-            result = ParsedBinaryRelationalOperatorNode(result, rightExpression, relationalEqualsToken.value)
+            result = ParsedBinaryRelationalOperatorExpressionNode(result, rightExpression, relationalEqualsToken.value)
             currentPosition = positionAfterRelationalOperator
         }
         return Pair(result, currentPosition)
@@ -145,7 +145,7 @@ internal class ExpressionParser: IExpressionParser {
             val relationalOperatorToken = tokens[currentPosition]
             currentPosition++
             val(rightExpression, positionAfterShift) = parseShift(tokens, currentPosition)
-            result = ParsedBinaryRelationalOperatorNode(result, rightExpression, relationalOperatorToken.value)
+            result = ParsedBinaryRelationalOperatorExpressionNode(result, rightExpression, relationalOperatorToken.value)
             currentPosition = positionAfterShift
         }
         return Pair(result, currentPosition)

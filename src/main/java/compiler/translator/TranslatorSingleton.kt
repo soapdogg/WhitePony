@@ -77,7 +77,23 @@ enum class TranslatorSingleton {
         arrayCodeGenerator
     )
 
-    private val booleanExpressionTranslator = BooleanExpressionTranslator(expressionTranslator)
+    private val gotoCodeGenerator = GotoCodeGenerator()
+    private val conditionalGotoCodeGenerator = ConditionalGotoCodeGenerator(
+        operationCodeGenerator,
+        gotoCodeGenerator
+    )
+
+    private val binaryRelationalOperatorExpressionTranslator = BinaryRelationalOperatorExpressionTranslator(
+        expressionTranslator,
+        conditionalGotoCodeGenerator,
+        gotoCodeGenerator
+    )
+
+    private val booleanExpressionTranslator = BooleanExpressionTranslator(
+        binaryRelationalOperatorExpressionTranslator,
+        expressionTranslator,
+        gotoCodeGenerator
+    )
     private val expressionStatementTranslator = ExpressionStatementTranslator(expressionTranslator)
     private val returnStatementTranslator = ReturnStatementTranslator(expressionStatementTranslator)
 

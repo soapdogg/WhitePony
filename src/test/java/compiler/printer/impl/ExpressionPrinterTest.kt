@@ -83,7 +83,7 @@ class ExpressionPrinterTest {
             Mockito.`when`(parsedBinaryOrOperator.rightExpression).thenReturn(parsedValueExpressionNode)
             val expectedBinaryOrOperatorString = value + PrinterConstants.SPACE + PrinterConstants.VERTICAL_BAR + PrinterConstants.VERTICAL_BAR + PrinterConstants.SPACE + value
 
-            val parsedBinaryRelationalOperator = Mockito.mock(ParsedBinaryRelationalOperatorNode::class.java)
+            val parsedBinaryRelationalOperator = Mockito.mock(ParsedBinaryRelationalOperatorExpressionNode::class.java)
             Mockito.`when`(parsedBinaryRelationalOperator.leftExpression).thenReturn(parsedValueExpressionNode)
             Mockito.`when`(parsedBinaryRelationalOperator.rightExpression).thenReturn(parsedValueExpressionNode)
             Mockito.`when`(parsedBinaryRelationalOperator.operator).thenReturn(operator)

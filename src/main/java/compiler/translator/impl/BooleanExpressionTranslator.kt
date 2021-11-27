@@ -6,11 +6,15 @@ import compiler.core.nodes.translated.TranslatedBooleanExpressionNode
 import compiler.core.stack.BooleanExpressionTranslatorStackItem
 import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
+import compiler.translator.impl.internal.IBinaryRelationalOperatorExpressionTranslator
 import compiler.translator.impl.internal.IBooleanExpressionTranslator
 import compiler.translator.impl.internal.IExpressionTranslator
+import compiler.translator.impl.internal.IGotoCodeGenerator
 
 internal class BooleanExpressionTranslator(
-    private val expressionTranslator: IExpressionTranslator
+    private val binaryRelationalOperatorExpressionTranslator: IBinaryRelationalOperatorExpressionTranslator,
+    private val expressionTranslator: IExpressionTranslator,
+    private val gotoCodeGenerator: IGotoCodeGenerator
 ): IBooleanExpressionTranslator {
     override fun translate(
         expressionNode: IParsedExpressionNode,
@@ -34,18 +38,18 @@ internal class BooleanExpressionTranslator(
             when(top.node) {
                 is ParsedBinaryAndOperatorNode -> {
                     when(top.location) {
-                        1 -> {
+                        LocationConstants.LOCATION_1 -> {
                             stack.push(BooleanExpressionTranslatorStackItem(LocationConstants.LOCATION_2, top.node, top.trueLabel, top.falseLabel))
                             val trueLabel = "_l" + l
                             l++
                             labelStack.push(trueLabel)
                             stack.push(BooleanExpressionTranslatorStackItem(LocationConstants.LOCATION_1, top.node.leftExpression, trueLabel, top.falseLabel))
                         }
-                        2 -> {
-                            stack.push(BooleanExpressionTranslatorStackItem(3, top.node, top.trueLabel, top.falseLabel))
-                            stack.push(BooleanExpressionTranslatorStackItem(1, top.node.rightExpression, top.trueLabel, top.falseLabel))
+                        LocationConstants.LOCATION_2 -> {
+                            stack.push(BooleanExpressionTranslatorStackItem(LocationConstants.LOCATION_3, top.node, top.trueLabel, top.falseLabel))
+                            stack.push(BooleanExpressionTranslatorStackItem(LocationConstants.LOCATION_1, top.node.rightExpression, top.trueLabel, top.falseLabel))
                         }
-                        3 -> {
+                        LocationConstants.LOCATION_3 -> {
                             val rightExpression = resultStack.pop()
                             val leftExpression = resultStack.pop()
                             val trueLabel = labelStack.pop()
@@ -61,18 +65,18 @@ internal class BooleanExpressionTranslator(
                 }
                 is ParsedBinaryOrOperatorNode -> {
                     when(top.location) {
-                        1 -> {
+                        LocationConstants.LOCATION_1 -> {
                             stack.push(BooleanExpressionTranslatorStackItem(LocationConstants.LOCATION_2, top.node, top.trueLabel, top.falseLabel))
                             val falseLabel = "_l" + l
                             l++
                             labelStack.push(falseLabel)
                             stack.push(BooleanExpressionTranslatorStackItem(LocationConstants.LOCATION_1, top.node.leftExpression, top.trueLabel, falseLabel))
                         }
-                        2 -> {
+                        LocationConstants.LOCATION_2 -> {
                             stack.push(BooleanExpressionTranslatorStackItem(LocationConstants.LOCATION_3, top.node, top.trueLabel, top.falseLabel))
                             stack.push(BooleanExpressionTranslatorStackItem(LocationConstants.LOCATION_1, top.node.rightExpression, top.trueLabel, top.falseLabel))
                         }
-                        3 -> {
+                        LocationConstants.LOCATION_3 -> {
                             val rightExpression = resultStack.pop()
                             val leftExpression = resultStack.pop()
                             val falseLabel = labelStack.pop()
@@ -93,32 +97,16 @@ internal class BooleanExpressionTranslator(
                 is ParsedInnerExpressionNode -> {
                     stack.push(BooleanExpressionTranslatorStackItem(LocationConstants.LOCATION_1, top.node.expression, top.trueLabel, top.falseLabel))
                 }
-                is ParsedBinaryRelationalOperatorNode -> {
-                    val (leftExpression, tempAfterLeft) = expressionTranslator.translate(top.node.leftExpression, variableToTypeMap, t)
-                    val (rightExpression, tempAfterRight) = expressionTranslator.translate(top.node.rightExpression, variableToTypeMap, tempAfterLeft)
-                    t = tempAfterRight
-
-                    val code = leftExpression.code + rightExpression.code +
-                            listOf(
-                                PrinterConstants.IF +
-                                        PrinterConstants.SPACE +
-                                        PrinterConstants.LEFT_PARENTHESES +
-                                        leftExpression.address +
-                                        PrinterConstants.SPACE +
-                                        top.node.operator +
-                                        PrinterConstants.SPACE +
-                                        rightExpression.address +
-                                        PrinterConstants.RIGHT_PARENTHESES +
-                                        PrinterConstants.SPACE +
-                                        PrinterConstants.GOTO +
-                                        PrinterConstants.SPACE +
-                                        top.trueLabel,
-                                PrinterConstants.GOTO +
-                                        PrinterConstants.SPACE +
-                                        top.falseLabel
-                            )
-                    val translatedBooleanExpressionNode = TranslatedBooleanExpressionNode(code)
-                    resultStack.push(translatedBooleanExpressionNode)
+                is ParsedBinaryRelationalOperatorExpressionNode -> {
+                    t = binaryRelationalOperatorExpressionTranslator.translate(
+                        top.node,
+                        top.trueLabel,
+                        top.falseLabel,
+                        t,
+                        variableToTypeMap,
+                        stack,
+                        resultStack
+                    )
                 }
             }
         }
