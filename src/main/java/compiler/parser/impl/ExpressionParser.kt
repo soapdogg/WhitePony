@@ -13,16 +13,9 @@ internal class ExpressionParser: IExpressionParser {
         tokens: List<Token>,
         startingPosition: Int,
     ): Pair<IParsedExpressionNode, Int> {
-        var (leftExpression, positionAfterBitwiseOr) = parseBitwiseOr(tokens, startingPosition)
+        val (leftExpression, positionAfterLogicalAnd) = parseLogicalAnd(tokens, startingPosition)
         var result = leftExpression
-        var currentPosition = positionAfterBitwiseOr
-        while(tokens[currentPosition].type == TokenType.BINARY_AND) {
-            currentPosition++
-            val(rightExpression, positionAfterBitwiseOr) = parseBitwiseOr(tokens, currentPosition)
-            result = ParsedBinaryAndOperatorExpressionNode(result, rightExpression)
-            currentPosition = positionAfterBitwiseOr
-        }
-
+        var currentPosition = positionAfterLogicalAnd
         while(tokens[currentPosition].type == TokenType.BINARY_OR) {
             currentPosition++
             val (rightExpression, positionAfterLogicalAnd) = parseLogicalAnd(tokens, currentPosition)
@@ -50,57 +43,9 @@ internal class ExpressionParser: IExpressionParser {
         tokens: List<Token>,
         startingPosition: Int
     ): Pair<IParsedExpressionNode, Int> {
-        val (leftExpression, positionAfterFactor) = parseFactor(tokens, startingPosition)
+        val (leftExpression, positionAfterBitwiseOr) = parseBitwiseOr(tokens, startingPosition)
         var result = leftExpression
-        var currentPosition = positionAfterFactor
-        while(tokens[currentPosition].type == TokenType.PLUS_MINUS) {
-            val termToken = tokens[currentPosition]
-            currentPosition++
-            val(rightExpression, positionAfterFactor) = parseFactor(tokens, currentPosition)
-            result = ParsedBinaryOperatorExpressionNode(result, rightExpression, termToken.value)
-            currentPosition = positionAfterFactor
-        }
-
-        while(tokens[currentPosition].value == ">>" || tokens[currentPosition].value == "<<") {
-            val shiftToken = tokens[currentPosition]
-            currentPosition++
-            val(rightExpression, positionAfterTerm) = parseTerm(tokens, currentPosition)
-            result = ParsedBinaryOperatorExpressionNode(result, rightExpression, shiftToken.value)
-            currentPosition = positionAfterTerm
-        }
-
-        while(tokens[currentPosition].value == "<" || tokens[currentPosition].value == "<=" ||  tokens[currentPosition].value == ">" || tokens[currentPosition].value == ">=" ) {
-            val relationalOperatorToken = tokens[currentPosition]
-            currentPosition++
-            val(rightExpression, positionAfterShift) = parseShift(tokens, currentPosition)
-            result = ParsedBinaryRelationalOperatorExpressionNode(result, rightExpression, relationalOperatorToken.value)
-            currentPosition = positionAfterShift
-        }
-        while(tokens[currentPosition].value == "!=" || tokens[currentPosition].value == "==") {
-            val relationalEqualsToken = tokens[currentPosition]
-            currentPosition++
-            val(rightExpression, positionAfterRelationalOperator) = parseRelationalOperator(tokens, currentPosition)
-            result = ParsedBinaryRelationalOperatorExpressionNode(result, rightExpression, relationalEqualsToken.value)
-            currentPosition = positionAfterRelationalOperator
-        }
-        while(tokens[currentPosition].value == "&") {
-            currentPosition++
-            val(rightExpression, positionAfterRelationalEquals) = parseRelationalEquals(tokens, currentPosition)
-            result = ParsedBinaryOperatorExpressionNode(result, rightExpression, "&")
-            currentPosition = positionAfterRelationalEquals
-        }
-        while(tokens[currentPosition].value == "^") {
-            currentPosition++
-            val(rightExpression, positionAfterBitwiseAnd) = parseBitwiseAnd(tokens, currentPosition)
-            result = ParsedBinaryOperatorExpressionNode(result, rightExpression, "^")
-            currentPosition = positionAfterBitwiseAnd
-        }
-        while(tokens[currentPosition].value == "|") {
-            currentPosition++
-            val(rightExpression, positionAfterBitwiseXor) = parseBitwiseXor(tokens, currentPosition)
-            result = ParsedBinaryOperatorExpressionNode(result, rightExpression, "|")
-            currentPosition = positionAfterBitwiseXor
-        }
+        var currentPosition = positionAfterBitwiseOr
         while(tokens[currentPosition].type == TokenType.BINARY_AND) {
             currentPosition++
             val(rightExpression, positionAfterBitwiseOr) = parseBitwiseOr(tokens, currentPosition)
@@ -114,51 +59,9 @@ internal class ExpressionParser: IExpressionParser {
         tokens: List<Token>,
         startingPosition: Int
     ): Pair<IParsedExpressionNode, Int> {
-        val (leftExpression, positionAfterFactor) = parseFactor(tokens, startingPosition)
+        val (leftExpression, positionAfterBitwiseXor) = parseBitwiseXor(tokens, startingPosition)
         var result = leftExpression
-        var currentPosition = positionAfterFactor
-        while(tokens[currentPosition].type == TokenType.PLUS_MINUS) {
-            val termToken = tokens[currentPosition]
-            currentPosition++
-            val(rightExpression, positionAfterFactor) = parseFactor(tokens, currentPosition)
-            result = ParsedBinaryOperatorExpressionNode(result, rightExpression, termToken.value)
-            currentPosition = positionAfterFactor
-        }
-
-        while(tokens[currentPosition].value == ">>" || tokens[currentPosition].value == "<<") {
-            val shiftToken = tokens[currentPosition]
-            currentPosition++
-            val(rightExpression, positionAfterTerm) = parseTerm(tokens, currentPosition)
-            result = ParsedBinaryOperatorExpressionNode(result, rightExpression, shiftToken.value)
-            currentPosition = positionAfterTerm
-        }
-
-        while(tokens[currentPosition].value == "<" || tokens[currentPosition].value == "<=" ||  tokens[currentPosition].value == ">" || tokens[currentPosition].value == ">=" ) {
-            val relationalOperatorToken = tokens[currentPosition]
-            currentPosition++
-            val(rightExpression, positionAfterShift) = parseShift(tokens, currentPosition)
-            result = ParsedBinaryRelationalOperatorExpressionNode(result, rightExpression, relationalOperatorToken.value)
-            currentPosition = positionAfterShift
-        }
-        while(tokens[currentPosition].value == "!=" || tokens[currentPosition].value == "==") {
-            val relationalEqualsToken = tokens[currentPosition]
-            currentPosition++
-            val(rightExpression, positionAfterRelationalOperator) = parseRelationalOperator(tokens, currentPosition)
-            result = ParsedBinaryRelationalOperatorExpressionNode(result, rightExpression, relationalEqualsToken.value)
-            currentPosition = positionAfterRelationalOperator
-        }
-        while(tokens[currentPosition].value == "&") {
-            currentPosition++
-            val(rightExpression, positionAfterRelationalEquals) = parseRelationalEquals(tokens, currentPosition)
-            result = ParsedBinaryOperatorExpressionNode(result, rightExpression, "&")
-            currentPosition = positionAfterRelationalEquals
-        }
-        while(tokens[currentPosition].value == "^") {
-            currentPosition++
-            val(rightExpression, positionAfterBitwiseAnd) = parseBitwiseAnd(tokens, currentPosition)
-            result = ParsedBinaryOperatorExpressionNode(result, rightExpression, "^")
-            currentPosition = positionAfterBitwiseAnd
-        }
+        var currentPosition = positionAfterBitwiseXor
         while(tokens[currentPosition].value == "|") {
             currentPosition++
             val(rightExpression, positionAfterBitwiseXor) = parseBitwiseXor(tokens, currentPosition)
@@ -172,45 +75,9 @@ internal class ExpressionParser: IExpressionParser {
         tokens: List<Token>,
         startingPosition: Int
     ): Pair<IParsedExpressionNode, Int> {
-        val (leftExpression, positionAfterFactor) = parseFactor(tokens, startingPosition)
+        val (leftExpression, positionAfterBitwiseAnd) = parseBitwiseAnd(tokens, startingPosition)
         var result = leftExpression
-        var currentPosition = positionAfterFactor
-        while(tokens[currentPosition].type == TokenType.PLUS_MINUS) {
-            val termToken = tokens[currentPosition]
-            currentPosition++
-            val(rightExpression, positionAfterFactor) = parseFactor(tokens, currentPosition)
-            result = ParsedBinaryOperatorExpressionNode(result, rightExpression, termToken.value)
-            currentPosition = positionAfterFactor
-        }
-
-        while(tokens[currentPosition].value == ">>" || tokens[currentPosition].value == "<<") {
-            val shiftToken = tokens[currentPosition]
-            currentPosition++
-            val(rightExpression, positionAfterTerm) = parseTerm(tokens, currentPosition)
-            result = ParsedBinaryOperatorExpressionNode(result, rightExpression, shiftToken.value)
-            currentPosition = positionAfterTerm
-        }
-
-        while(tokens[currentPosition].value == "<" || tokens[currentPosition].value == "<=" ||  tokens[currentPosition].value == ">" || tokens[currentPosition].value == ">=" ) {
-            val relationalOperatorToken = tokens[currentPosition]
-            currentPosition++
-            val(rightExpression, positionAfterShift) = parseShift(tokens, currentPosition)
-            result = ParsedBinaryRelationalOperatorExpressionNode(result, rightExpression, relationalOperatorToken.value)
-            currentPosition = positionAfterShift
-        }
-        while(tokens[currentPosition].value == "!=" || tokens[currentPosition].value == "==") {
-            val relationalEqualsToken = tokens[currentPosition]
-            currentPosition++
-            val(rightExpression, positionAfterRelationalOperator) = parseRelationalOperator(tokens, currentPosition)
-            result = ParsedBinaryRelationalOperatorExpressionNode(result, rightExpression, relationalEqualsToken.value)
-            currentPosition = positionAfterRelationalOperator
-        }
-        while(tokens[currentPosition].value == "&") {
-            currentPosition++
-            val(rightExpression, positionAfterRelationalEquals) = parseRelationalEquals(tokens, currentPosition)
-            result = ParsedBinaryOperatorExpressionNode(result, rightExpression, "&")
-            currentPosition = positionAfterRelationalEquals
-        }
+        var currentPosition = positionAfterBitwiseAnd
         while(tokens[currentPosition].value == "^") {
             currentPosition++
             val(rightExpression, positionAfterBitwiseAnd) = parseBitwiseAnd(tokens, currentPosition)
@@ -224,39 +91,9 @@ internal class ExpressionParser: IExpressionParser {
         tokens: List<Token>,
         startingPosition: Int
     ): Pair<IParsedExpressionNode, Int> {
-        val (leftExpression, positionAfterFactor) = parseFactor(tokens, startingPosition)
+        val (leftExpression, positionAfterRelationalEquals) = parseRelationalEquals(tokens, startingPosition)
         var result = leftExpression
-        var currentPosition = positionAfterFactor
-        while(tokens[currentPosition].type == TokenType.PLUS_MINUS) {
-            val termToken = tokens[currentPosition]
-            currentPosition++
-            val(rightExpression, positionAfterFactor) = parseFactor(tokens, currentPosition)
-            result = ParsedBinaryOperatorExpressionNode(result, rightExpression, termToken.value)
-            currentPosition = positionAfterFactor
-        }
-
-        while(tokens[currentPosition].value == ">>" || tokens[currentPosition].value == "<<") {
-            val shiftToken = tokens[currentPosition]
-            currentPosition++
-            val(rightExpression, positionAfterTerm) = parseTerm(tokens, currentPosition)
-            result = ParsedBinaryOperatorExpressionNode(result, rightExpression, shiftToken.value)
-            currentPosition = positionAfterTerm
-        }
-
-        while(tokens[currentPosition].value == "<" || tokens[currentPosition].value == "<=" ||  tokens[currentPosition].value == ">" || tokens[currentPosition].value == ">=" ) {
-            val relationalOperatorToken = tokens[currentPosition]
-            currentPosition++
-            val(rightExpression, positionAfterShift) = parseShift(tokens, currentPosition)
-            result = ParsedBinaryRelationalOperatorExpressionNode(result, rightExpression, relationalOperatorToken.value)
-            currentPosition = positionAfterShift
-        }
-        while(tokens[currentPosition].value == "!=" || tokens[currentPosition].value == "==") {
-            val relationalEqualsToken = tokens[currentPosition]
-            currentPosition++
-            val(rightExpression, positionAfterRelationalOperator) = parseRelationalOperator(tokens, currentPosition)
-            result = ParsedBinaryRelationalOperatorExpressionNode(result, rightExpression, relationalEqualsToken.value)
-            currentPosition = positionAfterRelationalOperator
-        }
+        var currentPosition = positionAfterRelationalEquals
         while(tokens[currentPosition].value == "&") {
             currentPosition++
             val(rightExpression, positionAfterRelationalEquals) = parseRelationalEquals(tokens, currentPosition)
@@ -270,32 +107,9 @@ internal class ExpressionParser: IExpressionParser {
         tokens: List<Token>,
         startingPosition: Int
     ): Pair<IParsedExpressionNode, Int> {
-        val (leftExpression, positionAfterFactor) = parseFactor(tokens, startingPosition)
+        val (leftExpression, positionAfterRelationalOperator) = parseRelationalOperator(tokens, startingPosition)
         var result = leftExpression
-        var currentPosition = positionAfterFactor
-        while(tokens[currentPosition].type == TokenType.PLUS_MINUS) {
-            val termToken = tokens[currentPosition]
-            currentPosition++
-            val(rightExpression, positionAfterFactor) = parseFactor(tokens, currentPosition)
-            result = ParsedBinaryOperatorExpressionNode(result, rightExpression, termToken.value)
-            currentPosition = positionAfterFactor
-        }
-
-        while(tokens[currentPosition].value == ">>" || tokens[currentPosition].value == "<<") {
-            val shiftToken = tokens[currentPosition]
-            currentPosition++
-            val(rightExpression, positionAfterTerm) = parseTerm(tokens, currentPosition)
-            result = ParsedBinaryOperatorExpressionNode(result, rightExpression, shiftToken.value)
-            currentPosition = positionAfterTerm
-        }
-
-        while(tokens[currentPosition].value == "<" || tokens[currentPosition].value == "<=" ||  tokens[currentPosition].value == ">" || tokens[currentPosition].value == ">=" ) {
-            val relationalOperatorToken = tokens[currentPosition]
-            currentPosition++
-            val(rightExpression, positionAfterShift) = parseShift(tokens, currentPosition)
-            result = ParsedBinaryRelationalOperatorExpressionNode(result, rightExpression, relationalOperatorToken.value)
-            currentPosition = positionAfterShift
-        }
+        var currentPosition = positionAfterRelationalOperator
         while(tokens[currentPosition].value == "!=" || tokens[currentPosition].value == "==") {
             val relationalEqualsToken = tokens[currentPosition]
             currentPosition++
@@ -310,25 +124,9 @@ internal class ExpressionParser: IExpressionParser {
         tokens: List<Token>,
         startingPosition: Int
     ): Pair<IParsedExpressionNode, Int> {
-        val (leftExpression, positionAfterFactor) = parseFactor(tokens, startingPosition)
+        val (leftExpression, positionAfterShift) = parseShift(tokens, startingPosition)
         var result = leftExpression
-        var currentPosition = positionAfterFactor
-        while(tokens[currentPosition].type == TokenType.PLUS_MINUS) {
-            val termToken = tokens[currentPosition]
-            currentPosition++
-            val(rightExpression, positionAfterFactor) = parseFactor(tokens, currentPosition)
-            result = ParsedBinaryOperatorExpressionNode(result, rightExpression, termToken.value)
-            currentPosition = positionAfterFactor
-        }
-
-        while(tokens[currentPosition].value == ">>" || tokens[currentPosition].value == "<<") {
-            val shiftToken = tokens[currentPosition]
-            currentPosition++
-            val(rightExpression, positionAfterTerm) = parseTerm(tokens, currentPosition)
-            result = ParsedBinaryOperatorExpressionNode(result, rightExpression, shiftToken.value)
-            currentPosition = positionAfterTerm
-        }
-
+        var currentPosition = positionAfterShift
         while(tokens[currentPosition].value == "<" || tokens[currentPosition].value == "<=" ||  tokens[currentPosition].value == ">" || tokens[currentPosition].value == ">=" ) {
             val relationalOperatorToken = tokens[currentPosition]
             currentPosition++
@@ -343,17 +141,9 @@ internal class ExpressionParser: IExpressionParser {
         tokens: List<Token>,
         startingPosition: Int
     ): Pair<IParsedExpressionNode, Int> {
-        val (leftExpression, positionAfterFactor) = parseFactor(tokens, startingPosition)
+        val (leftExpression, positionAfterTerm) = parseTerm(tokens, startingPosition)
         var result = leftExpression
-        var currentPosition = positionAfterFactor
-        while(tokens[currentPosition].type == TokenType.PLUS_MINUS) {
-            val termToken = tokens[currentPosition]
-            currentPosition++
-            val(rightExpression, positionAfterFactor) = parseFactor(tokens, currentPosition)
-            result = ParsedBinaryOperatorExpressionNode(result, rightExpression, termToken.value)
-            currentPosition = positionAfterFactor
-        }
-
+        var currentPosition = positionAfterTerm
         while(tokens[currentPosition].value == ">>" || tokens[currentPosition].value == "<<") {
             val shiftToken = tokens[currentPosition]
             currentPosition++
@@ -369,16 +159,16 @@ internal class ExpressionParser: IExpressionParser {
         startingPosition: Int
     ): Pair<IParsedExpressionNode, Int> {
         val (leftExpression, positionAfterFactor) = parseFactor(tokens, startingPosition)
-        var result2 = leftExpression
+        var result = leftExpression
         var currentPosition = positionAfterFactor
         while(tokens[currentPosition].type == TokenType.PLUS_MINUS) {
             val termToken = tokens[currentPosition]
             currentPosition++
             val(rightExpression, positionAfterFactor) = parseFactor(tokens, currentPosition)
-            result2 = ParsedBinaryOperatorExpressionNode(result2, rightExpression, termToken.value)
+            result = ParsedBinaryOperatorExpressionNode(result, rightExpression, termToken.value)
             currentPosition = positionAfterFactor
         }
-        return Pair(result2, currentPosition)
+        return Pair(result, currentPosition)
     }
 
     private fun parseFactor(
