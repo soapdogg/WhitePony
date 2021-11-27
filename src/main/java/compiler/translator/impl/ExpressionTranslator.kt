@@ -1,7 +1,6 @@
 package compiler.translator.impl
 
 import compiler.core.constants.PrinterConstants
-import compiler.core.constants.TokenizerConstants
 import compiler.core.nodes.parsed.*
 import compiler.core.nodes.translated.TranslatedExpressionNode
 import compiler.core.stack.ExpressionTranslatorStackItem
@@ -17,13 +16,13 @@ import compiler.translator.impl.internal.IVariableExpressionTranslator
 
 internal class ExpressionTranslator(
     private val binaryAssignExpressionTranslator: IBinaryAssignExpressionTranslator,
+    private val binaryOperatorExpressionTranslator: IBinaryOperatorExpressionTranslator,
     private val binaryArrayExpressionTranslator: IBinaryArrayExpressionTranslator,
     private val unaryExpressionTranslator: IUnaryExpressionTranslator,
     private val innerExpressionTranslator: IInnerExpressionTranslator,
     private val variableExpressionTranslator: IVariableExpressionTranslator,
     private val constantExpressionTranslator: IConstantExpressionTranslator,
     private val tempGenerator: ITempGenerator,
-    private val typeDeterminer: ITypeDeterminer,
     private val tempDeclarationCodeGenerator: ITempDeclarationCodeGenerator,
     private val expressionTranslatorStackPusher: IExpressionTranslatorStackPusher,
     private val assignCodeGenerator: IAssignCodeGenerator,
@@ -142,53 +141,15 @@ internal class ExpressionTranslator(
                         }
                     }
                 }
-                is ParsedBinaryOperatorNode -> {
-                    when (top.location) {
-                        LocationConstants.LOCATION_1 -> {
-                            expressionTranslatorStackPusher.push(
-                                LocationConstants.LOCATION_2,
-                                top.node,
-                                top.node.leftExpression,
-                                stack
-                            )
-                        }
-                        LocationConstants.LOCATION_2 -> {
-                            expressionTranslatorStackPusher.push(
-                                LocationConstants.LOCATION_3,
-                                top.node,
-                                top.node.rightExpression,
-                                stack
-                            )
-                        }
-                        LocationConstants.LOCATION_3 -> {
-                            val rightExpression = resultStack.pop()
-                            val leftExpression = resultStack.pop()
-                            val (address, tc) = tempGenerator.generateTempVariable(t)
-                            t = tc
-                            val type = typeDeterminer.determineType(leftExpression.type, rightExpression.type)
-                            val operationCode = leftExpression.address +
-                                    PrinterConstants.SPACE +
-                                    top.node.operator +
-                                    PrinterConstants.SPACE +
-                                    rightExpression.address
-                            val tempDeclarationCode = tempDeclarationCodeGenerator.generateTempDeclarationCode(
-                                type,
-                                address,
-                                operationCode
-                            )
-
-                            val code = leftExpression.code +
-                                rightExpression.code +
-                                listOf(tempDeclarationCode)
-
-                            val translatedBinaryOperatorNode = TranslatedExpressionNode(
-                                address,
-                                code,
-                                type
-                            )
-                            resultStack.push(translatedBinaryOperatorNode)
-                        }
-                    }
+                is ParsedBinaryOperatorExpressionNode -> {
+                    t = binaryOperatorExpressionTranslator.translate(
+                        top.node,
+                        top.location,
+                        t,
+                        variableToTypeMap,
+                        stack,
+                        resultStack
+                    )
                 }
                 is ParsedBinaryArrayExpressionNode -> {
                     t = binaryArrayExpressionTranslator.translate(

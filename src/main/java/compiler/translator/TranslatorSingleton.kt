@@ -18,6 +18,7 @@ enum class TranslatorSingleton {
     private val expressionTranslatorStackPusher = ExpressionTranslatorStackPusher()
     private val arrayCodeGenerator = ArrayCodeGenerator()
     private val assignCodeGenerator = AssignCodeGenerator()
+    private val operationCodeGenerator = OperationCodeGenerator()
 
     private val binaryAssignVariableLValueExpressionTranslator = BinaryAssignVariableLValueExpressionTranslator(
         expressionTranslatorStackPusher,
@@ -31,6 +32,14 @@ enum class TranslatorSingleton {
     private val binaryAssignExpressionTranslator = BinaryAssignExpressionTranslator(
         binaryAssignVariableLValueExpressionTranslator,
         binaryAssignArrayLValueExpressionTranslator
+    )
+
+    private val binaryOperatorExpressionTranslator = BinaryOperatorExpressionTranslator(
+        expressionTranslatorStackPusher,
+        tempGenerator,
+        typeDeterminer,
+        operationCodeGenerator,
+        tempDeclarationCodeGenerator
     )
 
     private val binaryArrayExpressionTranslator = BinaryArrayExpressionTranslator(
@@ -55,13 +64,13 @@ enum class TranslatorSingleton {
 
     private val expressionTranslator = ExpressionTranslator(
         binaryAssignExpressionTranslator,
+        binaryOperatorExpressionTranslator,
         binaryArrayExpressionTranslator,
         unaryExpressionTranslator,
         innerExpressionTranslator,
         variableExpressionTranslator,
         constantExpressionTranslator,
         tempGenerator,
-        typeDeterminer,
         tempDeclarationCodeGenerator,
         expressionTranslatorStackPusher,
         assignCodeGenerator,
@@ -69,9 +78,7 @@ enum class TranslatorSingleton {
     )
 
     private val booleanExpressionTranslator = BooleanExpressionTranslator(expressionTranslator)
-
     private val expressionStatementTranslator = ExpressionStatementTranslator(expressionTranslator)
-
     private val returnStatementTranslator = ReturnStatementTranslator(expressionStatementTranslator)
 
     private val statementTranslator = StatementTranslator(
