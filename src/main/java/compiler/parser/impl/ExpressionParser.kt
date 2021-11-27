@@ -211,7 +211,7 @@ internal class ExpressionParser: IExpressionParser {
             val positionAfterUnary = startingPosition + 1
             val (rightExpression, positionAfterRightExpression) = parseUnary(tokens, positionAfterUnary)
             val resultExpression = if (unaryToken.type == TokenType.PLUS_MINUS || unaryToken.type == TokenType.BIT_NEGATION) {
-                ParsedUnaryOperatorNode(rightExpression, unaryToken.value)
+                ParsedUnaryExpressionNode(rightExpression, unaryToken.value)
             } else if (unaryToken.type == TokenType.UNARY_NOT) {
                 ParsedUnaryNotOperatorNode(rightExpression)
             } else {

@@ -123,7 +123,7 @@ internal class ExpressionPrinter: IExpressionPrinter {
                                             expressionString +
                                             PrinterConstants.RIGHT_PARENTHESES
                                 }
-                                is ParsedUnaryOperatorNode -> {
+                                is ParsedUnaryExpressionNode -> {
                                     val expressionString = resultStack.pop()
                                     top.node.operator + expressionString
                                 }
