@@ -35,7 +35,7 @@ internal class ExpressionPrinter: IExpressionPrinter {
                         }
                         LocationConstants.LOCATION_3 -> {
                             val result = when(top.node) {
-                                is ParsedBinaryAssignNode -> {
+                                is ParsedBinaryAssignExpressionNode -> {
                                     val rightExpressionString = resultStack.pop()
                                     val leftExpressionString = resultStack.pop()
                                     leftExpressionString +
@@ -92,7 +92,7 @@ internal class ExpressionPrinter: IExpressionPrinter {
                                             PrinterConstants.SPACE +
                                             rightExpressionString
                                 }
-                                is ParsedBinaryArrayOperatorNode -> {
+                                is ParsedBinaryArrayExpressionNode -> {
                                     val rightExpressionString = resultStack.pop()
                                     val leftExpressionString = resultStack.pop()
                                     leftExpressionString +

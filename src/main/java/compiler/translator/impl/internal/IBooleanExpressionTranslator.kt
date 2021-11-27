@@ -3,7 +3,7 @@ package compiler.translator.impl.internal
 import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.translated.TranslatedBooleanExpressionNode
 
-interface IBooleanExpressionTranslator {
+internal interface IBooleanExpressionTranslator {
     fun translate(
         expressionNode: IParsedExpressionNode,
         topTrueLabel: String,

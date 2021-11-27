@@ -15,7 +15,23 @@ enum class TranslatorSingleton {
     private val tempGenerator = TempGenerator()
     private val typeDeterminer = TypeDeterminer()
     private val tempDeclarationCodeGenerator = TempDeclarationCodeGenerator()
+    private val expressionTranslatorStackPusher = ExpressionTranslatorStackPusher()
+    private val arrayCodeGenerator = ArrayCodeGenerator()
+    private val assignCodeGenerator = AssignCodeGenerator()
 
+    private val binaryAssignVariableLValueExpressionTranslator = BinaryAssignVariableLValueExpressionTranslator(
+        expressionTranslatorStackPusher,
+        assignCodeGenerator
+    )
+    private val binaryAssignArrayLValueExpressionTranslator = BinaryAssignArrayLValueExpressionTranslator(
+        expressionTranslatorStackPusher,
+        arrayCodeGenerator,
+        assignCodeGenerator
+    )
+    private val binaryAssignExpressionTranslator = BinaryAssignExpressionTranslator(
+        binaryAssignVariableLValueExpressionTranslator,
+        binaryAssignArrayLValueExpressionTranslator
+    )
     private val innerExpressionTranslator = InnerExpressionTranslator()
     private val variableExpressionTranslator = VariableExpressionTranslator(
         tempGenerator,
@@ -24,12 +40,16 @@ enum class TranslatorSingleton {
     private val constantExpressionTranslator = ConstantExpressionTranslator()
 
     private val expressionTranslator = ExpressionTranslator(
+        binaryAssignExpressionTranslator,
         innerExpressionTranslator,
         variableExpressionTranslator,
         constantExpressionTranslator,
         tempGenerator,
         typeDeterminer,
-        tempDeclarationCodeGenerator
+        tempDeclarationCodeGenerator,
+        expressionTranslatorStackPusher,
+        assignCodeGenerator,
+        arrayCodeGenerator
     )
 
     private val booleanExpressionTranslator = BooleanExpressionTranslator(expressionTranslator)

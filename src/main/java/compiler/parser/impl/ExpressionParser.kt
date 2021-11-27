@@ -28,7 +28,7 @@ internal class ExpressionParser: IExpressionParser {
             val positionAfterAssign = positionAfterLogicalOr + 1
             val (rightExpression, positionAfterRightExpression) = parseAssignmentOperator(tokens, positionAfterAssign)
             val resultNode =  if (binaryAssignToken.type == TokenType.BINARY_ASSIGN) {
-                ParsedBinaryAssignNode(leftExpression, rightExpression)
+                ParsedBinaryAssignExpressionNode(leftExpression, rightExpression)
             } else {
                 ParsedBinaryAssignOperatorNode(leftExpression, rightExpression, binaryAssignToken.value.replace("=", ""))
             }
@@ -258,7 +258,7 @@ internal class ExpressionParser: IExpressionParser {
             currentPosition++
             val (insideExpression, positionAfterInnerExpression) = parse(tokens, currentPosition)
             currentPosition = positionAfterInnerExpression + 1
-            result = ParsedBinaryArrayOperatorNode(variableExpression, insideExpression)
+            result = ParsedBinaryArrayExpressionNode(variableExpression, insideExpression)
         }
         if (tokens[currentPosition].type == TokenType.PRE_POST) {
             val prePostToken = tokens[currentPosition]

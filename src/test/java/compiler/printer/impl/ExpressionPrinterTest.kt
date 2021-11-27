@@ -62,7 +62,7 @@ class ExpressionPrinterTest {
             Mockito.`when`(parsedUnaryExpression.expression).thenReturn(parsedValueExpressionNode)
             val expectedUnaryExpressionString = PrinterConstants.EMPTY
 
-            val parsedBinaryAssign = Mockito.mock(ParsedBinaryAssignNode::class.java)
+            val parsedBinaryAssign = Mockito.mock(ParsedBinaryAssignExpressionNode::class.java)
             Mockito.`when`(parsedBinaryAssign.leftExpression).thenReturn(parsedValueExpressionNode)
             Mockito.`when`(parsedBinaryAssign.rightExpression).thenReturn(parsedValueExpressionNode)
             val expectedBinaryAssignString = value + PrinterConstants.SPACE + PrinterConstants.EQUALS + PrinterConstants.SPACE + value
@@ -95,7 +95,7 @@ class ExpressionPrinterTest {
             Mockito.`when`(parsedBinaryOperator.operator).thenReturn(operator)
             val expectedBinaryOperatorString = value + PrinterConstants.SPACE + operator + PrinterConstants.SPACE + value
 
-            val parsedBinaryArrayOperator = Mockito.mock(ParsedBinaryArrayOperatorNode::class.java)
+            val parsedBinaryArrayOperator = Mockito.mock(ParsedBinaryArrayExpressionNode::class.java)
             Mockito.`when`(parsedBinaryArrayOperator.leftExpression).thenReturn(parsedValueExpressionNode)
             Mockito.`when`(parsedBinaryArrayOperator.rightExpression).thenReturn(parsedValueExpressionNode)
             val expectedBinaryArrayOperatorString = value + PrinterConstants.LEFT_BRACKET + value + PrinterConstants.RIGHT_BRACKET
