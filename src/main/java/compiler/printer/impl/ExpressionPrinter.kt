@@ -54,7 +54,7 @@ internal class ExpressionPrinter: IExpressionPrinter {
                                             PrinterConstants.SPACE +
                                             rightExpressionString
                                 }
-                                is ParsedBinaryAndOperatorNode -> {
+                                is ParsedBinaryAndOperatorExpressionNode -> {
                                     val rightExpressionString = resultStack.pop()
                                     val leftExpressionString = resultStack.pop()
                                     leftExpressionString +
@@ -64,7 +64,7 @@ internal class ExpressionPrinter: IExpressionPrinter {
                                             PrinterConstants.SPACE +
                                             rightExpressionString
                                 }
-                                is ParsedBinaryOrOperatorNode -> {
+                                is ParsedBinaryOrOperatorExpressionNode -> {
                                     val rightExpressionString = resultStack.pop()
                                     val leftExpressionString = resultStack.pop()
                                     leftExpressionString +

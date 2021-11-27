@@ -47,7 +47,7 @@ internal class ExpressionParser: IExpressionParser {
         while(tokens[currentPosition].type == TokenType.BINARY_OR) {
             currentPosition++
             val (rightExpression, positionAfterLogicalAnd) = parseLogicalAnd(tokens, currentPosition)
-            result = ParsedBinaryOrOperatorNode(result, rightExpression)
+            result = ParsedBinaryOrOperatorExpressionNode(result, rightExpression)
             currentPosition = positionAfterLogicalAnd
         }
         return Pair(result, currentPosition)
@@ -63,7 +63,7 @@ internal class ExpressionParser: IExpressionParser {
         while(tokens[currentPosition].type == TokenType.BINARY_AND) {
             currentPosition++
             val(rightExpression, positionAfterBitwiseOr) = parseBitwiseOr(tokens, currentPosition)
-            result = ParsedBinaryAndOperatorNode(result, rightExpression)
+            result = ParsedBinaryAndOperatorExpressionNode(result, rightExpression)
             currentPosition = positionAfterBitwiseOr
         }
         return Pair(result, currentPosition)

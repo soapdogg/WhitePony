@@ -1,6 +1,6 @@
 package compiler.core.nodes.parsed
 
-data class ParsedBinaryAndOperatorNode(
+data class ParsedBinaryOrOperatorExpressionNode(
     override val leftExpression: IParsedExpressionNode,
-    override val rightExpression: IParsedExpressionNode,
+    override val rightExpression: IParsedExpressionNode
 ): IParsedBinaryExpressionNode
