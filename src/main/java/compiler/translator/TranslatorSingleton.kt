@@ -1,5 +1,6 @@
 package compiler.translator
 
+import compiler.core.nodes.parsed.*
 import compiler.translator.impl.*
 import compiler.translator.impl.DeclarationStatementTranslator
 import compiler.translator.impl.ExpressionStatementTranslator
@@ -105,10 +106,26 @@ enum class TranslatorSingleton {
         gotoCodeGenerator
     )
 
+    private val unaryNotExpressionNodeTranslator = UnaryNotExpressionTranslator(
+        booleanExpressionTranslatorStackPusher
+    )
+    private val innerBooleanExpressionTranslator = InnerBooleanExpressionTranslator(
+        booleanExpressionTranslatorStackPusher
+    )
+
+    private val stackGenerator = StackGenerator()
+
+    private val translatorMap = mapOf(
+        ParsedBinaryAndOperatorExpressionNode::class.java to binaryAndOperatorExpressionTranslator,
+        ParsedBinaryOrOperatorExpressionNode::class.java to binaryOrOperatorExpressionTranslator,
+        ParsedBinaryRelationalOperatorExpressionNode::class.java to binaryRelationalOperatorExpressionTranslator,
+        ParsedUnaryNotOperatorExpressionNode::class.java to unaryNotExpressionNodeTranslator,
+        ParsedInnerExpressionNode::class.java to innerBooleanExpressionTranslator
+    )
+
     private val booleanExpressionTranslator = BooleanExpressionTranslator(
-        binaryAndOperatorExpressionTranslator,
-        binaryOrOperatorExpressionTranslator,
-        binaryRelationalOperatorExpressionTranslator
+        stackGenerator,
+        translatorMap
     )
     private val expressionStatementTranslator = ExpressionStatementTranslator(expressionTranslator)
     private val returnStatementTranslator = ReturnStatementTranslator(expressionStatementTranslator)

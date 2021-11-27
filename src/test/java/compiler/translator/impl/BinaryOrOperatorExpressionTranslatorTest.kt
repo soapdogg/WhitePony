@@ -44,11 +44,12 @@ class BinaryOrOperatorExpressionTranslatorTest {
         val leftExpression = Mockito.mock(IParsedExpressionNode::class.java)
         Mockito.`when`(node.leftExpression).thenReturn(leftExpression)
 
-        val actual = binaryOrOperatorExpressionTranslator.translate(
+        val (ll, t) = binaryOrOperatorExpressionTranslator.translate(
             node, location, trueLabel, falseLabel, tempCounter, labelCounter, variableToTypeMap, stack, resultStack, labelStack
         )
 
-        Assertions.assertEquals(l, actual)
+        Assertions.assertEquals(l, ll)
+        Assertions.assertEquals(tempCounter, t)
         val topLabel = labelStack.pop()
         Assertions.assertEquals(fLabel, topLabel)
         Mockito.verify(booleanExpressionTranslatorStackPusher).push(LocationConstants.LOCATION_2, node, trueLabel, falseLabel, stack)
@@ -71,11 +72,12 @@ class BinaryOrOperatorExpressionTranslatorTest {
         val rightExpression = Mockito.mock(IParsedExpressionNode::class.java)
         Mockito.`when`(node.rightExpression).thenReturn(rightExpression)
 
-        val actual = binaryOrOperatorExpressionTranslator.translate(
+        val (l, t) = binaryOrOperatorExpressionTranslator.translate(
             node, location, trueLabel, falseLabel, tempCounter, labelCounter, variableToTypeMap, stack, resultStack, labelStack
         )
 
-        Assertions.assertEquals(labelCounter, actual)
+        Assertions.assertEquals(labelCounter, l)
+        Assertions.assertEquals(tempCounter, t)
         Mockito.verify(booleanExpressionTranslatorStackPusher).push(LocationConstants.LOCATION_3, node, trueLabel, falseLabel, stack)
         Mockito.verify(booleanExpressionTranslatorStackPusher).push(LocationConstants.LOCATION_1, rightExpression, trueLabel, falseLabel, stack)
     }
@@ -111,11 +113,12 @@ class BinaryOrOperatorExpressionTranslatorTest {
         val rightCode = "rightCode"
         Mockito.`when`(rightExpression.code).thenReturn(listOf(rightCode))
 
-        val actual = binaryOrOperatorExpressionTranslator.translate(
+        val (l, t) = binaryOrOperatorExpressionTranslator.translate(
             node, location, trueLabel, falseLabel, tempCounter, labelCounter, variableToTypeMap, stack, resultStack, labelStack
         )
 
-        Assertions.assertEquals(labelCounter, actual)
+        Assertions.assertEquals(labelCounter, l)
+        Assertions.assertEquals(tempCounter, t)
         val top = resultStack.pop()
         Assertions.assertEquals(listOf(leftCode, labelCode, rightCode), top.code)
     }
@@ -133,10 +136,11 @@ class BinaryOrOperatorExpressionTranslatorTest {
         val resultStack = Stack<TranslatedBooleanExpressionNode>()
         val labelStack = Stack<String>()
 
-        val actual = binaryOrOperatorExpressionTranslator.translate(
+        val (l, t) = binaryOrOperatorExpressionTranslator.translate(
             node, location, trueLabel, falseLabel, tempCounter, labelCounter, variableToTypeMap, stack, resultStack, labelStack
         )
 
-        Assertions.assertEquals(labelCounter, actual)
+        Assertions.assertEquals(labelCounter, l)
+        Assertions.assertEquals(tempCounter, t)
     }
 }

@@ -1,10 +1,11 @@
 package compiler.translator.impl
 
+import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.ParsedBinaryRelationalOperatorExpressionNode
 import compiler.core.nodes.translated.TranslatedBooleanExpressionNode
 import compiler.core.stack.BooleanExpressionTranslatorStackItem
 import compiler.core.stack.Stack
-import compiler.translator.impl.internal.IBinaryRelationalOperatorExpressionTranslator
+import compiler.translator.impl.internal.IBooleanExpressionNodeTranslator
 import compiler.translator.impl.internal.IConditionalGotoCodeGenerator
 import compiler.translator.impl.internal.IExpressionTranslator
 import compiler.translator.impl.internal.IGotoCodeGenerator
@@ -13,16 +14,20 @@ internal class BinaryRelationalOperatorExpressionTranslator(
     private val expressionTranslator: IExpressionTranslator,
     private val conditionalGotoCodeGenerator: IConditionalGotoCodeGenerator,
     private val gotoCodeGenerator: IGotoCodeGenerator
-): IBinaryRelationalOperatorExpressionTranslator {
+): IBooleanExpressionNodeTranslator {
     override fun translate(
-        node: ParsedBinaryRelationalOperatorExpressionNode,
+        node: IParsedExpressionNode,
+        location: Int,
         trueLabel: String,
         falseLabel: String,
         tempCounter: Int,
+        labelCounter: Int,
         variableToTypeMap: Map<String,String>,
         stack: Stack<BooleanExpressionTranslatorStackItem>,
-        resultStack: Stack<TranslatedBooleanExpressionNode>
-    ): Int {
+        resultStack: Stack<TranslatedBooleanExpressionNode>,
+        labelStack: Stack<String>
+    ): Pair<Int, Int> {
+        node as ParsedBinaryRelationalOperatorExpressionNode
         val (leftExpression, tempAfterLeft) = expressionTranslator.translate(node.leftExpression, variableToTypeMap, tempCounter)
         val (rightExpression, tempAfterRight) = expressionTranslator.translate(node.rightExpression, variableToTypeMap, tempAfterLeft)
 
@@ -36,6 +41,6 @@ internal class BinaryRelationalOperatorExpressionTranslator(
         val code = leftExpression.code + rightExpression.code + listOf(conditionalGotoCode, gotoFalseLabelCode)
         val translatedBooleanExpressionNode = TranslatedBooleanExpressionNode(code)
         resultStack.push(translatedBooleanExpressionNode)
-        return tempAfterRight
+        return Pair(labelCounter, tempAfterRight)
     }
 }

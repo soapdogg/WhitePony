@@ -1,5 +1,5 @@
 package compiler.core.nodes.parsed
 
-data class ParsedUnaryNotOperatorNode(
+data class ParsedUnaryNotOperatorExpressionNode(
     override val expression: IParsedExpressionNode
 ): IParsedUnaryExpressionNode

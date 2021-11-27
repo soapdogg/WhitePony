@@ -213,7 +213,7 @@ internal class ExpressionParser: IExpressionParser {
             val resultExpression = if (unaryToken.type == TokenType.PLUS_MINUS || unaryToken.type == TokenType.BIT_NEGATION) {
                 ParsedUnaryExpressionNode(rightExpression, unaryToken.value)
             } else if (unaryToken.type == TokenType.UNARY_NOT) {
-                ParsedUnaryNotOperatorNode(rightExpression)
+                ParsedUnaryNotOperatorExpressionNode(rightExpression)
             } else {
                 ParsedUnaryPreOperatorNode(rightExpression, unaryToken.value[0].toString())
             }

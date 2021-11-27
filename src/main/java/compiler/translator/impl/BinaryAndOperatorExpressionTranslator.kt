@@ -1,11 +1,12 @@
 package compiler.translator.impl
 
+import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.ParsedBinaryAndOperatorExpressionNode
 import compiler.core.nodes.translated.TranslatedBooleanExpressionNode
 import compiler.core.stack.BooleanExpressionTranslatorStackItem
 import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
-import compiler.translator.impl.internal.IBinaryAndOperatorExpressionTranslator
+import compiler.translator.impl.internal.IBooleanExpressionNodeTranslator
 import compiler.translator.impl.internal.IBooleanExpressionTranslatorStackPusher
 import compiler.translator.impl.internal.ILabelCodeGenerator
 import compiler.translator.impl.internal.ILabelGenerator
@@ -14,9 +15,9 @@ internal class BinaryAndOperatorExpressionTranslator(
     private val labelGenerator: ILabelGenerator,
     private val booleanExpressionTranslatorStackPusher: IBooleanExpressionTranslatorStackPusher,
     private val labelCodeGenerator: ILabelCodeGenerator
-): IBinaryAndOperatorExpressionTranslator {
+): IBooleanExpressionNodeTranslator {
     override fun translate(
-        node: ParsedBinaryAndOperatorExpressionNode,
+        node: IParsedExpressionNode,
         location: Int,
         trueLabel: String,
         falseLabel: String,
@@ -26,19 +27,20 @@ internal class BinaryAndOperatorExpressionTranslator(
         stack: Stack<BooleanExpressionTranslatorStackItem>,
         resultStack: Stack<TranslatedBooleanExpressionNode>,
         labelStack: Stack<String>
-    ): Int {
+    ): Pair<Int, Int> {
+        node as ParsedBinaryAndOperatorExpressionNode
         return when(location) {
             LocationConstants.LOCATION_1 -> {
                 val (tLabel, l) = labelGenerator.generateLabel(labelCounter)
                 labelStack.push(tLabel)
                 booleanExpressionTranslatorStackPusher.push(LocationConstants.LOCATION_2, node, trueLabel, falseLabel, stack)
                 booleanExpressionTranslatorStackPusher.push(LocationConstants.LOCATION_1, node.leftExpression, tLabel, falseLabel, stack)
-                l
+                Pair(l, tempCounter)
             }
             LocationConstants.LOCATION_2 -> {
                 booleanExpressionTranslatorStackPusher.push(LocationConstants.LOCATION_3, node, trueLabel, falseLabel, stack)
                 booleanExpressionTranslatorStackPusher.push(LocationConstants.LOCATION_1, node.rightExpression, trueLabel, falseLabel, stack)
-                labelCounter
+                Pair(labelCounter, tempCounter)
             }
             LocationConstants.LOCATION_3 -> {
                 val rightExpression = resultStack.pop()
@@ -48,10 +50,10 @@ internal class BinaryAndOperatorExpressionTranslator(
                 val code = leftExpression.code + listOf(labelCode) + rightExpression.code
                 val translatedBooleanExpressionNode = TranslatedBooleanExpressionNode(code)
                 resultStack.push(translatedBooleanExpressionNode)
-                labelCounter
+                Pair(labelCounter, tempCounter)
             }
             else -> {
-                labelCounter
+                Pair(labelCounter, tempCounter)
             }
         }
     }

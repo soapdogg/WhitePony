@@ -5,6 +5,7 @@ import compiler.core.nodes.parsed.ParsedBinaryRelationalOperatorExpressionNode
 import compiler.core.nodes.translated.TranslatedBooleanExpressionNode
 import compiler.core.nodes.translated.TranslatedExpressionNode
 import compiler.core.stack.BooleanExpressionTranslatorStackItem
+import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
 import compiler.translator.impl.internal.IConditionalGotoCodeGenerator
 import compiler.translator.impl.internal.IExpressionTranslator
@@ -27,12 +28,15 @@ class BinaryRelationalOperatorExpressionTranslatorTest {
     @Test
     fun translateTest() {
         val node = Mockito.mock(ParsedBinaryRelationalOperatorExpressionNode::class.java)
+        val location = LocationConstants.LOCATION_3
         val trueLabel = "trueLabel"
         val falseLabel = "falseLabel"
         val tempCounter = 1
+        val labelCounter = 234
         val variableToTypeMap = mapOf<String, String>()
         val stack = Stack<BooleanExpressionTranslatorStackItem>()
         val resultStack = Stack<TranslatedBooleanExpressionNode>()
+        val labelStack = Stack<String>()
 
         val leftExpression = Mockito.mock(IParsedExpressionNode::class.java)
         Mockito.`when`(node.leftExpression).thenReturn(leftExpression)
@@ -69,16 +73,20 @@ class BinaryRelationalOperatorExpressionTranslatorTest {
         val rightCode = "rightCode"
         Mockito.`when`(translatedRightExpression.code).thenReturn(listOf(rightCode))
 
-        val actual = binaryRelationalOperatorExpressionTranslator.translate(
+        val (l, t) = binaryRelationalOperatorExpressionTranslator.translate(
             node,
+            location,
             trueLabel,
             falseLabel,
             tempCounter,
+            labelCounter,
             variableToTypeMap,
             stack,
-            resultStack
+            resultStack,
+            labelStack
         )
-        Assertions.assertEquals(tempAfterRight, actual)
+        Assertions.assertEquals(labelCounter, l)
+        Assertions.assertEquals(tempAfterRight, t)
         val top = resultStack.pop()
         Assertions.assertEquals(listOf(leftCode, rightCode, conditionalGotoCode, gotoFalseLabelCode), top.code)
     }
