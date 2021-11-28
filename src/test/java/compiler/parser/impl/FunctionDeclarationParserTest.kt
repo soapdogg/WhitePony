@@ -3,7 +3,7 @@ package compiler.parser.impl
 import compiler.core.nodes.parsed.ParsedBasicBlockNode
 import compiler.core.tokenizer.Token
 import compiler.core.tokenizer.TokenType
-import compiler.parser.impl.internal.IStatementParser
+import compiler.parser.impl.internal.IStatementParserOrchestrator
 import compiler.parser.impl.internal.ITokenTypeAsserter
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -11,7 +11,7 @@ import org.mockito.Mockito
 
 class FunctionDeclarationParserTest {
     private val tokenTypeAsserter = Mockito.mock(ITokenTypeAsserter::class.java)
-    private val statementParser = Mockito.mock(IStatementParser::class.java)
+    private val statementParser = Mockito.mock(IStatementParserOrchestrator::class.java)
 
     private val functionDeclarationParser = FunctionDeclarationParser(
         tokenTypeAsserter,

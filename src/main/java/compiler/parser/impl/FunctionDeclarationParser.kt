@@ -4,12 +4,12 @@ import compiler.core.nodes.parsed.ParsedFunctionDeclarationNode
 import compiler.core.tokenizer.Token
 import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.internal.IFunctionDeclarationParser
-import compiler.parser.impl.internal.IStatementParser
+import compiler.parser.impl.internal.IStatementParserOrchestrator
 import compiler.parser.impl.internal.ITokenTypeAsserter
 
 internal class FunctionDeclarationParser(
     private val tokenTypeAsserter: ITokenTypeAsserter,
-    private val statementParser: IStatementParser
+    private val statementParserOrchestrator: IStatementParserOrchestrator
 ): IFunctionDeclarationParser {
 
     override fun parse(
@@ -21,7 +21,7 @@ internal class FunctionDeclarationParser(
         val (_, positionAfterLeftParentheses) = tokenTypeAsserter.assertTokenType(tokens, positionAfterIdentifier, TokenType.LEFT_PARENTHESES)
         val (_, positionAfterRightParentheses) = tokenTypeAsserter.assertTokenType(tokens, positionAfterLeftParentheses, TokenType.RIGHT_PARENTHESES)
         tokenTypeAsserter.assertTokenType(tokens, positionAfterRightParentheses, TokenType.LEFT_BRACE)
-        val (basicBlockNode, finalPosition) = statementParser.parse(
+        val (basicBlockNode, finalPosition) = statementParserOrchestrator.parse(
             tokens,
             positionAfterRightParentheses,
         )

@@ -1,5 +1,7 @@
 package compiler.parser
 
+import compiler.core.stack.StatementParserLocations
+import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.*
 import compiler.parser.impl.DeclarationStatementParser
 import compiler.parser.impl.FunctionDeclarationParser
@@ -40,17 +42,84 @@ enum class ParserSingleton {
         expressionStatementParser
     )
 
-    private val statementParser = StatementParser(
+    private val startDoStatementParser = StartDoStatementParser(
+        tokenTypeAsserter
+    )
+
+    private val startForStatementParser = StartForStatementParser(
         tokenTypeAsserter,
-        expressionParser,
-        variableDeclarationListParser,
-        returnStatementParser,
+        expressionParser
+    )
+
+    private val startIfStatementParser = StartIfStatementParser(
+        tokenTypeAsserter,
+        expressionParser
+    )
+
+    private val startBasicBlockStatementParser = StartBasicBlockStatementParser(
+        tokenTypeAsserter
+    )
+
+    private val startReturnStatementParser = StartReturnStatementParser(
+        returnStatementParser
+    )
+
+    private val startVariableDeclarationListStatementParser = StartVariableDeclarationListStatementParser(
+        variableDeclarationListParser
+    )
+
+    private val startWhileStatementParser = StartWhileStatementParser(
+        tokenTypeAsserter,
+        expressionParser
+    )
+
+    private val startExpressionStatementParser = StartExpressionStatementParser(
         expressionStatementParser
+    )
+
+    private val tokenTypeToParserMap = mapOf(
+        TokenType.DO to startDoStatementParser,
+        TokenType.FOR to startForStatementParser,
+        TokenType.IF to startIfStatementParser,
+        TokenType.LEFT_BRACE to startBasicBlockStatementParser,
+        TokenType.RETURN to startReturnStatementParser,
+        TokenType.TYPE to startVariableDeclarationListStatementParser,
+        TokenType.WHILE to startWhileStatementParser,
+    )
+
+    private val startLocationStatementParser = StartLocationStatementParser(
+        tokenTypeToParserMap,
+        startExpressionStatementParser,
+    )
+
+    private val endDoStatementParser = EndDoStatementParser(
+        tokenTypeAsserter,
+        expressionParser
+    )
+
+    private val endForStatementParser = EndForStatementParser()
+    private val endIfStatementParser = EndIfStatementParser(tokenTypeAsserter)
+    private val endElseStatementParser = EndElseStatementParser()
+    private val endWhileStatementParser = EndWhileStatementParser()
+    private val endBasicBlockStatementParser = EndBasicBlockStatementParser(tokenTypeAsserter)
+
+    private val locationToParserMap = mapOf(
+        StatementParserLocations.LOCATION_START to startLocationStatementParser,
+        StatementParserLocations.LOCATION_DO to endDoStatementParser,
+        StatementParserLocations.LOCATION_FOR to endForStatementParser,
+        StatementParserLocations.LOCATION_IF to endIfStatementParser,
+        StatementParserLocations.LOCATION_ELSE to endElseStatementParser,
+        StatementParserLocations.LOCATION_WHILE to endWhileStatementParser,
+        StatementParserLocations.LOCATION_BASIC_BLOCK to endBasicBlockStatementParser
+    )
+
+    private val statementParserOrchestrator = StatementParserOrchestrator(
+        locationToParserMap
     )
 
     private val functionDeclarationParser = FunctionDeclarationParser(
         tokenTypeAsserter,
-        statementParser
+        statementParserOrchestrator
     )
 
     private val declarationStatementParser = DeclarationStatementParser(

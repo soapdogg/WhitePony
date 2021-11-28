@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 
-class DeclarationStatementParserTest {
+class DeclarationStatementParserOrchestratorTest {
     private val functionDeclarationParser = Mockito.mock(IFunctionDeclarationParser::class.java)
     private val variableDeclarationListParser = Mockito.mock(IVariableDeclarationListParser::class.java)
 
