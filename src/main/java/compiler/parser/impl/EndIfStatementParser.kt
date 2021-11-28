@@ -4,7 +4,7 @@ import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.IParsedStatementNode
 import compiler.core.nodes.parsed.ParsedIfNode
 import compiler.core.stack.Stack
-import compiler.core.stack.StatementParserLocations
+import compiler.core.stack.StatementParserLocation
 import compiler.core.tokenizer.Token
 import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.internal.IStatementParser
@@ -16,7 +16,7 @@ internal class EndIfStatementParser(
     override fun parse(
         tokens: List<Token>,
         tokenPosition: Int,
-        stack: Stack<Int>,
+        stack: Stack<StatementParserLocation>,
         resultStack: Stack<IParsedStatementNode>,
         expressionStack: Stack<IParsedExpressionNode>,
         numberOfStatementsBlockStack: Stack<Int>
@@ -33,8 +33,8 @@ internal class EndIfStatementParser(
             return tokenPosition
         } else {
             val (_, positionAfterElse) = tokenTypeAsserter.assertTokenType(tokens, tokenPosition, TokenType.ELSE)
-            stack.push(StatementParserLocations.LOCATION_ELSE)
-            stack.push(StatementParserLocations.LOCATION_START)
+            stack.push(StatementParserLocation.LOCATION_ELSE)
+            stack.push(StatementParserLocation.LOCATION_START)
             return positionAfterElse
         }
     }

@@ -5,7 +5,7 @@ import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.IParsedStatementNode
 import compiler.core.nodes.parsed.ParsedBasicBlockNode
 import compiler.core.stack.Stack
-import compiler.core.stack.StatementParserLocations
+import compiler.core.stack.StatementParserLocation
 import compiler.core.tokenizer.Token
 import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.internal.ITokenTypeAsserter
@@ -23,7 +23,7 @@ class StartBasicBlockStatementParserTest {
         val secondToken = Mockito.mock(Token::class.java)
         val tokens = listOf(leftBraceToken, secondToken)
         val tokenPosition = 0
-        val stack = Stack<Int>()
+        val stack = Stack<StatementParserLocation>()
         val resultStack = Stack<IParsedStatementNode>()
         val expressionStack = Stack<IParsedExpressionNode>()
         val numberOfStatementsBlockStack = Stack<Int>()
@@ -37,9 +37,9 @@ class StartBasicBlockStatementParserTest {
         val actual = startBasicBlockStatementParser.parse(tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack)
         Assertions.assertEquals(positionAfterLeftBrace, actual)
         val start = stack.pop()
-        Assertions.assertEquals(StatementParserLocations.LOCATION_START, start)
+        Assertions.assertEquals(StatementParserLocation.LOCATION_START, start)
         val basicBlock = stack.pop()
-        Assertions.assertEquals(StatementParserLocations.LOCATION_BASIC_BLOCK, basicBlock)
+        Assertions.assertEquals(StatementParserLocation.LOCATION_BASIC_BLOCK, basicBlock)
         val number = numberOfStatementsBlockStack.pop()
         Assertions.assertEquals(PrinterConstants.ONE.toInt(), number)
     }
@@ -50,7 +50,7 @@ class StartBasicBlockStatementParserTest {
         val secondToken = Mockito.mock(Token::class.java)
         val tokens = listOf(leftBraceToken, secondToken)
         val tokenPosition = 0
-        val stack = Stack<Int>()
+        val stack = Stack<StatementParserLocation>()
         val resultStack = Stack<IParsedStatementNode>()
         val expressionStack = Stack<IParsedExpressionNode>()
         val numberOfStatementsBlockStack = Stack<Int>()

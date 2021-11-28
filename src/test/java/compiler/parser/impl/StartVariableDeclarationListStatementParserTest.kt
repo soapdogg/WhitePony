@@ -4,6 +4,7 @@ import compiler.core.nodes.VariableDeclarationListNode
 import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.IParsedStatementNode
 import compiler.core.stack.Stack
+import compiler.core.stack.StatementParserLocation
 import compiler.core.tokenizer.Token
 import compiler.parser.impl.internal.IVariableDeclarationListParser
 import org.junit.jupiter.api.Assertions
@@ -21,7 +22,7 @@ class StartVariableDeclarationListStatementParserTest {
     fun parseTest() {
         val tokens = listOf<Token>()
         val tokenPosition = 0
-        val stack = Stack<Int>()
+        val stack = Stack<StatementParserLocation>()
         val resultStack = Stack<IParsedStatementNode>()
         val expressionStack = Stack<IParsedExpressionNode>()
         val numberOfStatementsBlockStack = Stack<Int>()

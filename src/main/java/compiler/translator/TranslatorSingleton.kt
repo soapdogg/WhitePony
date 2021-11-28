@@ -2,6 +2,7 @@ package compiler.translator
 
 import compiler.core.nodes.parsed.*
 import compiler.translator.impl.*
+import compiler.translator.impl.StackGenerator
 import compiler.translator.impl.DeclarationStatementTranslator
 import compiler.translator.impl.ExpressionStatementTranslator
 import compiler.translator.impl.FunctionDeclarationTranslator

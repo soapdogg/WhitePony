@@ -5,7 +5,7 @@ import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.IParsedStatementNode
 import compiler.core.nodes.parsed.ParsedBasicBlockNode
 import compiler.core.stack.Stack
-import compiler.core.stack.StatementParserLocations
+import compiler.core.stack.StatementParserLocation
 import compiler.core.tokenizer.Token
 import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.internal.IStatementParser
@@ -17,7 +17,7 @@ internal class StartBasicBlockStatementParser(
     override fun parse(
         tokens: List<Token>,
         tokenPosition: Int,
-        stack: Stack<Int>,
+        stack: Stack<StatementParserLocation>,
         resultStack: Stack<IParsedStatementNode>,
         expressionStack: Stack<IParsedExpressionNode>,
         numberOfStatementsBlockStack: Stack<Int>
@@ -25,8 +25,8 @@ internal class StartBasicBlockStatementParser(
         val (_, positionAfterLeftBrace) = tokenTypeAsserter.assertTokenType(tokens, tokenPosition, TokenType.LEFT_BRACE)
         if (tokens[positionAfterLeftBrace].type != TokenType.RIGHT_BRACE) {
             numberOfStatementsBlockStack.push(PrinterConstants.ONE.toInt())
-            stack.push(StatementParserLocations.LOCATION_BASIC_BLOCK)
-            stack.push(StatementParserLocations.LOCATION_START)
+            stack.push(StatementParserLocation.LOCATION_BASIC_BLOCK)
+            stack.push(StatementParserLocation.LOCATION_START)
             return positionAfterLeftBrace
         }
         val (_, positionAfterRightBrace) = tokenTypeAsserter.assertTokenType(tokens, positionAfterLeftBrace, TokenType.RIGHT_BRACE)

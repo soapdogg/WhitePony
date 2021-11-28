@@ -4,6 +4,7 @@ import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.IParsedStatementNode
 import compiler.core.nodes.parsed.ParsedForNode
 import compiler.core.stack.Stack
+import compiler.core.stack.StatementParserLocation
 import compiler.core.tokenizer.Token
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -16,7 +17,7 @@ class EndForStatementParserTest {
     fun parseTest() {
         val tokens = listOf<Token>()
         val tokenPosition = 0
-        val stack = Stack<Int>()
+        val stack = Stack<StatementParserLocation>()
         val resultStack = Stack<IParsedStatementNode>()
         val expressionStack = Stack<IParsedExpressionNode>()
         val numberOfStatementsBlockStack = Stack<Int>()

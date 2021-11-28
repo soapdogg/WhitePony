@@ -3,7 +3,7 @@ package compiler.parser.impl
 import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.IParsedStatementNode
 import compiler.core.stack.Stack
-import compiler.core.stack.StatementParserLocations
+import compiler.core.stack.StatementParserLocation
 import compiler.core.tokenizer.Token
 import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.internal.IExpressionParser
@@ -17,7 +17,7 @@ internal class StartIfStatementParser(
     override fun parse(
         tokens: List<Token>,
         tokenPosition: Int,
-        stack: Stack<Int>,
+        stack: Stack<StatementParserLocation>,
         resultStack: Stack<IParsedStatementNode>,
         expressionStack: Stack<IParsedExpressionNode>,
         numberOfStatementsBlockStack: Stack<Int>
@@ -25,8 +25,8 @@ internal class StartIfStatementParser(
         val (_, positionAfterIf) = tokenTypeAsserter.assertTokenType(tokens, tokenPosition, TokenType.IF)
         val (booleanExpression, positionAfterBooleanExpression) = expressionParser.parse(tokens, positionAfterIf)
         expressionStack.push(booleanExpression)
-        stack.push(StatementParserLocations.LOCATION_IF)
-        stack.push(StatementParserLocations.LOCATION_START)
+        stack.push(StatementParserLocation.LOCATION_IF)
+        stack.push(StatementParserLocation.LOCATION_START)
         return positionAfterBooleanExpression
     }
 }

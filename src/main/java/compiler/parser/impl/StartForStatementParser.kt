@@ -3,7 +3,7 @@ package compiler.parser.impl
 import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.IParsedStatementNode
 import compiler.core.stack.Stack
-import compiler.core.stack.StatementParserLocations
+import compiler.core.stack.StatementParserLocation
 import compiler.core.tokenizer.Token
 import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.internal.IExpressionParser
@@ -17,7 +17,7 @@ internal class StartForStatementParser(
     override fun parse(
         tokens: List<Token>,
         tokenPosition: Int,
-        stack: Stack<Int>,
+        stack: Stack<StatementParserLocation>,
         resultStack: Stack<IParsedStatementNode>,
         expressionStack: Stack<IParsedExpressionNode>,
         numberOfStatementsBlockStack: Stack<Int>
@@ -33,8 +33,8 @@ internal class StartForStatementParser(
         expressionStack.push(incrementExpression)
         expressionStack.push(testExpression)
         expressionStack.push(initExpression)
-        stack.push(StatementParserLocations.LOCATION_FOR)
-        stack.push(StatementParserLocations.LOCATION_START)
+        stack.push(StatementParserLocation.LOCATION_FOR)
+        stack.push(StatementParserLocation.LOCATION_START)
         return positionAfterRightParentheses
     }
 }

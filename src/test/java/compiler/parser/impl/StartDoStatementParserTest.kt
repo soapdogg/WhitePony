@@ -3,7 +3,7 @@ package compiler.parser.impl
 import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.IParsedStatementNode
 import compiler.core.stack.Stack
-import compiler.core.stack.StatementParserLocations
+import compiler.core.stack.StatementParserLocation
 import compiler.core.tokenizer.Token
 import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.internal.ITokenTypeAsserter
@@ -19,7 +19,7 @@ class StartDoStatementParserTest {
     fun parseTest(){
         val tokens = listOf<Token>()
         val tokenPosition = 0
-        val stack = Stack<Int>()
+        val stack = Stack<StatementParserLocation>()
         val resultStack = Stack<IParsedStatementNode>()
         val expressionStack = Stack<IParsedExpressionNode>()
         val numberOfStatementsBlockStack = Stack<Int>()
@@ -29,8 +29,8 @@ class StartDoStatementParserTest {
         val actual = startDoStatementParser.parse(tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack)
         Assertions.assertEquals(positionAfterDo, actual)
         val startLocation = stack.pop()
-        Assertions.assertEquals(StatementParserLocations.LOCATION_START, startLocation)
+        Assertions.assertEquals(StatementParserLocation.LOCATION_START, startLocation)
         val doLocation = stack.pop()
-        Assertions.assertEquals(StatementParserLocations.LOCATION_DO, doLocation)
+        Assertions.assertEquals(StatementParserLocation.LOCATION_DO, doLocation)
     }
 }

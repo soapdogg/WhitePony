@@ -3,7 +3,7 @@ package compiler.parser.impl
 import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.IParsedStatementNode
 import compiler.core.stack.Stack
-import compiler.core.stack.StatementParserLocations
+import compiler.core.stack.StatementParserLocation
 import compiler.core.tokenizer.Token
 import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.internal.IExpressionParser
@@ -26,7 +26,7 @@ class StartForStatementParserTest {
         val token = Mockito.mock(Token::class.java)
         val tokens = listOf(token)
         val tokenPosition = 0
-        val stack = Stack<Int>()
+        val stack = Stack<StatementParserLocation>()
         val resultStack = Stack<IParsedStatementNode>()
         val expressionStack = Stack<IParsedExpressionNode>()
         val numberOfStatementsBlockStack = Stack<Int>()
@@ -62,9 +62,9 @@ class StartForStatementParserTest {
         Assertions.assertEquals(positionAfterRightParentheses, actual)
 
         val startLocation = stack.pop()
-        Assertions.assertEquals(StatementParserLocations.LOCATION_START, startLocation)
+        Assertions.assertEquals(StatementParserLocation.LOCATION_START, startLocation)
         val forLocation = stack.pop()
-        Assertions.assertEquals(StatementParserLocations.LOCATION_FOR, forLocation)
+        Assertions.assertEquals(StatementParserLocation.LOCATION_FOR, forLocation)
 
         val init = expressionStack.pop()
         Assertions.assertEquals(initExpression, init)

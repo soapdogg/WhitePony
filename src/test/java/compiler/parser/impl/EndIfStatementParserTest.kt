@@ -4,7 +4,7 @@ import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.IParsedStatementNode
 import compiler.core.nodes.parsed.ParsedIfNode
 import compiler.core.stack.Stack
-import compiler.core.stack.StatementParserLocations
+import compiler.core.stack.StatementParserLocation
 import compiler.core.tokenizer.Token
 import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.internal.ITokenTypeAsserter
@@ -22,7 +22,7 @@ class EndIfStatementParserTest {
         val token = Mockito.mock(Token::class.java)
         val tokens = listOf(token)
         val tokenPosition = 0
-        val stack = Stack<Int>()
+        val stack = Stack<StatementParserLocation>()
         val resultStack = Stack<IParsedStatementNode>()
         val expressionStack = Stack<IParsedExpressionNode>()
         val numberOfStatementsBlockStack = Stack<Int>()
@@ -49,7 +49,7 @@ class EndIfStatementParserTest {
         val token = Mockito.mock(Token::class.java)
         val tokens = listOf(token)
         val tokenPosition = 0
-        val stack = Stack<Int>()
+        val stack = Stack<StatementParserLocation>()
         val resultStack = Stack<IParsedStatementNode>()
         val expressionStack = Stack<IParsedExpressionNode>()
         val numberOfStatementsBlockStack = Stack<Int>()
@@ -62,8 +62,8 @@ class EndIfStatementParserTest {
         val actual = endIfStatementParser.parse(tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack)
         Assertions.assertEquals(positionAfterElse, actual)
         val start = stack.pop()
-        Assertions.assertEquals(StatementParserLocations.LOCATION_START, start)
+        Assertions.assertEquals(StatementParserLocation.LOCATION_START, start)
         val elseLocation = stack.pop()
-        Assertions.assertEquals(StatementParserLocations.LOCATION_ELSE, elseLocation)
+        Assertions.assertEquals(StatementParserLocation.LOCATION_ELSE, elseLocation)
     }
 }

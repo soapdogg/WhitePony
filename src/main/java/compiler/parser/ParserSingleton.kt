@@ -1,6 +1,6 @@
 package compiler.parser
 
-import compiler.core.stack.StatementParserLocations
+import compiler.core.stack.StatementParserLocation
 import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.*
 import compiler.parser.impl.DeclarationStatementParser
@@ -11,6 +11,8 @@ enum class ParserSingleton {
     INSTANCE;
 
     private val tokenTypeAsserter = TokenTypeAsserter()
+
+    private val stackGenerator = StackGenerator()
 
     private val expressionParser = ExpressionParser()
     private val arrayParser = ArrayParser(
@@ -104,16 +106,17 @@ enum class ParserSingleton {
     private val endBasicBlockStatementParser = EndBasicBlockStatementParser(tokenTypeAsserter)
 
     private val locationToParserMap = mapOf(
-        StatementParserLocations.LOCATION_START to startLocationStatementParser,
-        StatementParserLocations.LOCATION_DO to endDoStatementParser,
-        StatementParserLocations.LOCATION_FOR to endForStatementParser,
-        StatementParserLocations.LOCATION_IF to endIfStatementParser,
-        StatementParserLocations.LOCATION_ELSE to endElseStatementParser,
-        StatementParserLocations.LOCATION_WHILE to endWhileStatementParser,
-        StatementParserLocations.LOCATION_BASIC_BLOCK to endBasicBlockStatementParser
+        StatementParserLocation.LOCATION_START to startLocationStatementParser,
+        StatementParserLocation.LOCATION_DO to endDoStatementParser,
+        StatementParserLocation.LOCATION_FOR to endForStatementParser,
+        StatementParserLocation.LOCATION_IF to endIfStatementParser,
+        StatementParserLocation.LOCATION_ELSE to endElseStatementParser,
+        StatementParserLocation.LOCATION_WHILE to endWhileStatementParser,
+        StatementParserLocation.LOCATION_BASIC_BLOCK to endBasicBlockStatementParser
     )
 
     private val statementParserOrchestrator = StatementParserOrchestrator(
+        stackGenerator,
         locationToParserMap
     )
 
