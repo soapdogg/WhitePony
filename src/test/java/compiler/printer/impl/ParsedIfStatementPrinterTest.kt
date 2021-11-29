@@ -4,8 +4,6 @@ import compiler.core.constants.PrinterConstants
 import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.IParsedStatementNode
 import compiler.core.nodes.parsed.ParsedIfNode
-import compiler.core.nodes.translated.ITranslatedStatementNode
-import compiler.core.nodes.translated.TranslatedIfNode
 import compiler.core.stack.Stack
 import compiler.core.stack.StatementPrinterLocation
 import compiler.core.stack.StatementPrinterStackItem

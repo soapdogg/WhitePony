@@ -129,8 +129,11 @@ enum class PrinterSingleton {
         VariableDeclarationListNode::class.java to variableDeclarationListStatementPrinter
     )
 
+    private val stackGenerator = StackGenerator()
+
     private val statementPrinter = StatementPrinterOrchestrator(
-        printerMap
+        stackGenerator,
+        printerMap,
     )
     private val functionDeclarationPrinter = FunctionDeclarationPrinter(statementPrinter)
 

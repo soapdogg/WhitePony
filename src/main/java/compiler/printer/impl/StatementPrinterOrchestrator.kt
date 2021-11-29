@@ -7,19 +7,18 @@ import compiler.core.nodes.translated.*
 import compiler.core.stack.Stack
 import compiler.core.stack.StatementPrinterLocation
 import compiler.core.stack.StatementPrinterStackItem
-import compiler.printer.impl.internal.ICodeGenerator
-import compiler.printer.impl.internal.IExpressionPrinter
-import compiler.printer.impl.internal.IGotoCodeGenerator
-import compiler.printer.impl.internal.ILabelCodeGenerator
+import compiler.printer.impl.internal.*
+import compiler.printer.impl.internal.IStackGenerator
 import compiler.printer.impl.internal.IStatementPrinter
 import compiler.printer.impl.internal.IStatementPrinterOrchestrator
 
 internal class StatementPrinterOrchestrator(
+    private val stackGenerator: IStackGenerator,
     private val printerMap: Map<Class<out IStatementNode>, IStatementPrinter>
 ): IStatementPrinterOrchestrator {
     override fun printNode(node: IStatementNode, numberOfTabs: Int, appendSemicolon: Boolean): String {
-        val stack = Stack<StatementPrinterStackItem>()
-        val resultStack = Stack<String>()
+        val stack = stackGenerator.generateNewStack(StatementPrinterStackItem::class.java)
+        val resultStack = stackGenerator.generateNewStack(String::class.java)
         stack.push(StatementPrinterStackItem(node, numberOfTabs, StatementPrinterLocation.START))
         val wrapInBraces = node is TranslatedBasicBlockNode
 

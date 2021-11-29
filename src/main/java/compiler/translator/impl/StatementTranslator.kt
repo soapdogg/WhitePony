@@ -1,6 +1,5 @@
 package compiler.translator.impl
 
-import compiler.core.constants.PrinterConstants
 import compiler.core.nodes.*
 import compiler.core.nodes.parsed.*
 import compiler.core.nodes.translated.*
