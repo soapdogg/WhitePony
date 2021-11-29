@@ -7,8 +7,6 @@ internal class CodeGenerator: ICodeGenerator {
     override fun generateCode(code: List<String>): String {
         return code.joinToString(
             PrinterConstants.SEPARATOR,
-            PrinterConstants.EMPTY,
-            PrinterConstants.SEMICOLON
         )
     }
 }

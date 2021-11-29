@@ -195,7 +195,7 @@ internal class StatementPrinterOrchestrator(
 
                                 trueLabelCode + PrinterConstants.SEMICOLON +
                                         PrinterConstants.TABBED_NEW_LINE + bodyStatementStrings +
-                                        PrinterConstants.TABBED_NEW_LINE + expressionCode +
+                                        PrinterConstants.TABBED_NEW_LINE + expressionCode + PrinterConstants.SEMICOLON +
                                         PrinterConstants.TABBED_NEW_LINE + falseLabelCode + PrinterConstants.SEMICOLON
 
                             }
@@ -207,7 +207,7 @@ internal class StatementPrinterOrchestrator(
                                 val falseLabelCode = labelCodeGenerator.generateLabelCode(top.node.falseLabel)
                                 val gotoBeginCode = gotoCodeGenerator.generateGotoCode(top.node.beginLabel)
                                 beginLabelCode + PrinterConstants.SEMICOLON +
-                                        PrinterConstants.TABBED_NEW_LINE + expressionCode +
+                                        PrinterConstants.TABBED_NEW_LINE + expressionCode + PrinterConstants.SEMICOLON +
                                         PrinterConstants.TABBED_NEW_LINE + trueLabelCode + PrinterConstants.SEMICOLON +
                                         PrinterConstants.TABBED_NEW_LINE + bodyStatementStrings +
                                         PrinterConstants.TABBED_NEW_LINE + gotoBeginCode + PrinterConstants.SEMICOLON +
@@ -220,7 +220,7 @@ internal class StatementPrinterOrchestrator(
                                     val trueLabelCode = labelCodeGenerator.generateLabelCode(top.node.trueLabel)
                                     val falseLabelCode = labelCodeGenerator.generateLabelCode(top.node.falseLabel)
 
-                                    expressionCode +
+                                    expressionCode + PrinterConstants.SEMICOLON +
                                             PrinterConstants.TABBED_NEW_LINE + trueLabelCode + PrinterConstants.SEMICOLON +
                                             PrinterConstants.TABBED_NEW_LINE + ifBodyStatementString +
                                             PrinterConstants.TABBED_NEW_LINE + falseLabelCode + PrinterConstants.SEMICOLON
@@ -233,7 +233,7 @@ internal class StatementPrinterOrchestrator(
                                     val nextLabelCode = labelCodeGenerator.generateLabelCode(top.node.nextLabel)
                                     val gotoNextCode = gotoCodeGenerator.generateGotoCode(top.node.nextLabel)
 
-                                    expressionCode +
+                                    expressionCode + PrinterConstants.SEMICOLON +
                                             PrinterConstants.TABBED_NEW_LINE + trueLabelCode + PrinterConstants.SEMICOLON +
                                             PrinterConstants.TABBED_NEW_LINE + ifBodyStatementString +
                                             PrinterConstants.TABBED_NEW_LINE + gotoNextCode + PrinterConstants.SEMICOLON +
@@ -243,10 +243,10 @@ internal class StatementPrinterOrchestrator(
                                 }
                             }
                             is TranslatedExpressionStatementNode -> {
-                                codeGenerator.generateCode(top.node.expression.code)
+                                codeGenerator.generateCode(top.node.expression.code) + PrinterConstants.SEMICOLON
                             }
                             is TranslatedReturnNode -> {
-                                val expressionCode = codeGenerator.generateCode(top.node.expressionStatement.expression.code)
+                                val expressionCode = codeGenerator.generateCode(top.node.expressionStatement.expression.code) + PrinterConstants.SEMICOLON
 
                                 expressionCode +
                                         PrinterConstants.TABBED_NEW_LINE + PrinterConstants.RETURN + PrinterConstants.SPACE + top.node.expressionStatement.expression.address + PrinterConstants.SEMICOLON

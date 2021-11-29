@@ -12,8 +12,6 @@ class CodeGeneratorTest {
         val code = listOf("code1", "code2")
         val expected = code.joinToString(
             PrinterConstants.SEPARATOR,
-            PrinterConstants.EMPTY,
-            PrinterConstants.SEMICOLON
         )
         val actual = codeGenerator.generateCode(code)
         Assertions.assertEquals(expected, actual)

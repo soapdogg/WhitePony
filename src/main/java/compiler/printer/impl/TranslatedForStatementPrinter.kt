@@ -41,12 +41,12 @@ internal class TranslatedForStatementPrinter(
                 val falseLabelCode = labelCodeGenerator.generateLabelCode(node.falseLabel)
                 val gotoBeginCode = gotoCodeGenerator.generateGotoCode(node.beginLabel)
 
-                val result = initExpressionCode +
+                val result = initExpressionCode + PrinterConstants.SEMICOLON +
                         PrinterConstants.TABBED_NEW_LINE + beginLabelCode + PrinterConstants.SEMICOLON +
-                        PrinterConstants.TABBED_NEW_LINE + testExpressionCode +
+                        PrinterConstants.TABBED_NEW_LINE + testExpressionCode + PrinterConstants.SEMICOLON +
                         PrinterConstants.TABBED_NEW_LINE + trueLabelCode + PrinterConstants.SEMICOLON +
                         PrinterConstants.TABBED_NEW_LINE + bodyStatementString +
-                        PrinterConstants.TABBED_NEW_LINE + incrementExpressionCode +
+                        PrinterConstants.TABBED_NEW_LINE + incrementExpressionCode + PrinterConstants.SEMICOLON +
                         PrinterConstants.TABBED_NEW_LINE + gotoBeginCode + PrinterConstants.SEMICOLON +
                         PrinterConstants.TABBED_NEW_LINE + falseLabelCode + PrinterConstants.SEMICOLON
                 resultStack.push(result)
