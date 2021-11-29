@@ -9,10 +9,10 @@ import compiler.printer.impl.internal.IStatementPrinterStackPusher
 internal class StatementPrinterStackPusher: IStatementPrinterStackPusher {
     override fun push(
         node: IStatementNode,
-        numberOfNodes: Int,
+        numberOfTabs: Int,
         location: StatementPrinterLocation,
         stack: Stack<StatementPrinterStackItem>
     ) {
-        stack.push(StatementPrinterStackItem(node, numberOfNodes, location))
+        stack.push(StatementPrinterStackItem(node, numberOfTabs, location))
     }
 }

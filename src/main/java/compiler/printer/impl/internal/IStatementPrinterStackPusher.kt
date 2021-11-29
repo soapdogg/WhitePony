@@ -8,7 +8,7 @@ import compiler.core.stack.StatementPrinterStackItem
 internal interface IStatementPrinterStackPusher {
     fun push(
         node: IStatementNode,
-        numberOfNodes: Int,
+        numberOfTabs: Int,
         location: StatementPrinterLocation,
         stack: Stack<StatementPrinterStackItem>
     )
