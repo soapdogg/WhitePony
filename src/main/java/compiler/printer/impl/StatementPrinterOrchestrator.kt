@@ -18,8 +18,6 @@ import compiler.printer.impl.internal.IStatementPrinterOrchestrator
 
 internal class StatementPrinterOrchestrator(
     private val printerMap: Map<Class<out IStatementNode>, IStatementPrinter>,
-    private val returnStatementPrinter: IReturnStatementPrinter,
-    private val expressionStatementPrinter: IExpressionStatementPrinter,
     private val expressionPrinter: IExpressionPrinter,
     private val codeGenerator: ICodeGenerator,
     private val labelCodeGenerator: ILabelCodeGenerator,
@@ -161,7 +159,6 @@ internal class StatementPrinterOrchestrator(
                                 }
                                 val tabbedStatementStrings = statementStrings.joinToString(
                                     PrinterConstants.SEPARATOR,
-
                                 )
                                 tabbedStatementStrings
                             }
@@ -182,12 +179,6 @@ internal class StatementPrinterOrchestrator(
                                 } else {
                                     ifString
                                 }
-                            }
-                            is ParsedReturnNode -> {
-                                returnStatementPrinter.printNode(top.node)
-                            }
-                            is ParsedExpressionStatementNode -> {
-                                expressionStatementPrinter.printNode(top.node)
                             }
                             is TranslatedDoWhileNode -> {
                                 val bodyStatementStrings = resultStack.pop()
@@ -243,15 +234,6 @@ internal class StatementPrinterOrchestrator(
                                             PrinterConstants.TABBED_NEW_LINE + elseBodyStatementString + PrinterConstants.SEMICOLON +
                                             PrinterConstants.TABBED_NEW_LINE + nextLabelCode
                                 }
-                            }
-                            is TranslatedExpressionStatementNode -> {
-                                codeGenerator.generateCode(top.node.expression.code)
-                            }
-                            is TranslatedReturnNode -> {
-                                val expressionCode = codeGenerator.generateCode(top.node.expressionStatement.expression.code) + PrinterConstants.SEMICOLON
-
-                                expressionCode +
-                                        PrinterConstants.TABBED_NEW_LINE + PrinterConstants.RETURN + PrinterConstants.SPACE + top.node.expressionStatement.expression.address + PrinterConstants.SEMICOLON
                             }
                             else -> {
                                 PrinterConstants.EMPTY
