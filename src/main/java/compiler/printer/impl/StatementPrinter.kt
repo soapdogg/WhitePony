@@ -124,16 +124,12 @@ internal class StatementPrinter(
                                     PrinterConstants.RIGHT_BRACE
                         }
                         is TranslatedBasicBlockNode -> {
-                            var tabs = PrinterConstants.EMPTY
-                            for (i in 0 until top.numberOfTabs + 1) {
-                                tabs += PrinterConstants.TAB
-                            }
                             val statementStrings = mutableListOf<String>()
                             for (i in 0 until top.node.statements.size) {
                                 statementStrings.add(resultStack.pop())
                             }
                             val tabbedStatementStrings = statementStrings.joinToString(
-                                PrinterConstants.NEW_LINE + tabs,
+                                PrinterConstants.NEW_LINE + PrinterConstants.TAB,
                             )
                             tabbedStatementStrings
                         }
@@ -205,118 +201,94 @@ internal class StatementPrinter(
                             expressionStatementPrinter.printParsedNode(top.node)
                         }
                         is TranslatedForNode -> {
-                            var tabs = PrinterConstants.EMPTY
-                            for (i in 0 until numberOfTabs + 1) {
-                                tabs += PrinterConstants.TAB
-                            }
                             val bodyStatementStrings = resultStack.pop()
                             top.node.initExpression.code.joinToString(
-                                PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs,
+                                PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + PrinterConstants.TAB,
                                 PrinterConstants.EMPTY,
                                 PrinterConstants.SEMICOLON
                             ) +
-                                    PrinterConstants.NEW_LINE + tabs + top.node.beginLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
+                                    PrinterConstants.NEW_LINE + PrinterConstants.TAB + top.node.beginLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
                                     top.node.testExpression.code.joinToString(
-                                        PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs,
-                                        PrinterConstants.NEW_LINE + tabs,
+                                        PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + PrinterConstants.TAB,
+                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB,
                                         PrinterConstants.SEMICOLON
                                     ) +
-                                    PrinterConstants.NEW_LINE + tabs + top.node.trueLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
-                                    PrinterConstants.NEW_LINE + tabs + bodyStatementStrings +
+                                    PrinterConstants.NEW_LINE + PrinterConstants.TAB + top.node.trueLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
+                                    PrinterConstants.NEW_LINE + PrinterConstants.TAB + bodyStatementStrings +
                                     top.node.incrementExpression.code.joinToString(
-                                        PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs,
-                                        PrinterConstants.NEW_LINE + tabs,
+                                        PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + PrinterConstants.TAB,
+                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB,
                                         PrinterConstants.SEMICOLON
                                     ) +
-                                    PrinterConstants.NEW_LINE + tabs + PrinterConstants.GOTO + PrinterConstants.SPACE + top.node.beginLabel + PrinterConstants.SEMICOLON +
-                                    PrinterConstants.NEW_LINE + tabs + top.node.falseLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
+                                    PrinterConstants.NEW_LINE + PrinterConstants.TAB + PrinterConstants.GOTO + PrinterConstants.SPACE + top.node.beginLabel + PrinterConstants.SEMICOLON +
+                                    PrinterConstants.NEW_LINE + PrinterConstants.TAB + top.node.falseLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
                         }
                         is TranslatedDoWhileNode -> {
-                            var tabs = PrinterConstants.EMPTY
-                            for (i in 0 until numberOfTabs + 1) {
-                                tabs += PrinterConstants.TAB
-                            }
                             val bodyStatementStrings = resultStack.pop()
 
                             top.node.trueLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
-                                    PrinterConstants.NEW_LINE + tabs + bodyStatementStrings +
+                                    PrinterConstants.NEW_LINE + PrinterConstants.TAB + bodyStatementStrings +
                                     top.node.expressionNode.code.joinToString(
-                                        PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs,
-                                        PrinterConstants.NEW_LINE + tabs,
+                                        PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + PrinterConstants.TAB,
+                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB,
                                         PrinterConstants.SEMICOLON
                                     ) +
-                                    PrinterConstants.NEW_LINE + tabs + top.node.falseLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
+                                    PrinterConstants.NEW_LINE + PrinterConstants.TAB + top.node.falseLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
 
                         }
                         is TranslatedWhileNode -> {
-                            var tabs = PrinterConstants.EMPTY
-                            for (i in 0 until numberOfTabs + 1) {
-                                tabs += PrinterConstants.TAB
-                            }
                             val bodyStatementStrings = resultStack.pop()
                             top.node.beginLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
                                     top.node.expression.code.joinToString(
-                                        PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs,
-                                        PrinterConstants.NEW_LINE + tabs,
+                                        PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + PrinterConstants.TAB,
+                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB,
                                         PrinterConstants.SEMICOLON
                                     ) +
-                                    PrinterConstants.NEW_LINE + tabs + top.node.trueLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
-                                    PrinterConstants.NEW_LINE + tabs + bodyStatementStrings +
-                                    PrinterConstants.NEW_LINE + tabs + PrinterConstants.GOTO + PrinterConstants.SPACE + top.node.beginLabel + PrinterConstants.SEMICOLON +
-                                    PrinterConstants.NEW_LINE + tabs + top.node.falseLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
+                                    PrinterConstants.NEW_LINE + PrinterConstants.TAB + top.node.trueLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
+                                    PrinterConstants.NEW_LINE + PrinterConstants.TAB + bodyStatementStrings +
+                                    PrinterConstants.NEW_LINE + PrinterConstants.TAB + PrinterConstants.GOTO + PrinterConstants.SPACE + top.node.beginLabel + PrinterConstants.SEMICOLON +
+                                    PrinterConstants.NEW_LINE + PrinterConstants.TAB + top.node.falseLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
                         }
                         is TranslatedIfNode -> {
-                            var tabs = PrinterConstants.EMPTY
-                            for (i in 0 until numberOfTabs + 1) {
-                                tabs += PrinterConstants.TAB
-                            }
                             if (top.node.elseBody == null) {
-
                                 val ifBodyStatementString = resultStack.pop()
                                 top.node.expression.code.joinToString(
-                                    PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs,
+                                    PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + PrinterConstants.TAB,
                                     PrinterConstants.EMPTY,
                                     PrinterConstants.SEMICOLON
                                 ) +
-                                        PrinterConstants.NEW_LINE + tabs + top.node.trueLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
-                                        PrinterConstants.NEW_LINE + tabs + ifBodyStatementString +
-                                        PrinterConstants.NEW_LINE + tabs + top.node.falseLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
+                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB + top.node.trueLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
+                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB + ifBodyStatementString +
+                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB + top.node.falseLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
                             } else {
                                 val elseBodyStatementString = resultStack.pop()
                                 val ifBodyStatementString = resultStack.pop()
                                 top.node.expression.code.joinToString(
-                                    PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs,
+                                    PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + PrinterConstants.TAB,
                                     PrinterConstants.EMPTY,
                                     PrinterConstants.SEMICOLON
                                 ) +
-                                        PrinterConstants.NEW_LINE + tabs + top.node.trueLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
-                                        PrinterConstants.NEW_LINE + tabs + ifBodyStatementString +
-                                        PrinterConstants.NEW_LINE + tabs + PrinterConstants.GOTO + PrinterConstants.SPACE + top.node.nextLabel + PrinterConstants.SEMICOLON +
-                                        PrinterConstants.NEW_LINE + tabs + top.node.falseLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
-                                        PrinterConstants.NEW_LINE + tabs + elseBodyStatementString +
-                                        PrinterConstants.NEW_LINE + tabs + top.node.nextLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
+                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB + top.node.trueLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
+                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB + ifBodyStatementString +
+                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB + PrinterConstants.GOTO + PrinterConstants.SPACE + top.node.nextLabel + PrinterConstants.SEMICOLON +
+                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB + top.node.falseLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
+                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB + elseBodyStatementString +
+                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB + top.node.nextLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
 
                             }
                         }
                         is TranslatedExpressionStatementNode -> {
-                            var tabs = PrinterConstants.EMPTY
-                            for (i in 0 until numberOfTabs + 1) {
-                                tabs += PrinterConstants.TAB
-                            }
                             top.node.expression.code.joinToString(
-                                PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs,
+                                PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + PrinterConstants.TAB,
                                 PrinterConstants.EMPTY,
                                 PrinterConstants.SEMICOLON
                             )
                         }
                         is TranslatedReturnNode -> {
-                            var tabs = PrinterConstants.EMPTY
-                            for (i in 0 until numberOfTabs + 1) {
-                                tabs += PrinterConstants.TAB
-                            }
                             val expressionCode =
-                                top.node.expressionStatement.expression.code.joinToString(PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs)
-                            expressionCode + PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + tabs + PrinterConstants.RETURN + PrinterConstants.SPACE + top.node.expressionStatement.expression.address + PrinterConstants.SEMICOLON
+                                top.node.expressionStatement.expression.code.joinToString(PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + PrinterConstants.TAB)
+                            expressionCode + PrinterConstants.SEMICOLON +
+                                    PrinterConstants.NEW_LINE + PrinterConstants.TAB + PrinterConstants.RETURN + PrinterConstants.SPACE + top.node.expressionStatement.expression.address + PrinterConstants.SEMICOLON
                         }
                         else -> {
                             PrinterConstants.EMPTY
