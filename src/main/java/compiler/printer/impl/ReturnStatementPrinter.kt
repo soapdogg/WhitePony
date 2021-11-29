@@ -8,7 +8,7 @@ import compiler.printer.impl.internal.IReturnStatementPrinter
 internal class ReturnStatementPrinter(
     private val expressionStatementPrinter: IExpressionStatementPrinter
 ): IReturnStatementPrinter {
-    override fun printParsedNode(node: ParsedReturnNode): String {
+    override fun printNode(node: ParsedReturnNode): String {
         return PrinterConstants.RETURN + PrinterConstants.SPACE + expressionStatementPrinter.printParsedNode(node.expressionStatement)
     }
 }

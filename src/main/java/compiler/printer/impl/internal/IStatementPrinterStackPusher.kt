@@ -5,12 +5,11 @@ import compiler.core.stack.Stack
 import compiler.core.stack.StatementPrinterLocation
 import compiler.core.stack.StatementPrinterStackItem
 
-internal interface IStatementPrinter {
-    fun printNode(
+internal interface IStatementPrinterStackPusher {
+    fun push(
         node: IStatementNode,
-        numberOfTabs: Int,
+        numberOfNodes: Int,
         location: StatementPrinterLocation,
-        stack: Stack<StatementPrinterStackItem>,
-        resultStack: Stack<String>
+        stack: Stack<StatementPrinterStackItem>
     )
 }

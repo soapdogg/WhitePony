@@ -1,9 +1,12 @@
 package compiler.printer
 
+import compiler.core.nodes.IStatementNode
+import compiler.core.nodes.parsed.ParsedDoWhileNode
 import compiler.printer.impl.*
 import compiler.printer.impl.DeclarationStatementPrinter
 import compiler.printer.impl.FunctionDeclarationPrinter
 import compiler.printer.impl.Printer
+import compiler.printer.impl.internal.IStatementPrinter
 
 enum class PrinterSingleton {
     INSTANCE;
@@ -25,7 +28,19 @@ enum class PrinterSingleton {
         expressionStatementPrinter
     )
 
-    private val statementPrinter = StatementPrinter(
+    private val statementPrinterStackPusher = StatementPrinterStackPusher()
+
+    private val parsedDoWhileStatementPrinter = ParsedDoWhileStatementPrinter(
+        statementPrinterStackPusher,
+        expressionPrinter
+    )
+
+    private val printerMap = mapOf<Class<out IStatementNode>, IStatementPrinter>(
+        ParsedDoWhileNode::class.java to parsedDoWhileStatementPrinter
+    )
+
+    private val statementPrinter = StatementPrinterOrchestrator(
+        printerMap,
         variableDeclarationListPrinter,
         returnStatementPrinter,
         expressionStatementPrinter,

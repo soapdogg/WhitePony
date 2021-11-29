@@ -3,13 +3,13 @@ package compiler.printer.impl
 import compiler.core.nodes.parsed.ParsedBasicBlockNode
 import compiler.core.nodes.parsed.ParsedFunctionDeclarationNode
 import compiler.core.constants.PrinterConstants
-import compiler.printer.impl.internal.IStatementPrinter
+import compiler.printer.impl.internal.IStatementPrinterOrchestrator
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 
 class FunctionDeclarationPrinterTest {
-    private val statementPrinter = Mockito.mock(IStatementPrinter::class.java)
+    private val statementPrinter = Mockito.mock(IStatementPrinterOrchestrator::class.java)
     private val functionDeclarationPrinter = FunctionDeclarationPrinter(statementPrinter)
 
     @Test

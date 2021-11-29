@@ -23,7 +23,7 @@ class ReturnStatementPrinterTest {
         Mockito.`when`(expressionStatementPrinter.printParsedNode(expressionStatement)).thenReturn(expressionStatementString)
 
         val expected = PrinterConstants.RETURN + PrinterConstants.SPACE + expressionStatementString
-        val actual = returnStatementPrinter.printParsedNode(node)
+        val actual = returnStatementPrinter.printNode(node)
 
         Assertions.assertEquals(expected, actual)
     }

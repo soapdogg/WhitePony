@@ -3,10 +3,10 @@ package compiler.printer.impl
 import compiler.core.nodes.IFunctionDeclarationNode
 import compiler.core.constants.PrinterConstants
 import compiler.printer.impl.internal.IFunctionDeclarationPrinter
-import compiler.printer.impl.internal.IStatementPrinter
+import compiler.printer.impl.internal.IStatementPrinterOrchestrator
 
 internal class FunctionDeclarationPrinter(
-    private val statementPrinter: IStatementPrinter
+    private val statementPrinter: IStatementPrinterOrchestrator
 ): IFunctionDeclarationPrinter {
     override fun printNode(node: IFunctionDeclarationNode): String {
         return node.type +
