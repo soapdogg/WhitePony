@@ -1,6 +1,5 @@
 package compiler.printer.impl
 
-import compiler.core.constants.PrinterConstants
 import compiler.core.nodes.IStatementNode
 import compiler.core.nodes.translated.TranslatedForNode
 import compiler.core.stack.Stack
@@ -23,7 +22,8 @@ internal class TranslatedForStatementPrinter(
         numberOfTabs: Int,
         location: StatementPrinterLocation,
         stack: Stack<StatementPrinterStackItem>,
-        resultStack: Stack<String>
+        resultStack: Stack<String>,
+        appendSemicolon: Boolean
     ) {
         node as TranslatedForNode
         when(location) {
@@ -41,14 +41,19 @@ internal class TranslatedForStatementPrinter(
                 val falseLabelCode = labelCodeGenerator.generateLabelCode(node.falseLabel)
                 val gotoBeginCode = gotoCodeGenerator.generateGotoCode(node.beginLabel)
 
-                val result = initExpressionCode + PrinterConstants.SEMICOLON +
-                        PrinterConstants.TABBED_NEW_LINE + beginLabelCode + PrinterConstants.SEMICOLON +
-                        PrinterConstants.TABBED_NEW_LINE + testExpressionCode + PrinterConstants.SEMICOLON +
-                        PrinterConstants.TABBED_NEW_LINE + trueLabelCode + PrinterConstants.SEMICOLON +
-                        PrinterConstants.TABBED_NEW_LINE + bodyStatementString +
-                        PrinterConstants.TABBED_NEW_LINE + incrementExpressionCode + PrinterConstants.SEMICOLON +
-                        PrinterConstants.TABBED_NEW_LINE + gotoBeginCode + PrinterConstants.SEMICOLON +
-                        PrinterConstants.TABBED_NEW_LINE + falseLabelCode + PrinterConstants.SEMICOLON
+                val forStatementCode = listOf(
+                    initExpressionCode,
+                    beginLabelCode,
+                    testExpressionCode,
+                    trueLabelCode,
+                    bodyStatementString,
+                    incrementExpressionCode,
+                    gotoBeginCode,
+                    falseLabelCode
+                )
+
+                val result = codeGenerator.generateCode(forStatementCode)
+
                 resultStack.push(result)
             }
         }

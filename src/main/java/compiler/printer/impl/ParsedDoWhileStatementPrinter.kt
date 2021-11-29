@@ -19,7 +19,8 @@ internal class ParsedDoWhileStatementPrinter(
         numberOfTabs: Int,
         location: StatementPrinterLocation,
         stack: Stack<StatementPrinterStackItem>,
-        resultStack: Stack<String>
+        resultStack: Stack<String>,
+        appendSemicolon: Boolean
     ) {
         node as ParsedDoWhileNode
         when (location) {

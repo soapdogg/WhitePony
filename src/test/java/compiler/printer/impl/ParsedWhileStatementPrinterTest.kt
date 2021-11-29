@@ -34,7 +34,7 @@ class ParsedWhileStatementPrinterTest {
         val body = Mockito.mock(IParsedStatementNode::class.java)
         Mockito.`when`(node.body).thenReturn(body)
 
-        parsedWhileStatementPrinter.printNode(node, numberOfTabs, location, stack, resultStack)
+        parsedWhileStatementPrinter.printNode(node, numberOfTabs, location, stack, resultStack, false)
 
         Mockito.verify(statementPrinterStackPusher).push(node, numberOfTabs, StatementPrinterLocation.END_WHILE, stack)
         Mockito.verify(statementPrinterStackPusher).push(body, numberOfTabs, StatementPrinterLocation.START, stack)
@@ -62,7 +62,7 @@ class ParsedWhileStatementPrinterTest {
                 expressionString +
                 PrinterConstants.SPACE +
                 bodyString
-        parsedWhileStatementPrinter.printNode(node, numberOfTabs, location, stack, resultStack)
+        parsedWhileStatementPrinter.printNode(node, numberOfTabs, location, stack, resultStack, false)
         val actual = resultStack.pop()
         Assertions.assertEquals(expected, actual)
     }

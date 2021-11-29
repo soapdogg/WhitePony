@@ -11,11 +11,14 @@ internal class DeclarationStatementPrinter(
     private val functionDeclarationPrinter: IFunctionDeclarationPrinter,
     private val variableDeclarationListPrinter: IVariableDeclarationListPrinter
 ):IDeclarationStatementPrinter {
-    override fun printNode(node: IDeclarationStatementNode): String {
+    override fun printNode(node: IDeclarationStatementNode, appendSemicolon: Boolean): String {
         return if (node is VariableDeclarationListNode) {
-            variableDeclarationListPrinter.printNode(node)
+            variableDeclarationListPrinter.printNode(
+                node,
+                true
+            )
         } else {
-            functionDeclarationPrinter.printNode(node as IFunctionDeclarationNode)
+            functionDeclarationPrinter.printNode(node as IFunctionDeclarationNode, appendSemicolon)
         }
     }
 }

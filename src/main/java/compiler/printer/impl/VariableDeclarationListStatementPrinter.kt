@@ -16,10 +16,14 @@ internal class VariableDeclarationListStatementPrinter(
         numberOfTabs: Int,
         location: StatementPrinterLocation,
         stack: Stack<StatementPrinterStackItem>,
-        resultStack: Stack<String>
+        resultStack: Stack<String>,
+        appendSemicolon: Boolean
     ) {
         node as VariableDeclarationListNode
-        val result = variableDeclarationListPrinter.printNode(node)
+        val result = variableDeclarationListPrinter.printNode(
+            node,
+            appendSemicolon
+        )
         resultStack.push(result)
     }
 }

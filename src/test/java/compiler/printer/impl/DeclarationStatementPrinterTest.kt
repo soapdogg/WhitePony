@@ -23,9 +23,12 @@ class DeclarationStatementPrinterTest {
         val parsedDeclarationStatementNode = Mockito.mock(VariableDeclarationListNode::class.java)
 
         val s1 = "s1"
-        Mockito.`when`(variableDeclarationListPrinter.printNode(parsedDeclarationStatementNode)).thenReturn(s1)
+        Mockito.`when`(variableDeclarationListPrinter.printNode(
+            parsedDeclarationStatementNode,
+            true
+        )).thenReturn(s1)
 
-        val actual = declarationStatementPrinter.printNode(parsedDeclarationStatementNode)
+        val actual = declarationStatementPrinter.printNode(parsedDeclarationStatementNode, false)
 
         Assertions.assertEquals(s1, actual)
     }
@@ -35,9 +38,9 @@ class DeclarationStatementPrinterTest {
         val parsedDeclarationStatementNode = Mockito.mock(ParsedFunctionDeclarationNode::class.java)
 
         val s1 = "s1"
-        Mockito.`when`(functionDeclarationPrinter.printNode(parsedDeclarationStatementNode)).thenReturn(s1)
+        Mockito.`when`(functionDeclarationPrinter.printNode(parsedDeclarationStatementNode, false)).thenReturn(s1)
 
-        val actual = declarationStatementPrinter.printNode(parsedDeclarationStatementNode)
+        val actual = declarationStatementPrinter.printNode(parsedDeclarationStatementNode, false)
 
         Assertions.assertEquals(s1, actual)
     }

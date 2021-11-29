@@ -23,8 +23,11 @@ class VariableDeclarationListStatementPrinterTest {
         val resultStack = Stack<String>()
 
         val result = "result"
-        Mockito.`when`(variableDeclarationListPrinter.printNode(node)).thenReturn(result)
-        variableDeclarationListStatementPrinter.printNode(node, numberOfTabs, location, stack, resultStack)
+        Mockito.`when`(variableDeclarationListPrinter.printNode(
+            node,
+            false
+        )).thenReturn(result)
+        variableDeclarationListStatementPrinter.printNode(node, numberOfTabs, location, stack, resultStack, false)
         val actual = resultStack.pop()
         Assertions.assertEquals(result, actual)
     }

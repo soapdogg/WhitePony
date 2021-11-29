@@ -14,9 +14,9 @@ class Compiler(
     fun compile(program: String): Pair<String, String> {
         val tokens = tokenizer.tokenize(program)
         val parseTree = parser.parse(tokens)
-        val parseTreeString = printer.printNode(parseTree)
+        val parseTreeString = printer.printNode(parseTree, true)
         val translatedTree = translator.translate(parseTree)
-        val translatedTreeString = printer.printNode(translatedTree)
+        val translatedTreeString = printer.printNode(translatedTree, false)
 
         return Pair(parseTreeString, translatedTreeString)
     }

@@ -25,7 +25,7 @@ internal class StatementPrinterOrchestrator(
     private val labelCodeGenerator: ILabelCodeGenerator,
     private val gotoCodeGenerator: IGotoCodeGenerator
 ): IStatementPrinterOrchestrator {
-    override fun printNode(node: IStatementNode, numberOfTabs: Int): String {
+    override fun printNode(node: IStatementNode, numberOfTabs: Int, appendSemicolon: Boolean): String {
         val stack = Stack<StatementPrinterStackItem>()
         val resultStack = Stack<String>()
         stack.push(StatementPrinterStackItem(node, numberOfTabs, StatementPrinterLocation.START))
@@ -41,7 +41,8 @@ internal class StatementPrinterOrchestrator(
                     top.numberOfTabs,
                     top.location,
                     stack,
-                    resultStack
+                    resultStack,
+                    appendSemicolon
                 )
             } else {
 
@@ -159,7 +160,8 @@ internal class StatementPrinterOrchestrator(
                                     statementStrings.add(resultStack.pop())
                                 }
                                 val tabbedStatementStrings = statementStrings.joinToString(
-                                    PrinterConstants.NEW_LINE + PrinterConstants.TAB,
+                                    PrinterConstants.SEPARATOR,
+
                                 )
                                 tabbedStatementStrings
                             }
@@ -194,9 +196,9 @@ internal class StatementPrinterOrchestrator(
                                 val falseLabelCode = labelCodeGenerator.generateLabelCode(top.node.falseLabel)
 
                                 trueLabelCode + PrinterConstants.SEMICOLON +
-                                        PrinterConstants.TABBED_NEW_LINE + bodyStatementStrings +
+                                        PrinterConstants.TABBED_NEW_LINE + bodyStatementStrings + PrinterConstants.SEMICOLON +
                                         PrinterConstants.TABBED_NEW_LINE + expressionCode + PrinterConstants.SEMICOLON +
-                                        PrinterConstants.TABBED_NEW_LINE + falseLabelCode + PrinterConstants.SEMICOLON
+                                        PrinterConstants.TABBED_NEW_LINE + falseLabelCode
 
                             }
                             is TranslatedWhileNode -> {
@@ -209,9 +211,9 @@ internal class StatementPrinterOrchestrator(
                                 beginLabelCode + PrinterConstants.SEMICOLON +
                                         PrinterConstants.TABBED_NEW_LINE + expressionCode + PrinterConstants.SEMICOLON +
                                         PrinterConstants.TABBED_NEW_LINE + trueLabelCode + PrinterConstants.SEMICOLON +
-                                        PrinterConstants.TABBED_NEW_LINE + bodyStatementStrings +
+                                        PrinterConstants.TABBED_NEW_LINE + bodyStatementStrings + PrinterConstants.SEMICOLON +
                                         PrinterConstants.TABBED_NEW_LINE + gotoBeginCode + PrinterConstants.SEMICOLON +
-                                        PrinterConstants.TABBED_NEW_LINE + falseLabelCode + PrinterConstants.SEMICOLON
+                                        PrinterConstants.TABBED_NEW_LINE + falseLabelCode
                             }
                             is TranslatedIfNode -> {
                                 if (top.node.elseBody == null) {
@@ -222,8 +224,8 @@ internal class StatementPrinterOrchestrator(
 
                                     expressionCode + PrinterConstants.SEMICOLON +
                                             PrinterConstants.TABBED_NEW_LINE + trueLabelCode + PrinterConstants.SEMICOLON +
-                                            PrinterConstants.TABBED_NEW_LINE + ifBodyStatementString +
-                                            PrinterConstants.TABBED_NEW_LINE + falseLabelCode + PrinterConstants.SEMICOLON
+                                            PrinterConstants.TABBED_NEW_LINE + ifBodyStatementString + PrinterConstants.SEMICOLON +
+                                            PrinterConstants.TABBED_NEW_LINE + falseLabelCode
                                 } else {
                                     val elseBodyStatementString = resultStack.pop()
                                     val ifBodyStatementString = resultStack.pop()
@@ -235,15 +237,15 @@ internal class StatementPrinterOrchestrator(
 
                                     expressionCode + PrinterConstants.SEMICOLON +
                                             PrinterConstants.TABBED_NEW_LINE + trueLabelCode + PrinterConstants.SEMICOLON +
-                                            PrinterConstants.TABBED_NEW_LINE + ifBodyStatementString +
+                                            PrinterConstants.TABBED_NEW_LINE + ifBodyStatementString + PrinterConstants.SEMICOLON +
                                             PrinterConstants.TABBED_NEW_LINE + gotoNextCode + PrinterConstants.SEMICOLON +
                                             PrinterConstants.TABBED_NEW_LINE + falseLabelCode + PrinterConstants.SEMICOLON +
-                                            PrinterConstants.TABBED_NEW_LINE + elseBodyStatementString +
-                                            PrinterConstants.TABBED_NEW_LINE + nextLabelCode + PrinterConstants.SEMICOLON
+                                            PrinterConstants.TABBED_NEW_LINE + elseBodyStatementString + PrinterConstants.SEMICOLON +
+                                            PrinterConstants.TABBED_NEW_LINE + nextLabelCode
                                 }
                             }
                             is TranslatedExpressionStatementNode -> {
-                                codeGenerator.generateCode(top.node.expression.code) + PrinterConstants.SEMICOLON
+                                codeGenerator.generateCode(top.node.expression.code)
                             }
                             is TranslatedReturnNode -> {
                                 val expressionCode = codeGenerator.generateCode(top.node.expressionStatement.expression.code) + PrinterConstants.SEMICOLON
