@@ -1,5 +1,6 @@
 package compiler.translator.impl
 
+import compiler.core.constants.PrinterConstants
 import compiler.core.nodes.*
 import compiler.core.nodes.parsed.*
 import compiler.core.nodes.translated.*
@@ -140,16 +141,25 @@ internal class StatementTranslator (
                 2 -> {
 
                     when(top.node) {
+                        is ParsedBasicBlockNode -> {
+                            val numberOfStatements = top.node.statements.size
+                            val body = mutableListOf<ITranslatedStatementNode>()
+                            for (i in 0 until numberOfStatements) {
+                                body.add(resultStack.pop())
+                            }
+                            val translatedBasicBlock = TranslatedBasicBlockNode(
+                                body.reversed()
+                            )
+                            resultStack.push(translatedBasicBlock)
+                        }
+
                         is ParsedDoWhileNode -> {
                             val falseLabel = labelStack.pop()
                             val trueLabel = labelStack.pop()
                             val (expression, l, t) = booleanExpressionTranslator.translate(top.node.expression, trueLabel, falseLabel, labelCounter, tempCounter, variableToTypeMap)
                             labelCounter = l
                             tempCounter = t
-                            val body = mutableListOf<ITranslatedStatementNode>()
-                            for (i in 0 until top.node.body.getNumberOfStatements()) {
-                                body.add(resultStack.pop())
-                            }
+                            val body = resultStack.pop()
                             val doWhile = TranslatedDoWhileNode(
                                 expression,
                                 body,
@@ -163,10 +173,8 @@ internal class StatementTranslator (
                             val beginLabel = labelStack.pop()
                             val trueLabel = labelStack.pop()
                             val expression = expressionStack.pop()
-                            val body = mutableListOf<ITranslatedStatementNode>()
-                            for (i in 0 until top.node.body.getNumberOfStatements()) {
-                                body.add(resultStack.pop())
-                            }
+                            val body = resultStack.pop()
+
                             val whileNode = TranslatedWhileNode(
                                 expression,
                                 body,
@@ -183,10 +191,8 @@ internal class StatementTranslator (
                             val initExpression = expressionStack.pop()
                             val testExpression = expressionStack.pop()
                             val incrementExpression = expressionStack.pop()
-                            val body = mutableListOf<ITranslatedStatementNode>()
-                            for (i in 0 until top.node.body.getNumberOfStatements()) {
-                                body.add(resultStack.pop())
-                            }
+                            val body = resultStack.pop()
+
                             val forNode = TranslatedForNode(
                                 initExpression,
                                 testExpression,
@@ -203,14 +209,12 @@ internal class StatementTranslator (
                                 val nextLabel = labelStack.pop()
                                 val trueLabel = labelStack.pop()
                                 val expression = expressionStack.pop()
-                                val body = mutableListOf<ITranslatedStatementNode>()
-                                for (i in 0 until top.node.ifBody.getNumberOfStatements()) {
-                                    body.add(resultStack.pop())
-                                }
+                                val body = resultStack.pop()
+
                                 val ifNode = TranslatedIfNode(
                                     expression,
                                     body,
-                                    listOf(),
+                                    null,
                                     nextLabel,
                                     trueLabel,
                                     nextLabel
@@ -221,14 +225,9 @@ internal class StatementTranslator (
                                 val trueLabel = labelStack.pop()
                                 val falseLabel = labelStack.pop()
                                 val expression = expressionStack.pop()
-                                val ifBody = mutableListOf<ITranslatedStatementNode>()
-                                for (i in 0 until top.node.ifBody.getNumberOfStatements()) {
-                                    ifBody.add(resultStack.pop())
-                                }
-                                val elseBody = mutableListOf<ITranslatedStatementNode>()
-                                for (i in 0 until top.node.elseBody.getNumberOfStatements()) {
-                                    elseBody.add(resultStack.pop())
-                                }
+                                val elseBody = resultStack.pop()
+                                val ifBody = resultStack.pop()
+
                                 val ifNode = TranslatedIfNode(
                                     expression,
                                     ifBody,
@@ -266,11 +265,7 @@ internal class StatementTranslator (
                 }
             }
         }
-        val translatedNodes = mutableListOf<ITranslatedStatementNode>()
-        while (resultStack.isNotEmpty()) {
-            translatedNodes.add(resultStack.pop())
-        }
 
-        return TranslatedBasicBlockNode(translatedNodes.reversed())
+        return resultStack.pop() as TranslatedBasicBlockNode
     }
 }
