@@ -32,7 +32,12 @@ enum class PrinterSingleton {
     private val labelCodeGenerator = LabelCodeGenerator()
     private val gotoCodeGenerator = GotoCodeGenerator()
     private val statementPrinterStackPusher = StatementPrinterStackPusher()
+    private val tabsGenerator = TabsGenerator()
 
+    private val parsedBasicBlockStatementPrinter = ParsedBasicBlockStatementPrinter(
+        statementPrinterStackPusher,
+        tabsGenerator
+    )
     private val parsedDoWhileStatementPrinter = ParsedDoWhileStatementPrinter(
         statementPrinterStackPusher,
         expressionPrinter
@@ -45,6 +50,12 @@ enum class PrinterSingleton {
     private val parsedForStatementPrinter = ParsedForStatementPrinter(
         statementPrinterStackPusher,
         expressionPrinter
+    )
+
+    private val parsedIfStatementPrinter = ParsedIfStatementPrinter(
+        statementPrinterStackPusher,
+        expressionPrinter,
+        tabsGenerator
     )
 
     private val parsedReturnStatementPrinter = ParsedReturnStatementPrinter(
@@ -101,9 +112,11 @@ enum class PrinterSingleton {
     )
 
     private val printerMap = mapOf(
+        ParsedBasicBlockNode::class.java to parsedBasicBlockStatementPrinter,
         ParsedDoWhileNode::class.java to parsedDoWhileStatementPrinter,
         ParsedExpressionStatementNode::class.java to parsedExpressionStatementPrinter,
         ParsedForNode::class.java to parsedForStatementPrinter,
+        ParsedIfNode::class.java to parsedIfStatementPrinter,
         ParsedReturnNode::class.java to parsedReturnStatementPrinter,
         ParsedWhileNode::class.java to parsedWhileStatementPrinter,
         TranslatedBasicBlockNode::class.java to translatedBasicBlockStatementPrinter,
@@ -117,8 +130,7 @@ enum class PrinterSingleton {
     )
 
     private val statementPrinter = StatementPrinterOrchestrator(
-        printerMap,
-        expressionPrinter
+        printerMap
     )
     private val functionDeclarationPrinter = FunctionDeclarationPrinter(statementPrinter)
 

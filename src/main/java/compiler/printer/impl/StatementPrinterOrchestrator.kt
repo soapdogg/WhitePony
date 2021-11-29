@@ -15,8 +15,7 @@ import compiler.printer.impl.internal.IStatementPrinter
 import compiler.printer.impl.internal.IStatementPrinterOrchestrator
 
 internal class StatementPrinterOrchestrator(
-    private val printerMap: Map<Class<out IStatementNode>, IStatementPrinter>,
-    private val expressionPrinter: IExpressionPrinter
+    private val printerMap: Map<Class<out IStatementNode>, IStatementPrinter>
 ): IStatementPrinterOrchestrator {
     override fun printNode(node: IStatementNode, numberOfTabs: Int, appendSemicolon: Boolean): String {
         val stack = Stack<StatementPrinterStackItem>()
@@ -26,111 +25,15 @@ internal class StatementPrinterOrchestrator(
 
         while(stack.isNotEmpty()) {
             val top = stack.pop()
-
-            if (printerMap.containsKey(top.node.javaClass)) {
-                val printer = printerMap.getValue(top.node.javaClass)
-                printer.printNode(
-                    top.node,
-                    top.numberOfTabs,
-                    top.location,
-                    stack,
-                    resultStack,
-                    appendSemicolon
-                )
-            } else {
-
-                when (top.location) {
-                    StatementPrinterLocation.START -> {
-                        val returnStackItem = StatementPrinterStackItem(
-                            top.node,
-                            top.numberOfTabs,
-                            StatementPrinterLocation.END_LOCATION
-                        )
-                        val stackItems = mutableListOf(returnStackItem)
-                        when (top.node) {
-                            is ParsedBasicBlockNode -> {
-                                top.node.statements.forEach {
-                                    val stackItem =
-                                        StatementPrinterStackItem(
-                                            it,
-                                            top.numberOfTabs + 1,
-                                            StatementPrinterLocation.START
-                                        )
-                                    stackItems.add(stackItem)
-                                }
-                            }
-                            is ParsedIfNode -> {
-                                val stackItem =
-                                    StatementPrinterStackItem(
-                                        top.node.ifBody,
-                                        top.numberOfTabs,
-                                        StatementPrinterLocation.START
-                                    )
-                                stackItems.add(stackItem)
-                                if (top.node.elseBody != null) {
-                                    val stackItem2 = StatementPrinterStackItem(
-                                        top.node.elseBody,
-                                        top.numberOfTabs,
-                                        StatementPrinterLocation.START
-                                    )
-                                    stackItems.add(stackItem2)
-                                }
-                            }
-                        }
-                        stackItems.forEach { stack.push(it) }
-                    }
-                    StatementPrinterLocation.END_LOCATION -> {
-
-                        val result = when (top.node) {
-                            is ParsedBasicBlockNode -> {
-                                var tabs = PrinterConstants.EMPTY
-                                for (i in 0 until top.numberOfTabs + 1) {
-                                    tabs += PrinterConstants.TAB
-                                }
-                                var closingTabs = PrinterConstants.EMPTY
-                                for (i in 0 until top.numberOfTabs) {
-                                    closingTabs += PrinterConstants.TAB
-                                }
-                                val statementStrings = mutableListOf<String>()
-                                for (i in 0 until top.node.statements.size) {
-                                    statementStrings.add(resultStack.pop())
-                                }
-                                val tabbedStatementStrings = statementStrings.joinToString(
-                                    PrinterConstants.NEW_LINE + tabs,
-                                    PrinterConstants.NEW_LINE + tabs,
-                                    PrinterConstants.NEW_LINE + closingTabs
-                                )
-                                PrinterConstants.LEFT_BRACE +
-                                        tabbedStatementStrings +
-                                        PrinterConstants.RIGHT_BRACE
-                            }
-                            is ParsedIfNode -> {
-                                val ifBodyString = resultStack.pop()
-                                val booleanExpressionString = expressionPrinter.printNode(top.node.booleanExpression)
-                                val ifString = PrinterConstants.IF +
-                                        booleanExpressionString +
-                                        PrinterConstants.SPACE +
-                                        ifBodyString
-                                if (top.node.elseBody != null) {
-                                    var tabs = PrinterConstants.EMPTY
-                                    for (i in 0 until top.numberOfTabs) {
-                                        tabs += PrinterConstants.TAB
-                                    }
-                                    val elseBodyString = resultStack.pop()
-                                    ifString + PrinterConstants.NEW_LINE + tabs + PrinterConstants.ELSE + PrinterConstants.SPACE + elseBodyString
-                                } else {
-                                    ifString
-                                }
-                            }
-                            else -> {
-                                PrinterConstants.EMPTY
-                            }
-                        }
-
-                        resultStack.push(result)
-                    }
-                }
-            }
+            val printer = printerMap.getValue(top.node.javaClass)
+            printer.printNode(
+                top.node,
+                top.numberOfTabs,
+                top.location,
+                stack,
+                resultStack,
+                appendSemicolon
+            )
         }
 
         val top = resultStack.pop()
