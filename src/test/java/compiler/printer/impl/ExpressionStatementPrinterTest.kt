@@ -23,7 +23,7 @@ class ExpressionStatementPrinterTest {
         Mockito.`when`(expressionPrinter.printNode(expression)).thenReturn(expressionString)
 
         val expected = expressionString + PrinterConstants.SEMICOLON
-        val actual = expressionStatementPrinter.printParsedNode(node)
+        val actual = expressionStatementPrinter.printNode(node)
 
         Assertions.assertEquals(expected, actual)
     }

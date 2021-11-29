@@ -8,7 +8,7 @@ import compiler.printer.impl.internal.IExpressionStatementPrinter
 internal class ExpressionStatementPrinter(
     private val expressionPrinter: IExpressionPrinter
 ): IExpressionStatementPrinter {
-    override fun printParsedNode(node: ParsedExpressionStatementNode): String {
+    override fun printNode(node: ParsedExpressionStatementNode): String {
         return expressionPrinter.printNode(node.expressionNode) + PrinterConstants.SEMICOLON
     }
 }

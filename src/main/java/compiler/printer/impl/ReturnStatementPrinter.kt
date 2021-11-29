@@ -9,6 +9,6 @@ internal class ReturnStatementPrinter(
     private val expressionStatementPrinter: IExpressionStatementPrinter
 ): IReturnStatementPrinter {
     override fun printNode(node: ParsedReturnNode): String {
-        return PrinterConstants.RETURN + PrinterConstants.SPACE + expressionStatementPrinter.printParsedNode(node.expressionStatement)
+        return PrinterConstants.RETURN + PrinterConstants.SPACE + expressionStatementPrinter.printNode(node.expressionStatement)
     }
 }

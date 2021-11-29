@@ -7,19 +7,23 @@ import compiler.core.nodes.translated.*
 import compiler.core.stack.Stack
 import compiler.core.stack.StatementPrinterLocation
 import compiler.core.stack.StatementPrinterStackItem
+import compiler.printer.impl.internal.ICodeGenerator
 import compiler.printer.impl.internal.IExpressionPrinter
 import compiler.printer.impl.internal.IExpressionStatementPrinter
+import compiler.printer.impl.internal.IGotoCodeGenerator
+import compiler.printer.impl.internal.ILabelCodeGenerator
 import compiler.printer.impl.internal.IReturnStatementPrinter
 import compiler.printer.impl.internal.IStatementPrinter
 import compiler.printer.impl.internal.IStatementPrinterOrchestrator
-import compiler.printer.impl.internal.IVariableDeclarationListPrinter
 
 internal class StatementPrinterOrchestrator(
     private val printerMap: Map<Class<out IStatementNode>, IStatementPrinter>,
-    private val variableDeclarationListPrinter: IVariableDeclarationListPrinter,
     private val returnStatementPrinter: IReturnStatementPrinter,
     private val expressionStatementPrinter: IExpressionStatementPrinter,
-    private val expressionPrinter: IExpressionPrinter
+    private val expressionPrinter: IExpressionPrinter,
+    private val codeGenerator: ICodeGenerator,
+    private val labelCodeGenerator: ILabelCodeGenerator,
+    private val gotoCodeGenerator: IGotoCodeGenerator
 ): IStatementPrinterOrchestrator {
     override fun printNode(node: IStatementNode, numberOfTabs: Int): String {
         val stack = Stack<StatementPrinterStackItem>()
@@ -71,14 +75,6 @@ internal class StatementPrinterOrchestrator(
                                     stackItems.add(stackItem)
                                 }
                             }
-                            is TranslatedForNode -> {
-                                val stackItem = StatementPrinterStackItem(
-                                    top.node.body,
-                                    top.numberOfTabs,
-                                    StatementPrinterLocation.START
-                                )
-                                stackItems.add(stackItem)
-                            }
                             is TranslatedDoWhileNode -> {
                                 val stackItem = StatementPrinterStackItem(
                                     top.node.body,
@@ -110,24 +106,6 @@ internal class StatementPrinterOrchestrator(
                                     top.numberOfTabs,
                                     StatementPrinterLocation.START
                                 )
-                                stackItems.add(stackItem)
-                            }
-                            is ParsedWhileNode -> {
-                                val stackItem =
-                                    StatementPrinterStackItem(
-                                        top.node.body,
-                                        top.numberOfTabs,
-                                        StatementPrinterLocation.START
-                                    )
-                                stackItems.add(stackItem)
-                            }
-                            is ParsedForNode -> {
-                                val stackItem =
-                                    StatementPrinterStackItem(
-                                        top.node.body,
-                                        top.numberOfTabs,
-                                        StatementPrinterLocation.START
-                                    )
                                 stackItems.add(stackItem)
                             }
                             is ParsedIfNode -> {
@@ -185,35 +163,6 @@ internal class StatementPrinterOrchestrator(
                                 )
                                 tabbedStatementStrings
                             }
-                            is ParsedWhileNode -> {
-                                val bodyString = resultStack.pop()
-                                val expressionString = expressionPrinter.printNode(top.node.expression)
-                                PrinterConstants.WHILE +
-                                        PrinterConstants.SPACE +
-                                        expressionString +
-                                        PrinterConstants.SPACE +
-                                        bodyString
-                            }
-                            is ParsedForNode -> {
-                                val bodyString = resultStack.pop()
-                                val initExpressionString = expressionPrinter.printNode(top.node.initExpression)
-                                val testExpressionString = expressionPrinter.printNode(top.node.testExpression)
-                                val incrementExpressionString =
-                                    expressionPrinter.printNode(top.node.incrementExpression)
-                                PrinterConstants.FOR +
-                                        PrinterConstants.SPACE +
-                                        PrinterConstants.LEFT_PARENTHESES +
-                                        initExpressionString +
-                                        PrinterConstants.SEMICOLON +
-                                        PrinterConstants.SPACE +
-                                        testExpressionString +
-                                        PrinterConstants.SEMICOLON +
-                                        PrinterConstants.SPACE +
-                                        incrementExpressionString +
-                                        PrinterConstants.RIGHT_PARENTHESES +
-                                        PrinterConstants.SPACE +
-                                        bodyString
-                            }
                             is ParsedIfNode -> {
                                 val ifBodyString = resultStack.pop()
                                 val booleanExpressionString = expressionPrinter.printNode(top.node.booleanExpression)
@@ -232,104 +181,75 @@ internal class StatementPrinterOrchestrator(
                                     ifString
                                 }
                             }
-                            is VariableDeclarationListNode -> {
-                                variableDeclarationListPrinter.printNode(top.node)
-                            }
                             is ParsedReturnNode -> {
                                 returnStatementPrinter.printNode(top.node)
                             }
                             is ParsedExpressionStatementNode -> {
-                                expressionStatementPrinter.printParsedNode(top.node)
-                            }
-                            is TranslatedForNode -> {
-                                val bodyStatementStrings = resultStack.pop()
-                                top.node.initExpression.code.joinToString(
-                                    PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + PrinterConstants.TAB,
-                                    PrinterConstants.EMPTY,
-                                    PrinterConstants.SEMICOLON
-                                ) +
-                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB + top.node.beginLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
-                                        top.node.testExpression.code.joinToString(
-                                            PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + PrinterConstants.TAB,
-                                            PrinterConstants.NEW_LINE + PrinterConstants.TAB,
-                                            PrinterConstants.SEMICOLON
-                                        ) +
-                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB + top.node.trueLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
-                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB + bodyStatementStrings +
-                                        top.node.incrementExpression.code.joinToString(
-                                            PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + PrinterConstants.TAB,
-                                            PrinterConstants.NEW_LINE + PrinterConstants.TAB,
-                                            PrinterConstants.SEMICOLON
-                                        ) +
-                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB + PrinterConstants.GOTO + PrinterConstants.SPACE + top.node.beginLabel + PrinterConstants.SEMICOLON +
-                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB + top.node.falseLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
+                                expressionStatementPrinter.printNode(top.node)
                             }
                             is TranslatedDoWhileNode -> {
                                 val bodyStatementStrings = resultStack.pop()
+                                val expressionCode = codeGenerator.generateCode(top.node.expressionNode.code)
+                                val trueLabelCode = labelCodeGenerator.generateLabelCode(top.node.trueLabel)
+                                val falseLabelCode = labelCodeGenerator.generateLabelCode(top.node.falseLabel)
 
-                                top.node.trueLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
-                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB + bodyStatementStrings +
-                                        top.node.expressionNode.code.joinToString(
-                                            PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + PrinterConstants.TAB,
-                                            PrinterConstants.NEW_LINE + PrinterConstants.TAB,
-                                            PrinterConstants.SEMICOLON
-                                        ) +
-                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB + top.node.falseLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
+                                trueLabelCode + PrinterConstants.SEMICOLON +
+                                        PrinterConstants.TABBED_NEW_LINE + bodyStatementStrings +
+                                        PrinterConstants.TABBED_NEW_LINE + expressionCode +
+                                        PrinterConstants.TABBED_NEW_LINE + falseLabelCode + PrinterConstants.SEMICOLON
 
                             }
                             is TranslatedWhileNode -> {
                                 val bodyStatementStrings = resultStack.pop()
-                                top.node.beginLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
-                                        top.node.expression.code.joinToString(
-                                            PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + PrinterConstants.TAB,
-                                            PrinterConstants.NEW_LINE + PrinterConstants.TAB,
-                                            PrinterConstants.SEMICOLON
-                                        ) +
-                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB + top.node.trueLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
-                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB + bodyStatementStrings +
-                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB + PrinterConstants.GOTO + PrinterConstants.SPACE + top.node.beginLabel + PrinterConstants.SEMICOLON +
-                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB + top.node.falseLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
+                                val expressionCode = codeGenerator.generateCode(top.node.expression.code)
+                                val beginLabelCode = labelCodeGenerator.generateLabelCode(top.node.beginLabel)
+                                val trueLabelCode = labelCodeGenerator.generateLabelCode(top.node.trueLabel)
+                                val falseLabelCode = labelCodeGenerator.generateLabelCode(top.node.falseLabel)
+                                val gotoBeginCode = gotoCodeGenerator.generateGotoCode(top.node.beginLabel)
+                                beginLabelCode + PrinterConstants.SEMICOLON +
+                                        PrinterConstants.TABBED_NEW_LINE + expressionCode +
+                                        PrinterConstants.TABBED_NEW_LINE + trueLabelCode + PrinterConstants.SEMICOLON +
+                                        PrinterConstants.TABBED_NEW_LINE + bodyStatementStrings +
+                                        PrinterConstants.TABBED_NEW_LINE + gotoBeginCode + PrinterConstants.SEMICOLON +
+                                        PrinterConstants.TABBED_NEW_LINE + falseLabelCode + PrinterConstants.SEMICOLON
                             }
                             is TranslatedIfNode -> {
                                 if (top.node.elseBody == null) {
                                     val ifBodyStatementString = resultStack.pop()
-                                    top.node.expression.code.joinToString(
-                                        PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + PrinterConstants.TAB,
-                                        PrinterConstants.EMPTY,
-                                        PrinterConstants.SEMICOLON
-                                    ) +
-                                            PrinterConstants.NEW_LINE + PrinterConstants.TAB + top.node.trueLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
-                                            PrinterConstants.NEW_LINE + PrinterConstants.TAB + ifBodyStatementString +
-                                            PrinterConstants.NEW_LINE + PrinterConstants.TAB + top.node.falseLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
+                                    val expressionCode = codeGenerator.generateCode(top.node.expression.code)
+                                    val trueLabelCode = labelCodeGenerator.generateLabelCode(top.node.trueLabel)
+                                    val falseLabelCode = labelCodeGenerator.generateLabelCode(top.node.falseLabel)
+
+                                    expressionCode +
+                                            PrinterConstants.TABBED_NEW_LINE + trueLabelCode + PrinterConstants.SEMICOLON +
+                                            PrinterConstants.TABBED_NEW_LINE + ifBodyStatementString +
+                                            PrinterConstants.TABBED_NEW_LINE + falseLabelCode + PrinterConstants.SEMICOLON
                                 } else {
                                     val elseBodyStatementString = resultStack.pop()
                                     val ifBodyStatementString = resultStack.pop()
-                                    top.node.expression.code.joinToString(
-                                        PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + PrinterConstants.TAB,
-                                        PrinterConstants.EMPTY,
-                                        PrinterConstants.SEMICOLON
-                                    ) +
-                                            PrinterConstants.NEW_LINE + PrinterConstants.TAB + top.node.trueLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
-                                            PrinterConstants.NEW_LINE + PrinterConstants.TAB + ifBodyStatementString +
-                                            PrinterConstants.NEW_LINE + PrinterConstants.TAB + PrinterConstants.GOTO + PrinterConstants.SPACE + top.node.nextLabel + PrinterConstants.SEMICOLON +
-                                            PrinterConstants.NEW_LINE + PrinterConstants.TAB + top.node.falseLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON +
-                                            PrinterConstants.NEW_LINE + PrinterConstants.TAB + elseBodyStatementString +
-                                            PrinterConstants.NEW_LINE + PrinterConstants.TAB + top.node.nextLabel + PrinterConstants.COLON + PrinterConstants.SPACE + PrinterConstants.SEMICOLON
+                                    val expressionCode = codeGenerator.generateCode(top.node.expression.code)
+                                    val trueLabelCode = labelCodeGenerator.generateLabelCode(top.node.trueLabel)
+                                    val falseLabelCode = labelCodeGenerator.generateLabelCode(top.node.falseLabel)
+                                    val nextLabelCode = labelCodeGenerator.generateLabelCode(top.node.nextLabel)
+                                    val gotoNextCode = gotoCodeGenerator.generateGotoCode(top.node.nextLabel)
 
+                                    expressionCode +
+                                            PrinterConstants.TABBED_NEW_LINE + trueLabelCode + PrinterConstants.SEMICOLON +
+                                            PrinterConstants.TABBED_NEW_LINE + ifBodyStatementString +
+                                            PrinterConstants.TABBED_NEW_LINE + gotoNextCode + PrinterConstants.SEMICOLON +
+                                            PrinterConstants.TABBED_NEW_LINE + falseLabelCode + PrinterConstants.SEMICOLON +
+                                            PrinterConstants.TABBED_NEW_LINE + elseBodyStatementString +
+                                            PrinterConstants.TABBED_NEW_LINE + nextLabelCode + PrinterConstants.SEMICOLON
                                 }
                             }
                             is TranslatedExpressionStatementNode -> {
-                                top.node.expression.code.joinToString(
-                                    PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + PrinterConstants.TAB,
-                                    PrinterConstants.EMPTY,
-                                    PrinterConstants.SEMICOLON
-                                )
+                                codeGenerator.generateCode(top.node.expression.code)
                             }
                             is TranslatedReturnNode -> {
-                                val expressionCode =
-                                    top.node.expressionStatement.expression.code.joinToString(PrinterConstants.SEMICOLON + PrinterConstants.NEW_LINE + PrinterConstants.TAB)
-                                expressionCode + PrinterConstants.SEMICOLON +
-                                        PrinterConstants.NEW_LINE + PrinterConstants.TAB + PrinterConstants.RETURN + PrinterConstants.SPACE + top.node.expressionStatement.expression.address + PrinterConstants.SEMICOLON
+                                val expressionCode = codeGenerator.generateCode(top.node.expressionStatement.expression.code)
+
+                                expressionCode +
+                                        PrinterConstants.TABBED_NEW_LINE + PrinterConstants.RETURN + PrinterConstants.SPACE + top.node.expressionStatement.expression.address + PrinterConstants.SEMICOLON
                             }
                             else -> {
                                 PrinterConstants.EMPTY
@@ -344,7 +264,7 @@ internal class StatementPrinterOrchestrator(
 
         val top = resultStack.pop()
         return if (wrapInBraces) {
-            PrinterConstants.LEFT_BRACE + PrinterConstants.NEW_LINE + PrinterConstants.TAB + top + PrinterConstants.NEW_LINE + PrinterConstants.RIGHT_BRACE
+            PrinterConstants.LEFT_BRACE + PrinterConstants.TABBED_NEW_LINE + top + PrinterConstants.NEW_LINE + PrinterConstants.RIGHT_BRACE
         } else {
             top
         }

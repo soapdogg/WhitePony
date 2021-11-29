@@ -1,12 +1,14 @@
 package compiler.printer
 
-import compiler.core.nodes.IStatementNode
+import compiler.core.nodes.VariableDeclarationListNode
 import compiler.core.nodes.parsed.ParsedDoWhileNode
+import compiler.core.nodes.parsed.ParsedForNode
+import compiler.core.nodes.parsed.ParsedWhileNode
+import compiler.core.nodes.translated.TranslatedForNode
 import compiler.printer.impl.*
 import compiler.printer.impl.DeclarationStatementPrinter
 import compiler.printer.impl.FunctionDeclarationPrinter
 import compiler.printer.impl.Printer
-import compiler.printer.impl.internal.IStatementPrinter
 
 enum class PrinterSingleton {
     INSTANCE;
@@ -28,6 +30,9 @@ enum class PrinterSingleton {
         expressionStatementPrinter
     )
 
+    private val codeGenerator = CodeGenerator()
+    private val labelCodeGenerator = LabelCodeGenerator()
+    private val gotoCodeGenerator = GotoCodeGenerator()
     private val statementPrinterStackPusher = StatementPrinterStackPusher()
 
     private val parsedDoWhileStatementPrinter = ParsedDoWhileStatementPrinter(
@@ -35,16 +40,43 @@ enum class PrinterSingleton {
         expressionPrinter
     )
 
-    private val printerMap = mapOf<Class<out IStatementNode>, IStatementPrinter>(
-        ParsedDoWhileNode::class.java to parsedDoWhileStatementPrinter
+    private val parsedForStatementPrinter = ParsedForStatementPrinter(
+        statementPrinterStackPusher,
+        expressionPrinter
+    )
+
+    private val parsedWhileStatementPrinter = ParsedWhileStatementPrinter(
+        statementPrinterStackPusher,
+        expressionPrinter
+    )
+
+    private val translatedForStatementPrinter = TranslatedForStatementPrinter(
+        statementPrinterStackPusher,
+        codeGenerator,
+        labelCodeGenerator,
+        gotoCodeGenerator
+    )
+
+    private val variableDeclarationListStatementPrinter = VariableDeclarationListStatementPrinter(
+        variableDeclarationListPrinter
+    )
+
+    private val printerMap = mapOf(
+        ParsedDoWhileNode::class.java to parsedDoWhileStatementPrinter,
+        ParsedForNode::class.java to parsedForStatementPrinter,
+        ParsedWhileNode::class.java to parsedWhileStatementPrinter,
+        TranslatedForNode::class.java to translatedForStatementPrinter,
+        VariableDeclarationListNode::class.java to variableDeclarationListStatementPrinter
     )
 
     private val statementPrinter = StatementPrinterOrchestrator(
         printerMap,
-        variableDeclarationListPrinter,
         returnStatementPrinter,
         expressionStatementPrinter,
-        expressionPrinter
+        expressionPrinter,
+        codeGenerator,
+        labelCodeGenerator,
+        gotoCodeGenerator
     )
     private val functionDeclarationPrinter = FunctionDeclarationPrinter(statementPrinter)
 

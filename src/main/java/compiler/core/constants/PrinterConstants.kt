@@ -29,6 +29,8 @@ object PrinterConstants {
     const val WHILE = "while"
     const val INT = "int"
     const val DOUBLE = "double"
+    const val TABBED_NEW_LINE = NEW_LINE + TAB
+    const val SEPARATOR = SEMICOLON + TABBED_NEW_LINE
 
 
 }
