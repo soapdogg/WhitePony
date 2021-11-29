@@ -30,9 +30,9 @@ class RegressionTest {
         "inputData",
     )
     fun regressionTest(arguments: ArgumentsAccessor) {
-        val triple = arguments.get(0) as Triple<*, *, *>
-        val input = triple.first as String
-        val intermediateCode = triple.second as String
+        val pair = arguments.get(0) as Pair<*, *>
+        val input = pair.first as String
+        val intermediateCode = pair.second as String
 
         val (parseTreeString, translatedTreeString) = recursiveCompiler.compile(input)
         Assertions.assertEquals(input, parseTreeString)
@@ -58,32 +58,32 @@ class RegressionTest {
 
     companion object {
         @JvmStatic
-        fun inputData(): Stream<Triple<String, String, Int>> {
+        fun inputData(): Stream<Pair<String, String>> {
             return Stream.of(
-                Triple(Program1, IProgram1, 34),
-                Triple(Program2, IProgram2, 37),
-                Triple(Program3, IProgram3, 34),
-                Triple(Program4, IProgram4, 28),
-                Triple(Program5, IProgram5, 36),
-                Triple(Program6, IProgram6, 44),
-                Triple(Program7, IProgram7, 71),
-                Triple(Program8, IProgram8, 30),
-                Triple(Program9, IProgram9, 100),
-                Triple(Program10, IProgram10, 22),
-                Triple(Program11, IProgram11, 22),
-                Triple(Program12, IProgram12, 32),
-                Triple(Program13, IProgram13, 30),
-                Triple(Program14, IProgram14, 37),
-                Triple(Program15, IProgram15, 44),
-                Triple(Program16, IProgram16, 42),
-                Triple(Program17, IProgram17, 37),
-                Triple(Program18, IProgram18, 42),
-                Triple(Program19, IProgram19, 39),
-                Triple(Program20, IProgram20, 39),
-                Triple(Program21, IProgram21, 152),
-                Triple(Program22, IProgram22, 367),
-                Triple(Program23, IProgram23, 0),
-                Triple(Program24, IProgram24, 0)
+                Pair(Program1, IProgram1),
+                Pair(Program2, IProgram2),
+                Pair(Program3, IProgram3),
+                Pair(Program4, IProgram4),
+                Pair(Program5, IProgram5),
+                Pair(Program6, IProgram6),
+                Pair(Program7, IProgram7),
+                Pair(Program8, IProgram8),
+                Pair(Program9, IProgram9),
+                Pair(Program10, IProgram10),
+                Pair(Program11, IProgram11),
+                Pair(Program12, IProgram12),
+                Pair(Program13, IProgram13),
+                Pair(Program14, IProgram14),
+                Pair(Program15, IProgram15),
+                Pair(Program16, IProgram16),
+                Pair(Program17, IProgram17),
+                Pair(Program18, IProgram18),
+                Pair(Program19, IProgram19),
+                Pair(Program20, IProgram20),
+                Pair(Program21, IProgram21),
+                Pair(Program22, IProgram22),
+                Pair(Program23, IProgram23),
+                Pair(Program24, IProgram24)
             )
         }
 
