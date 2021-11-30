@@ -52,136 +52,32 @@ internal class StatementTranslatorOrchestrator(
                 tempCounter = tempAfter
                 labelCounter = labelAfter
             } else {
-                when (top.location) {
-                    StatementTranslatorLocation.START -> {
-                        stack.push(
-                            StatementTranslatorStackItem(
-                                StatementTranslatorLocation.END,
-                                top.node
-                            )
+
+                when (top.node) {
+                    is VariableDeclarationListNode -> {
+                        variableTypeRecorder.recordVariableTypes(
+                            top.node,
+                            variableToTypeMap
                         )
-                        when (top.node) {
-                            is ParsedIfNode -> {
-                                if (top.node.elseBody == null) {
-                                    val (nextLabel, labelCountAfterNext) = labelGenerator.generateLabel(labelCounter)
-                                    val (trueLabel, labelCountAfterTrue) = labelGenerator.generateLabel(labelCountAfterNext)
-                                    val (expression, l, t) = booleanExpressionTranslator.translate(
-                                        top.node.booleanExpression,
-                                        trueLabel,
-                                        nextLabel,
-                                        labelCountAfterTrue,
-                                        tempCounter,
-                                        variableToTypeMap
-                                    )
-                                    labelCounter = l
-                                    tempCounter = t
-                                    labelStack.push(trueLabel)
-                                    labelStack.push(nextLabel)
-                                    expressionStack.push(expression)
-                                    stack.push(
-                                        StatementTranslatorStackItem(
-                                            StatementTranslatorLocation.START,
-                                            top.node.ifBody
-                                        )
-                                    )
-                                } else {
-                                    val (nextLabel, labelCountAfterNext) = labelGenerator.generateLabel(labelCounter)
-                                    val (trueLabel, labelCountAfterTrue) = labelGenerator.generateLabel(labelCountAfterNext)
-                                    val (falseLabel, labelCountAfterFalse) = labelGenerator.generateLabel(labelCountAfterTrue)
-                                    val (expression, l, t) = booleanExpressionTranslator.translate(
-                                        top.node.booleanExpression,
-                                        trueLabel,
-                                        falseLabel,
-                                        labelCountAfterFalse,
-                                        tempCounter,
-                                        variableToTypeMap
-                                    )
-                                    labelCounter = l
-                                    tempCounter = t
-                                    labelStack.push(falseLabel)
-                                    labelStack.push(trueLabel)
-                                    labelStack.push(nextLabel)
-                                    expressionStack.push(expression)
-                                    stack.push(
-                                        StatementTranslatorStackItem(
-                                            StatementTranslatorLocation.START,
-                                            top.node.elseBody
-                                        )
-                                    )
-                                    stack.push(
-                                        StatementTranslatorStackItem(
-                                            StatementTranslatorLocation.START,
-                                            top.node.ifBody
-                                        )
-                                    )
-                                }
-                            }
-
-                        }
+                        resultStack.push(top.node)
                     }
-                    StatementTranslatorLocation.END -> {
-                        when (top.node) {
-                            is ParsedIfNode -> {
-                                if (top.node.elseBody == null) {
-                                    val nextLabel = labelStack.pop()
-                                    val trueLabel = labelStack.pop()
-                                    val expression = expressionStack.pop()
-                                    val body = resultStack.pop()
-
-                                    val ifNode = TranslatedIfNode(
-                                        expression,
-                                        body,
-                                        null,
-                                        nextLabel,
-                                        trueLabel,
-                                        nextLabel
-                                    )
-                                    resultStack.push(ifNode)
-                                } else {
-                                    val nextLabel = labelStack.pop()
-                                    val trueLabel = labelStack.pop()
-                                    val falseLabel = labelStack.pop()
-                                    val expression = expressionStack.pop()
-                                    val elseBody = resultStack.pop()
-                                    val ifBody = resultStack.pop()
-
-                                    val ifNode = TranslatedIfNode(
-                                        expression,
-                                        ifBody,
-                                        elseBody,
-                                        nextLabel,
-                                        trueLabel,
-                                        falseLabel
-                                    )
-                                    resultStack.push(ifNode)
-                                }
-                            }
-                            is VariableDeclarationListNode -> {
-                                variableTypeRecorder.recordVariableTypes(
-                                    top.node,
-                                    variableToTypeMap
-                                )
-                                resultStack.push(top.node)
-                            }
-                            is ParsedReturnNode -> {
-                                val (returnStatement, t) = returnStatementTranslator.translate(
-                                    top.node,
-                                    variableToTypeMap,
-                                    tempCounter
-                                )
-                                tempCounter = t
-                                resultStack.push(returnStatement)
-                            }
-                            is ParsedExpressionStatementNode -> {
-                                val (expressionStatement, t) = expressionStatementTranslator.translate(
-                                    top.node,
-                                    variableToTypeMap,
-                                    tempCounter
-                                )
-                                tempCounter = t
-                                resultStack.push(expressionStatement)
-                            }
-                        }
+                    is ParsedReturnNode -> {
+                        val (returnStatement, t) = returnStatementTranslator.translate(
+                            top.node,
+                            variableToTypeMap,
+                            tempCounter
+                        )
+                        tempCounter = t
+                        resultStack.push(returnStatement)
+                    }
+                    is ParsedExpressionStatementNode -> {
+                        val (expressionStatement, t) = expressionStatementTranslator.translate(
+                            top.node,
+                            variableToTypeMap,
+                            tempCounter
+                        )
+                        tempCounter = t
+                        resultStack.push(expressionStatement)
                     }
                 }
             }
