@@ -8,7 +8,6 @@ import compiler.translator.impl.ExpressionStatementTranslator
 import compiler.translator.impl.FunctionDeclarationTranslator
 import compiler.translator.impl.ReturnStatementTranslator
 import compiler.translator.impl.Translator
-import compiler.translator.impl.internal.IStatementTranslator
 
 enum class TranslatorSingleton {
     INSTANCE;
@@ -65,7 +64,7 @@ enum class TranslatorSingleton {
     )
     private val constantExpressionTranslator = ConstantExpressionTranslator()
 
-    private val expressionTranslator = ExpressionTranslator(
+    private val expressionTranslatorOrchestrator = ExpressionTranslatorOrchestrator(
         binaryAssignExpressionTranslator,
         binaryOperatorExpressionTranslator,
         binaryArrayExpressionTranslator,
@@ -103,7 +102,7 @@ enum class TranslatorSingleton {
     )
 
     private val binaryRelationalOperatorExpressionTranslator = BinaryRelationalOperatorExpressionTranslator(
-        expressionTranslator,
+        expressionTranslatorOrchestrator,
         conditionalGotoCodeGenerator,
         gotoCodeGenerator
     )
@@ -129,12 +128,17 @@ enum class TranslatorSingleton {
         stackGenerator,
         booleanExpressionTranslatorMap
     )
-    private val expressionStatementTranslator = ExpressionStatementTranslator(expressionTranslator)
+    private val expressionStatementTranslator = ExpressionStatementTranslator(expressionTranslatorOrchestrator)
     private val returnStatementTranslator = ReturnStatementTranslator(expressionStatementTranslator)
 
     private val basicBlockStatementTranslator = BasicBlockStatementTranslator()
     private val doWhileStatementTranslator = DoWhileStatementTranslator(
         labelGenerator,
+        booleanExpressionTranslatorOrchestrator
+    )
+    private val forStatementTranslator = ForStatementTranslator(
+        labelGenerator,
+        expressionTranslatorOrchestrator,
         booleanExpressionTranslatorOrchestrator
     )
     private val whileStatementTranslator = WhileStatementTranslator(
@@ -144,6 +148,7 @@ enum class TranslatorSingleton {
     private val statementTranslatorMap = mapOf(
         ParsedBasicBlockNode::class.java to basicBlockStatementTranslator,
         ParsedDoWhileNode::class.java to doWhileStatementTranslator,
+        ParsedForNode::class.java to forStatementTranslator,
         ParsedWhileNode::class.java to whileStatementTranslator
     )
 
@@ -152,7 +157,6 @@ enum class TranslatorSingleton {
         statementTranslatorMap,
         labelGenerator,
         variableTypeRecorder,
-        expressionTranslator,
         booleanExpressionTranslatorOrchestrator,
         returnStatementTranslator,
         expressionStatementTranslator

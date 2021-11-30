@@ -3,10 +3,10 @@ package compiler.translator.impl
 import compiler.core.nodes.parsed.ParsedExpressionStatementNode
 import compiler.core.nodes.translated.TranslatedExpressionStatementNode
 import compiler.translator.impl.internal.IExpressionStatementTranslator
-import compiler.translator.impl.internal.IExpressionTranslator
+import compiler.translator.impl.internal.IExpressionTranslatorOrchestrator
 
 internal class ExpressionStatementTranslator(
-    private val expressionTranslator: IExpressionTranslator
+    private val expressionTranslator: IExpressionTranslatorOrchestrator
 ): IExpressionStatementTranslator {
     override fun translate(
         expressionStatementNode: ParsedExpressionStatementNode,

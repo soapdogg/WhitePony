@@ -2,7 +2,6 @@ package compiler.translator.impl
 
 import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.IParsedStatementNode
-import compiler.core.nodes.parsed.ParsedDoWhileNode
 import compiler.core.nodes.parsed.ParsedWhileNode
 import compiler.core.nodes.translated.ITranslatedExpressionNode
 import compiler.core.nodes.translated.ITranslatedStatementNode

@@ -8,14 +8,14 @@ import compiler.core.stack.BooleanExpressionTranslatorStackItem
 import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
 import compiler.translator.impl.internal.IConditionalGotoCodeGenerator
-import compiler.translator.impl.internal.IExpressionTranslator
+import compiler.translator.impl.internal.IExpressionTranslatorOrchestrator
 import compiler.translator.impl.internal.IGotoCodeGenerator
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 
 class BinaryRelationalOperatorExpressionTranslatorTest {
-    private val expressionTranslator = Mockito.mock(IExpressionTranslator::class.java)
+    private val expressionTranslator = Mockito.mock(IExpressionTranslatorOrchestrator::class.java)
     private val conditionalGotoCodeGenerator = Mockito.mock(IConditionalGotoCodeGenerator::class.java)
     private val gotoCodeGenerator = Mockito.mock(IGotoCodeGenerator::class.java)
 

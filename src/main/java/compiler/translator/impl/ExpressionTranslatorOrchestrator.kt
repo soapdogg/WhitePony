@@ -8,13 +8,12 @@ import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
 import compiler.translator.impl.internal.*
 import compiler.translator.impl.internal.IConstantExpressionTranslator
-import compiler.translator.impl.internal.IExpressionTranslator
+import compiler.translator.impl.internal.IExpressionTranslatorOrchestrator
 import compiler.translator.impl.internal.IInnerExpressionTranslator
 import compiler.translator.impl.internal.ITempGenerator
-import compiler.translator.impl.internal.ITypeDeterminer
 import compiler.translator.impl.internal.IVariableExpressionTranslator
 
-internal class ExpressionTranslator(
+internal class ExpressionTranslatorOrchestrator(
     private val binaryAssignExpressionTranslator: IBinaryAssignExpressionTranslator,
     private val binaryOperatorExpressionTranslator: IBinaryOperatorExpressionTranslator,
     private val binaryArrayExpressionTranslator: IBinaryArrayExpressionTranslator,
@@ -27,7 +26,7 @@ internal class ExpressionTranslator(
     private val expressionTranslatorStackPusher: IExpressionTranslatorStackPusher,
     private val assignCodeGenerator: IAssignCodeGenerator,
     private val arrayCodeGenerator: IArrayCodeGenerator
-): IExpressionTranslator {
+): IExpressionTranslatorOrchestrator {
     override fun translate(
         expressionNode: IParsedExpressionNode,
         variableToTypeMap: Map<String, String>,

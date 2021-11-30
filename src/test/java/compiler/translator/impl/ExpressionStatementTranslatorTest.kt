@@ -3,13 +3,13 @@ package compiler.translator.impl
 import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.ParsedExpressionStatementNode
 import compiler.core.nodes.translated.TranslatedExpressionNode
-import compiler.translator.impl.internal.IExpressionTranslator
+import compiler.translator.impl.internal.IExpressionTranslatorOrchestrator
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 
 class ExpressionStatementTranslatorTest {
-    private val expressionTranslator = Mockito.mock(IExpressionTranslator::class.java)
+    private val expressionTranslator = Mockito.mock(IExpressionTranslatorOrchestrator::class.java)
 
     private val expressionStatementTranslator = ExpressionStatementTranslator(expressionTranslator)
 

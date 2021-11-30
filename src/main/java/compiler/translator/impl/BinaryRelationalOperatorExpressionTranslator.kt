@@ -7,11 +7,11 @@ import compiler.core.stack.BooleanExpressionTranslatorStackItem
 import compiler.core.stack.Stack
 import compiler.translator.impl.internal.IBooleanExpressionTranslator
 import compiler.translator.impl.internal.IConditionalGotoCodeGenerator
-import compiler.translator.impl.internal.IExpressionTranslator
+import compiler.translator.impl.internal.IExpressionTranslatorOrchestrator
 import compiler.translator.impl.internal.IGotoCodeGenerator
 
 internal class BinaryRelationalOperatorExpressionTranslator(
-    private val expressionTranslator: IExpressionTranslator,
+    private val expressionTranslator: IExpressionTranslatorOrchestrator,
     private val conditionalGotoCodeGenerator: IConditionalGotoCodeGenerator,
     private val gotoCodeGenerator: IGotoCodeGenerator
 ): IBooleanExpressionTranslator {
