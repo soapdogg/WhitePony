@@ -152,6 +152,7 @@ enum class TranslatorSingleton {
     private val statementTranslatorMap = mapOf(
         ParsedBasicBlockNode::class.java to basicBlockStatementTranslator,
         ParsedDoWhileNode::class.java to doWhileStatementTranslator,
+        ParsedExpressionStatementNode::class.java to expressionStatementTranslator,
         ParsedForNode::class.java to forStatementTranslator,
         ParsedIfNode::class.java to ifStatementTranslator,
         ParsedReturnNode::class.java to returnStatementTranslator,
@@ -162,7 +163,6 @@ enum class TranslatorSingleton {
         stackGenerator,
         statementTranslatorMap,
         variableTypeRecorder,
-        expressionStatementTranslator
     )
 
     private val functionDeclarationTranslator = FunctionDeclarationTranslator(

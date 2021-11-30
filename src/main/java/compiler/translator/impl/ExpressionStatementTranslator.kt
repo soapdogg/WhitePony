@@ -1,23 +1,38 @@
 package compiler.translator.impl
 
+import compiler.core.nodes.parsed.IParsedStatementNode
 import compiler.core.nodes.parsed.ParsedExpressionStatementNode
+import compiler.core.nodes.translated.ITranslatedExpressionNode
+import compiler.core.nodes.translated.ITranslatedStatementNode
 import compiler.core.nodes.translated.TranslatedExpressionStatementNode
-import compiler.translator.impl.internal.IExpressionStatementTranslator
+import compiler.core.stack.Stack
+import compiler.core.stack.StatementTranslatorLocation
+import compiler.core.stack.StatementTranslatorStackItem
 import compiler.translator.impl.internal.IExpressionTranslatorOrchestrator
+import compiler.translator.impl.internal.IStatementTranslator
 
 internal class ExpressionStatementTranslator(
     private val expressionTranslator: IExpressionTranslatorOrchestrator
-): IExpressionStatementTranslator {
+): IStatementTranslator {
+
     override fun translate(
-        expressionStatementNode: ParsedExpressionStatementNode,
-        variableToTypeMap: Map<String, String>,
+        node: IParsedStatementNode,
+        location: StatementTranslatorLocation,
         tempCounter: Int,
-    ): Pair<TranslatedExpressionStatementNode, Int> {
-        val (expression, t) = expressionTranslator.translate(
-            expressionStatementNode.expressionNode,
+        labelCounter: Int,
+        variableToTypeMap: Map<String, String>,
+        stack: Stack<StatementTranslatorStackItem>,
+        resultStack: Stack<ITranslatedStatementNode>,
+        expressionStack: Stack<ITranslatedExpressionNode>,
+        labelStack: Stack<String>
+    ): Pair<Int, Int> {
+        node as ParsedExpressionStatementNode
+        val (expression, tempAfterExpression) = expressionTranslator.translate(
+            node.expressionNode,
             variableToTypeMap,
             tempCounter
         )
-        return Pair(TranslatedExpressionStatementNode(expression), t)
+        resultStack.push(TranslatedExpressionStatementNode(expression))
+        return Pair(tempAfterExpression, labelCounter)
     }
 }

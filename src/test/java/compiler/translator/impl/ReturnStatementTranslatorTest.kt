@@ -9,14 +9,14 @@ import compiler.core.nodes.translated.TranslatedReturnNode
 import compiler.core.stack.Stack
 import compiler.core.stack.StatementTranslatorLocation
 import compiler.core.stack.StatementTranslatorStackItem
-import compiler.translator.impl.internal.IExpressionStatementTranslator
+import compiler.translator.impl.internal.IStatementTranslator
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 
 class ReturnStatementTranslatorTest {
 
-    private val expressionStatementTranslator = Mockito.mock(IExpressionStatementTranslator::class.java)
+    private val expressionStatementTranslator = Mockito.mock(IStatementTranslator::class.java)
 
     private val returnStatementTranslator = ReturnStatementTranslator(expressionStatementTranslator)
 
@@ -37,11 +37,15 @@ class ReturnStatementTranslatorTest {
 
         val translatedExpressionStatement = Mockito.mock(TranslatedExpressionStatementNode::class.java)
         val tempAfterExpression = 2
-        Mockito.`when`(expressionStatementTranslator.translate(expressionStatement, variableToTypeMap, tempCounter)).thenReturn(Pair(translatedExpressionStatement, tempAfterExpression))
+        val labelAfterExpression = 66
+        Mockito.`when`(expressionStatementTranslator.translate(expressionStatement, location, tempCounter, labelCounter, variableToTypeMap, stack, resultStack, expressionStack, labelStack)).then {
+            resultStack.push(translatedExpressionStatement)
+            return@then Pair(tempAfterExpression, labelAfterExpression)
+        }
 
         val (actualTemp, actualLabel) = returnStatementTranslator.translate(node, location, tempCounter, labelCounter, variableToTypeMap, stack, resultStack, expressionStack, labelStack)
         Assertions.assertEquals(tempAfterExpression, actualTemp)
-        Assertions.assertEquals(labelCounter, actualLabel)
+        Assertions.assertEquals(labelAfterExpression, actualLabel)
         val top = resultStack.pop()
         Assertions.assertEquals(TranslatedReturnNode(translatedExpressionStatement), top)
     }
