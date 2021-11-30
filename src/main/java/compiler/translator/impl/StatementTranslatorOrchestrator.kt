@@ -40,7 +40,18 @@ internal class StatementTranslatorOrchestrator (
 
             if (translatorMap.containsKey(top.node.javaClass)) {
                 val translator = translatorMap.getValue(top.node.javaClass)
-
+                val (tempAfter, labelAfter) = translator.translate(
+                    top.node,
+                    top.location,
+                    tempCounter,
+                    labelCounter,
+                    stack,
+                    resultStack,
+                    expressionStack,
+                    labelStack
+                )
+                tempCounter = tempAfter
+                labelCounter = labelAfter
             } else {
                 when (top.location) {
                     StatementTranslatorLocation.START -> {
@@ -51,16 +62,6 @@ internal class StatementTranslatorOrchestrator (
                             )
                         )
                         when (top.node) {
-                            is ParsedBasicBlockNode -> {
-                                top.node.statements.reversed().forEach {
-                                    stack.push(
-                                        StatementTranslatorStackItem(
-                                            StatementTranslatorLocation.START,
-                                            it
-                                        )
-                                    )
-                                }
-                            }
                             is ParsedDoWhileNode -> {
                                 val (falseLabel, labelCountAfterFalse) = labelGenerator.generateLabel(labelCounter)
                                 val (trueLabel, labelCountAfterTrue) = labelGenerator.generateLabel(labelCountAfterFalse)
@@ -198,18 +199,6 @@ internal class StatementTranslatorOrchestrator (
                     StatementTranslatorLocation.END -> {
 
                         when (top.node) {
-                            is ParsedBasicBlockNode -> {
-                                val numberOfStatements = top.node.statements.size
-                                val body = mutableListOf<ITranslatedStatementNode>()
-                                for (i in 0 until numberOfStatements) {
-                                    body.add(resultStack.pop())
-                                }
-                                val translatedBasicBlock = TranslatedBasicBlockNode(
-                                    body.reversed()
-                                )
-                                resultStack.push(translatedBasicBlock)
-                            }
-
                             is ParsedDoWhileNode -> {
                                 val falseLabel = labelStack.pop()
                                 val trueLabel = labelStack.pop()
