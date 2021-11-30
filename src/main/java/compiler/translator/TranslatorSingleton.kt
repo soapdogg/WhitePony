@@ -154,16 +154,14 @@ enum class TranslatorSingleton {
         ParsedDoWhileNode::class.java to doWhileStatementTranslator,
         ParsedForNode::class.java to forStatementTranslator,
         ParsedIfNode::class.java to ifStatementTranslator,
+        ParsedReturnNode::class.java to returnStatementTranslator,
         ParsedWhileNode::class.java to whileStatementTranslator
     )
 
     private val statementTranslator = StatementTranslatorOrchestrator(
         stackGenerator,
         statementTranslatorMap,
-        labelGenerator,
         variableTypeRecorder,
-        booleanExpressionTranslatorOrchestrator,
-        returnStatementTranslator,
         expressionStatementTranslator
     )
 
