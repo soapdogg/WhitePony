@@ -9,6 +9,7 @@ import compiler.translator.impl.ExpressionStatementTranslator
 import compiler.translator.impl.FunctionDeclarationTranslator
 import compiler.translator.impl.ReturnStatementTranslator
 import compiler.translator.impl.Translator
+import compiler.translator.impl.internal.IExpressionTranslator
 
 enum class TranslatorSingleton {
     INSTANCE;
@@ -65,7 +66,10 @@ enum class TranslatorSingleton {
     )
     private val constantExpressionTranslator = ConstantExpressionTranslator()
 
+    private val translatorMap = mapOf<Class<out IParsedExpressionNode>, IExpressionTranslator>()
+
     private val expressionTranslatorOrchestrator = ExpressionTranslatorOrchestrator(
+        translatorMap,
         binaryAssignExpressionTranslator,
         binaryOperatorExpressionTranslator,
         binaryArrayExpressionTranslator,

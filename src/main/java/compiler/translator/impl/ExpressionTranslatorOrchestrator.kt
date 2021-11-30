@@ -15,6 +15,7 @@ import compiler.translator.impl.internal.ITempGenerator
 import compiler.translator.impl.internal.IVariableExpressionTranslator
 
 internal class ExpressionTranslatorOrchestrator(
+    private val translatorMap: Map<Class<out IParsedExpressionNode>, IExpressionTranslator>,
     private val binaryAssignExpressionTranslator: IBinaryAssignExpressionTranslator,
     private val binaryOperatorExpressionTranslator: IBinaryOperatorExpressionTranslator,
     private val binaryArrayExpressionTranslator: IBinaryArrayExpressionTranslator,
@@ -41,299 +42,349 @@ internal class ExpressionTranslatorOrchestrator(
         while(stack.isNotEmpty()) {
             val top = stack.pop()
 
-            when (top.node) {
-                is ParsedBinaryAssignExpressionNode -> {
-                    binaryAssignExpressionTranslator.translate(
-                        top.node,
-                        top.location,
-                        variableToTypeMap,
-                        stack,
-                        resultStack
-                    )
-                }
-                is ParsedBinaryAssignOperatorNode -> {
-                    if (top.node.leftExpression is ParsedVariableExpressionNode) {
-                        when (top.location) {
-                            ExpressionTranslatorLocation.START -> {
-                                expressionTranslatorStackPusher.push(
-                                    ExpressionTranslatorLocation.END,
-                                    top.node,
-                                    top.node.rightExpression,
-                                    stack
-                                )
-                            }
-                            else -> {
-                                val rightExpression = resultStack.pop()
-                                val (address, tc) = tempGenerator.generateTempVariable(t)
-                                t = tc
-                                val type = variableToTypeMap.getValue(top.node.leftExpression.value)
-                                val tempDeclarationRValue = top.node.leftExpression.value +
-                                        PrinterConstants.SPACE +
-                                        top.node.operator +
-                                        PrinterConstants.SPACE +
-                                        rightExpression.address
-                                val tempDeclarationCode = tempDeclarationCodeGenerator.generateTempDeclarationCode(
-                                    type,
-                                    address,
-                                    tempDeclarationRValue
-                                )
-                                val assignCode = assignCodeGenerator.generateAssignCode(
-                                    top.node.leftExpression.value,
-                                    address
-                                )
-                                val code = rightExpression.code + listOf(tempDeclarationCode, assignCode)
-                                val translatedExpressionNode = TranslatedExpressionNode(
-                                    address,
-                                    code,
-                                    type
-                                )
-                                resultStack.push(translatedExpressionNode)
-                            }
-                        }
-                    } else if (top.node.leftExpression is ParsedBinaryArrayExpressionNode){
-                        when (top.location) {
-                            ExpressionTranslatorLocation.START -> {
-                                expressionTranslatorStackPusher.push(
-                                    ExpressionTranslatorLocation.MIDDLE,
-                                    top.node,
-                                    top.node.leftExpression.rightExpression,
-                                    stack
-                                )
-                            }
-                            ExpressionTranslatorLocation.MIDDLE -> {
-                                expressionTranslatorStackPusher.push(
-                                    ExpressionTranslatorLocation.END,
-                                    top.node,
-                                    top.node.rightExpression,
-                                    stack
-                                )
-                            }
-                            else -> {
-                                val rightExpression = resultStack.pop()
-                                val insideArrayExpression = resultStack.pop()
-                                val (address, tc) = tempGenerator.generateTempVariable(t)
-                                t = tc
-                                val type = variableToTypeMap.getValue(top.node.leftExpression.leftExpression.value)
-                                val arrayCode = arrayCodeGenerator.generateArrayCode(top.node.leftExpression.leftExpression.value, insideArrayExpression.address)
-
-                                val tempDeclarationCode = tempDeclarationCodeGenerator.generateTempDeclarationCode(
-                                    type,
-                                    address,
-                                    arrayCode
-                                )
-
-                                val operationCode = address +
-                                        PrinterConstants.SPACE +
-                                        top.node.operator +
-                                        PrinterConstants.SPACE +
-                                        rightExpression.address
-                                val addressAssignCode = assignCodeGenerator.generateAssignCode(address, operationCode)
-                                val arrayAssignCode = assignCodeGenerator.generateAssignCode(arrayCode, address)
-                                val code = insideArrayExpression.code + listOf(tempDeclarationCode) + rightExpression.code + listOf(addressAssignCode, arrayAssignCode)
-
-                                val translatedExpressionNode = TranslatedExpressionNode(
-                                    address,
-                                    code,
-                                    type
-                                )
-                                resultStack.push(translatedExpressionNode)
-                            }
-                        }
+            if (translatorMap.containsKey(top.node.javaClass)) {
+                val translator = translatorMap.getValue(top.node.javaClass)
+                t = translator.translate(
+                    top.node,
+                    top.location,
+                    variableToTypeMap,
+                    t,
+                    stack,
+                    resultStack
+                )
+            }
+            else {
+                when (top.node) {
+                    is ParsedBinaryAssignExpressionNode -> {
+                        binaryAssignExpressionTranslator.translate(
+                            top.node,
+                            top.location,
+                            variableToTypeMap,
+                            stack,
+                            resultStack
+                        )
                     }
-                }
-                is ParsedBinaryOperatorExpressionNode -> {
-                    t = binaryOperatorExpressionTranslator.translate(
-                        top.node,
-                        top.location,
-                        t,
-                        variableToTypeMap,
-                        stack,
-                        resultStack
-                    )
-                }
-                is ParsedBinaryArrayExpressionNode -> {
-                    t = binaryArrayExpressionTranslator.translate(
-                        top.node,
-                        top.location,
-                        t,
-                        variableToTypeMap,
-                        stack,
-                        resultStack
-                    )
-                }
-                is ParsedUnaryExpressionNode -> {
-                    t = unaryExpressionTranslator.translate(
-                        top.node,
-                        top.location,
-                        t,
-                        stack,
-                        resultStack
-                    )
-                }
-                is ParsedUnaryPreOperatorNode -> {
-                    if (top.node.expression is ParsedVariableExpressionNode) {
-                        val operationCode = top.node.expression.value +
-                                PrinterConstants.SPACE +
-                                top.node.operator +
-                                PrinterConstants.SPACE +
-                                PrinterConstants.ONE
-                        val assignCode = assignCodeGenerator.generateAssignCode(
-                            top.node.expression.value,
-                            operationCode
-                        )
-                        val code = listOf(assignCode)
-                        val type = variableToTypeMap.getValue(top.node.expression.value)
-                        val translatedExpressionNode = TranslatedExpressionNode(
-                            top.node.expression.value,
-                            code,
-                            type
-                        )
-                        resultStack.push(translatedExpressionNode)
-                    } else if (top.node.expression is ParsedBinaryArrayExpressionNode) {
-                        when (top.location) {
-                            ExpressionTranslatorLocation.START -> {
-                                expressionTranslatorStackPusher.push(
-                                    ExpressionTranslatorLocation.END,
-                                    top.node,
-                                    top.node.expression.rightExpression,
-                                    stack
-                                )
+                    is ParsedBinaryAssignOperatorNode -> {
+                        if (top.node.leftExpression is ParsedVariableExpressionNode) {
+                            when (top.location) {
+                                ExpressionTranslatorLocation.START -> {
+                                    expressionTranslatorStackPusher.push(
+                                        ExpressionTranslatorLocation.END,
+                                        top.node,
+                                        top.node.rightExpression,
+                                        stack
+                                    )
+                                }
+                                else -> {
+                                    val rightExpression = resultStack.pop()
+                                    val (address, tc) = tempGenerator.generateTempVariable(t)
+                                    t = tc
+                                    val type = variableToTypeMap.getValue(top.node.leftExpression.value)
+                                    val tempDeclarationRValue = top.node.leftExpression.value +
+                                            PrinterConstants.SPACE +
+                                            top.node.operator +
+                                            PrinterConstants.SPACE +
+                                            rightExpression.address
+                                    val tempDeclarationCode = tempDeclarationCodeGenerator.generateTempDeclarationCode(
+                                        type,
+                                        address,
+                                        tempDeclarationRValue
+                                    )
+                                    val assignCode = assignCodeGenerator.generateAssignCode(
+                                        top.node.leftExpression.value,
+                                        address
+                                    )
+                                    val code = rightExpression.code + listOf(
+                                        tempDeclarationCode,
+                                        assignCode
+                                    )
+                                    val translatedExpressionNode = TranslatedExpressionNode(
+                                        address,
+                                        code,
+                                        type
+                                    )
+                                    resultStack.push(translatedExpressionNode)
+                                }
                             }
-                            else -> {
-                                val insideExpression = resultStack.pop()
-                                val (address, tc) = tempGenerator.generateTempVariable(t)
-                                t = tc
-                                val type = variableToTypeMap.getValue(top.node.expression.leftExpression.value)
-                                val arrayCode = arrayCodeGenerator.generateArrayCode(
-                                    top.node.expression.leftExpression.value,
-                                    insideExpression.address
-                                )
-                                val tempDeclarationCode = tempDeclarationCodeGenerator.generateTempDeclarationCode(
-                                    type,
-                                    address,
-                                    arrayCode
-                                )
+                        } else if (top.node.leftExpression is ParsedBinaryArrayExpressionNode) {
+                            when (top.location) {
+                                ExpressionTranslatorLocation.START -> {
+                                    expressionTranslatorStackPusher.push(
+                                        ExpressionTranslatorLocation.MIDDLE,
+                                        top.node,
+                                        top.node.leftExpression.rightExpression,
+                                        stack
+                                    )
+                                }
+                                ExpressionTranslatorLocation.MIDDLE -> {
+                                    expressionTranslatorStackPusher.push(
+                                        ExpressionTranslatorLocation.END,
+                                        top.node,
+                                        top.node.rightExpression,
+                                        stack
+                                    )
+                                }
+                                else -> {
+                                    val rightExpression = resultStack.pop()
+                                    val insideArrayExpression = resultStack.pop()
+                                    val (address, tc) = tempGenerator.generateTempVariable(t)
+                                    t = tc
+                                    val type = variableToTypeMap.getValue(top.node.leftExpression.leftExpression.value)
+                                    val arrayCode = arrayCodeGenerator.generateArrayCode(
+                                        top.node.leftExpression.leftExpression.value,
+                                        insideArrayExpression.address
+                                    )
 
-                                val operationCode = address +
-                                        PrinterConstants.SPACE +
-                                        top.node.operator +
-                                        PrinterConstants.SPACE +
-                                        PrinterConstants.ONE
-                                val operationAssignCode = assignCodeGenerator.generateAssignCode(address, operationCode)
+                                    val tempDeclarationCode = tempDeclarationCodeGenerator.generateTempDeclarationCode(
+                                        type,
+                                        address,
+                                        arrayCode
+                                    )
 
-                                val arrayAssignCode = assignCodeGenerator.generateAssignCode(arrayCode, address)
-                                val code = insideExpression.code +
-                                        listOf(
-                                            tempDeclarationCode,
-                                            operationAssignCode,
+                                    val operationCode = address +
+                                            PrinterConstants.SPACE +
+                                            top.node.operator +
+                                            PrinterConstants.SPACE +
+                                            rightExpression.address
+                                    val addressAssignCode = assignCodeGenerator.generateAssignCode(
+                                        address,
+                                        operationCode
+                                    )
+                                    val arrayAssignCode = assignCodeGenerator.generateAssignCode(
+                                        arrayCode,
+                                        address
+                                    )
+                                    val code =
+                                        insideArrayExpression.code + listOf(tempDeclarationCode) + rightExpression.code + listOf(
+                                            addressAssignCode,
                                             arrayAssignCode
                                         )
-                                val translatedExpressionNode = TranslatedExpressionNode(
-                                    address,
-                                    code,
-                                    type
-                                )
-                                resultStack.push(translatedExpressionNode)
+
+                                    val translatedExpressionNode = TranslatedExpressionNode(
+                                        address,
+                                        code,
+                                        type
+                                    )
+                                    resultStack.push(translatedExpressionNode)
+                                }
                             }
                         }
                     }
-                }
-                is ParsedUnaryPostOperatorNode -> {
-                    if (top.node.expression is ParsedVariableExpressionNode) {
-                        val (address, tc) = tempGenerator.generateTempVariable(t)
-                        t = tc
-                        val type = variableToTypeMap.getValue(top.node.expression.value)
-                        val tempDeclarationCode = tempDeclarationCodeGenerator.generateTempDeclarationCode(
-                            type,
-                            address,
-                            top.node.expression.value
+                    is ParsedBinaryOperatorExpressionNode -> {
+                        t = binaryOperatorExpressionTranslator.translate(
+                            top.node,
+                            top.location,
+                            t,
+                            variableToTypeMap,
+                            stack,
+                            resultStack
                         )
-                        val operationCode = top.node.expression.value +
-                                PrinterConstants.SPACE +
-                                top.node.operator +
-                                PrinterConstants.SPACE +
-                                PrinterConstants.ONE
-                        val assignCode = assignCodeGenerator.generateAssignCode(
-                            top.node.expression.value,
-                            operationCode
+                    }
+                    is ParsedBinaryArrayExpressionNode -> {
+                        t = binaryArrayExpressionTranslator.translate(
+                            top.node,
+                            top.location,
+                            t,
+                            variableToTypeMap,
+                            stack,
+                            resultStack
                         )
-                        val code = listOf(
-                            tempDeclarationCode,
-                            assignCode
+                    }
+                    is ParsedUnaryExpressionNode -> {
+                        t = unaryExpressionTranslator.translate(
+                            top.node,
+                            top.location,
+                            t,
+                            stack,
+                            resultStack
                         )
-                        val translatedExpressionNode = TranslatedExpressionNode(
-                            address,
-                            code,
-                            type,
-                        )
-                        resultStack.push(translatedExpressionNode)
-                    } else if (top.node.expression is ParsedBinaryArrayExpressionNode) {
-                        when (top.location) {
-                            ExpressionTranslatorLocation.START -> {
-                                expressionTranslatorStackPusher.push(
-                                    ExpressionTranslatorLocation.END,
-                                    top.node,
-                                    top.node.expression.rightExpression,
-                                    stack
-                                )
-                            }
-                            else -> {
-                                val insideExpression = resultStack.pop()
-                                val (address, tc) = tempGenerator.generateTempVariable(t)
-                                t = tc
-                                val type = variableToTypeMap.getValue(top.node.expression.leftExpression.value)
-                                val arrayCode = arrayCodeGenerator.generateArrayCode(
-                                    top.node.expression.leftExpression.value,
-                                    insideExpression.address
-                                )
-                                val tempDeclarationCode = tempDeclarationCodeGenerator.generateTempDeclarationCode(
-                                    type,
-                                    address,
-                                    arrayCode
-                                )
-                                val operationCode =  address +
-                                        PrinterConstants.SPACE +
-                                        top.node.operator +
-                                        PrinterConstants.SPACE +
-                                        PrinterConstants.ONE
-                                val operationAssignCode = assignCodeGenerator.generateAssignCode(address, operationCode)
-                                val arrayAssignCode = assignCodeGenerator.generateAssignCode(arrayCode, address)
-                                val oppositeOperationCode = address +
-                                        PrinterConstants.SPACE +
-                                        top.node.oppositeOperator +
-                                        PrinterConstants.SPACE +
-                                        PrinterConstants.ONE
-                                val oppositeOperationAssignCode = assignCodeGenerator.generateAssignCode(address, oppositeOperationCode)
-                                val code = insideExpression.code +
-                                        listOf(
-                                            tempDeclarationCode,
-                                            operationAssignCode,
-                                            arrayAssignCode,
-                                            oppositeOperationAssignCode
-                                        )
-                                val translatedExpressionNode = TranslatedExpressionNode(
-                                    address,
-                                    code,
-                                    type,
-                                )
-                                resultStack.push(translatedExpressionNode)
+                    }
+                    is ParsedUnaryPreOperatorNode -> {
+                        if (top.node.expression is ParsedVariableExpressionNode) {
+                            val operationCode = top.node.expression.value +
+                                    PrinterConstants.SPACE +
+                                    top.node.operator +
+                                    PrinterConstants.SPACE +
+                                    PrinterConstants.ONE
+                            val assignCode = assignCodeGenerator.generateAssignCode(
+                                top.node.expression.value,
+                                operationCode
+                            )
+                            val code = listOf(assignCode)
+                            val type = variableToTypeMap.getValue(top.node.expression.value)
+                            val translatedExpressionNode = TranslatedExpressionNode(
+                                top.node.expression.value,
+                                code,
+                                type
+                            )
+                            resultStack.push(translatedExpressionNode)
+                        } else if (top.node.expression is ParsedBinaryArrayExpressionNode) {
+                            when (top.location) {
+                                ExpressionTranslatorLocation.START -> {
+                                    expressionTranslatorStackPusher.push(
+                                        ExpressionTranslatorLocation.END,
+                                        top.node,
+                                        top.node.expression.rightExpression,
+                                        stack
+                                    )
+                                }
+                                else -> {
+                                    val insideExpression = resultStack.pop()
+                                    val (address, tc) = tempGenerator.generateTempVariable(t)
+                                    t = tc
+                                    val type = variableToTypeMap.getValue(top.node.expression.leftExpression.value)
+                                    val arrayCode = arrayCodeGenerator.generateArrayCode(
+                                        top.node.expression.leftExpression.value,
+                                        insideExpression.address
+                                    )
+                                    val tempDeclarationCode = tempDeclarationCodeGenerator.generateTempDeclarationCode(
+                                        type,
+                                        address,
+                                        arrayCode
+                                    )
+
+                                    val operationCode = address +
+                                            PrinterConstants.SPACE +
+                                            top.node.operator +
+                                            PrinterConstants.SPACE +
+                                            PrinterConstants.ONE
+                                    val operationAssignCode = assignCodeGenerator.generateAssignCode(
+                                        address,
+                                        operationCode
+                                    )
+
+                                    val arrayAssignCode = assignCodeGenerator.generateAssignCode(
+                                        arrayCode,
+                                        address
+                                    )
+                                    val code = insideExpression.code +
+                                            listOf(
+                                                tempDeclarationCode,
+                                                operationAssignCode,
+                                                arrayAssignCode
+                                            )
+                                    val translatedExpressionNode = TranslatedExpressionNode(
+                                        address,
+                                        code,
+                                        type
+                                    )
+                                    resultStack.push(translatedExpressionNode)
+                                }
                             }
                         }
                     }
-                }
-                is ParsedInnerExpressionNode -> {
-                    innerExpressionTranslator.translate(top.node, stack)
-                }
-                is ParsedVariableExpressionNode -> {
-                    t = variableExpressionTranslator.translate(
-                        top.node,
-                        variableToTypeMap,
-                        t,
-                        resultStack
-                    )
-                }
-                is ParsedConstantExpressionNode -> {
-                    constantExpressionTranslator.translate(top.node, resultStack)
+                    is ParsedUnaryPostOperatorNode -> {
+                        if (top.node.expression is ParsedVariableExpressionNode) {
+                            val (address, tc) = tempGenerator.generateTempVariable(t)
+                            t = tc
+                            val type = variableToTypeMap.getValue(top.node.expression.value)
+                            val tempDeclarationCode = tempDeclarationCodeGenerator.generateTempDeclarationCode(
+                                type,
+                                address,
+                                top.node.expression.value
+                            )
+                            val operationCode = top.node.expression.value +
+                                    PrinterConstants.SPACE +
+                                    top.node.operator +
+                                    PrinterConstants.SPACE +
+                                    PrinterConstants.ONE
+                            val assignCode = assignCodeGenerator.generateAssignCode(
+                                top.node.expression.value,
+                                operationCode
+                            )
+                            val code = listOf(
+                                tempDeclarationCode,
+                                assignCode
+                            )
+                            val translatedExpressionNode = TranslatedExpressionNode(
+                                address,
+                                code,
+                                type,
+                            )
+                            resultStack.push(translatedExpressionNode)
+                        } else if (top.node.expression is ParsedBinaryArrayExpressionNode) {
+                            when (top.location) {
+                                ExpressionTranslatorLocation.START -> {
+                                    expressionTranslatorStackPusher.push(
+                                        ExpressionTranslatorLocation.END,
+                                        top.node,
+                                        top.node.expression.rightExpression,
+                                        stack
+                                    )
+                                }
+                                else -> {
+                                    val insideExpression = resultStack.pop()
+                                    val (address, tc) = tempGenerator.generateTempVariable(t)
+                                    t = tc
+                                    val type = variableToTypeMap.getValue(top.node.expression.leftExpression.value)
+                                    val arrayCode = arrayCodeGenerator.generateArrayCode(
+                                        top.node.expression.leftExpression.value,
+                                        insideExpression.address
+                                    )
+                                    val tempDeclarationCode = tempDeclarationCodeGenerator.generateTempDeclarationCode(
+                                        type,
+                                        address,
+                                        arrayCode
+                                    )
+                                    val operationCode = address +
+                                            PrinterConstants.SPACE +
+                                            top.node.operator +
+                                            PrinterConstants.SPACE +
+                                            PrinterConstants.ONE
+                                    val operationAssignCode = assignCodeGenerator.generateAssignCode(
+                                        address,
+                                        operationCode
+                                    )
+                                    val arrayAssignCode = assignCodeGenerator.generateAssignCode(
+                                        arrayCode,
+                                        address
+                                    )
+                                    val oppositeOperationCode = address +
+                                            PrinterConstants.SPACE +
+                                            top.node.oppositeOperator +
+                                            PrinterConstants.SPACE +
+                                            PrinterConstants.ONE
+                                    val oppositeOperationAssignCode = assignCodeGenerator.generateAssignCode(
+                                        address,
+                                        oppositeOperationCode
+                                    )
+                                    val code = insideExpression.code +
+                                            listOf(
+                                                tempDeclarationCode,
+                                                operationAssignCode,
+                                                arrayAssignCode,
+                                                oppositeOperationAssignCode
+                                            )
+                                    val translatedExpressionNode = TranslatedExpressionNode(
+                                        address,
+                                        code,
+                                        type,
+                                    )
+                                    resultStack.push(translatedExpressionNode)
+                                }
+                            }
+                        }
+                    }
+                    is ParsedInnerExpressionNode -> {
+                        innerExpressionTranslator.translate(
+                            top.node,
+                            stack
+                        )
+                    }
+                    is ParsedVariableExpressionNode -> {
+                        t = variableExpressionTranslator.translate(
+                            top.node,
+                            variableToTypeMap,
+                            t,
+                            resultStack
+                        )
+                    }
+                    is ParsedConstantExpressionNode -> {
+                        constantExpressionTranslator.translate(
+                            top.node,
+                            resultStack
+                        )
+                    }
                 }
             }
         }
