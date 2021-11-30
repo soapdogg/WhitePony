@@ -63,31 +63,6 @@ internal class StatementTranslatorOrchestrator (
                             )
                         )
                         when (top.node) {
-                            is ParsedWhileNode -> {
-                                val (falseLabel, labelCountAfterFalse) = labelGenerator.generateLabel(labelCounter)
-                                val (beginLabel, labelCountAfterBegin) = labelGenerator.generateLabel(labelCountAfterFalse)
-                                val (trueLabel, labelCountAfterTrue) = labelGenerator.generateLabel(labelCountAfterBegin)
-                                val (expression, l, t) = booleanExpressionTranslator.translate(
-                                    top.node.expression,
-                                    trueLabel,
-                                    falseLabel,
-                                    labelCountAfterTrue,
-                                    tempCounter,
-                                    variableToTypeMap
-                                )
-                                labelCounter = l
-                                tempCounter = t
-                                labelStack.push(trueLabel)
-                                labelStack.push(beginLabel)
-                                labelStack.push(falseLabel)
-                                expressionStack.push(expression)
-                                stack.push(
-                                    StatementTranslatorStackItem(
-                                        StatementTranslatorLocation.START,
-                                        top.node.body
-                                    )
-                                )
-                            }
                             is ParsedForNode -> {
                                 val (falseLabel, labelCountAfterFalse) = labelGenerator.generateLabel(labelCounter)
                                 val (beginLabel, labelCountAfterBegin) = labelGenerator.generateLabel(labelCountAfterFalse)
@@ -185,22 +160,6 @@ internal class StatementTranslatorOrchestrator (
                     }
                     StatementTranslatorLocation.END -> {
                         when (top.node) {
-                            is ParsedWhileNode -> {
-                                val falseLabel = labelStack.pop()
-                                val beginLabel = labelStack.pop()
-                                val trueLabel = labelStack.pop()
-                                val expression = expressionStack.pop()
-                                val body = resultStack.pop()
-
-                                val whileNode = TranslatedWhileNode(
-                                    expression,
-                                    body,
-                                    falseLabel,
-                                    beginLabel,
-                                    trueLabel
-                                )
-                                resultStack.push(whileNode)
-                            }
                             is ParsedForNode -> {
                                 val falseLabel = labelStack.pop()
                                 val beginLabel = labelStack.pop()

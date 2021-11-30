@@ -137,9 +137,14 @@ enum class TranslatorSingleton {
         labelGenerator,
         booleanExpressionTranslatorOrchestrator
     )
+    private val whileStatementTranslator = WhileStatementTranslator(
+        labelGenerator,
+        booleanExpressionTranslatorOrchestrator
+    )
     private val statementTranslatorMap = mapOf(
         ParsedBasicBlockNode::class.java to basicBlockStatementTranslator,
-        ParsedDoWhileNode::class.java to doWhileStatementTranslator
+        ParsedDoWhileNode::class.java to doWhileStatementTranslator,
+        ParsedWhileNode::class.java to whileStatementTranslator
     )
 
     private val statementTranslator = StatementTranslatorOrchestrator(
