@@ -4,6 +4,7 @@ import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.ParsedBinaryAssignExpressionNode
 import compiler.core.nodes.parsed.ParsedVariableExpressionNode
 import compiler.core.nodes.translated.TranslatedExpressionNode
+import compiler.core.stack.ExpressionTranslatorLocation
 import compiler.core.stack.ExpressionTranslatorStackItem
 import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
@@ -26,7 +27,7 @@ class BinaryAssignVariableLValueExpressionTranslatorTest {
     fun location1Test() {
         val node = Mockito.mock(ParsedBinaryAssignExpressionNode::class.java)
         val lValueNode = Mockito.mock(ParsedVariableExpressionNode::class.java)
-        val location = LocationConstants.LOCATION_1
+        val location = ExpressionTranslatorLocation.START
         val variableToTypeMap = mapOf<String, String>()
         val stack = Stack<ExpressionTranslatorStackItem>()
         val resultStack = Stack<TranslatedExpressionNode>()
@@ -44,7 +45,7 @@ class BinaryAssignVariableLValueExpressionTranslatorTest {
         )
 
         Mockito.verify(expressionTranslatorStackPusher).push(
-            LocationConstants.LOCATION_2,
+            ExpressionTranslatorLocation.END,
             node,
             rightExpression,
             stack
@@ -59,7 +60,7 @@ class BinaryAssignVariableLValueExpressionTranslatorTest {
         val value = "value"
         Mockito.`when`(lValueNode.value).thenReturn(value)
 
-        val location = LocationConstants.LOCATION_2
+        val location = ExpressionTranslatorLocation.END
 
         val type = "type"
         val variableToTypeMap = mapOf(

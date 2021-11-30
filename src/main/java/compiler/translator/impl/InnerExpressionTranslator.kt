@@ -1,6 +1,7 @@
 package compiler.translator.impl
 
 import compiler.core.nodes.parsed.ParsedInnerExpressionNode
+import compiler.core.stack.ExpressionTranslatorLocation
 import compiler.core.stack.ExpressionTranslatorStackItem
 import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
@@ -11,6 +12,6 @@ internal class InnerExpressionTranslator: IInnerExpressionTranslator {
         node: ParsedInnerExpressionNode,
         stack: Stack<ExpressionTranslatorStackItem>
     ) {
-        stack.push(ExpressionTranslatorStackItem(LocationConstants.LOCATION_1, node.expression))
+        stack.push(ExpressionTranslatorStackItem(ExpressionTranslatorLocation.START, node.expression))
     }
 }

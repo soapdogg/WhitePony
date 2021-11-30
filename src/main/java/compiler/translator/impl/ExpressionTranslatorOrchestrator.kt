@@ -3,6 +3,7 @@ package compiler.translator.impl
 import compiler.core.constants.PrinterConstants
 import compiler.core.nodes.parsed.*
 import compiler.core.nodes.translated.TranslatedExpressionNode
+import compiler.core.stack.ExpressionTranslatorLocation
 import compiler.core.stack.ExpressionTranslatorStackItem
 import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
@@ -33,7 +34,7 @@ internal class ExpressionTranslatorOrchestrator(
         tempCounter: Int
     ): Pair<TranslatedExpressionNode, Int> {
         val stack = Stack<ExpressionTranslatorStackItem>()
-        stack.push(ExpressionTranslatorStackItem(LocationConstants.LOCATION_1, expressionNode))
+        stack.push(ExpressionTranslatorStackItem(ExpressionTranslatorLocation.START, expressionNode))
         val resultStack = Stack<TranslatedExpressionNode>()
         var t = tempCounter
 
@@ -53,15 +54,15 @@ internal class ExpressionTranslatorOrchestrator(
                 is ParsedBinaryAssignOperatorNode -> {
                     if (top.node.leftExpression is ParsedVariableExpressionNode) {
                         when (top.location) {
-                            LocationConstants.LOCATION_1 -> {
+                            ExpressionTranslatorLocation.START -> {
                                 expressionTranslatorStackPusher.push(
-                                    LocationConstants.LOCATION_2,
+                                    ExpressionTranslatorLocation.END,
                                     top.node,
                                     top.node.rightExpression,
                                     stack
                                 )
                             }
-                            LocationConstants.LOCATION_2 -> {
+                            else -> {
                                 val rightExpression = resultStack.pop()
                                 val (address, tc) = tempGenerator.generateTempVariable(t)
                                 t = tc
@@ -91,23 +92,23 @@ internal class ExpressionTranslatorOrchestrator(
                         }
                     } else if (top.node.leftExpression is ParsedBinaryArrayExpressionNode){
                         when (top.location) {
-                            LocationConstants.LOCATION_1 -> {
+                            ExpressionTranslatorLocation.START -> {
                                 expressionTranslatorStackPusher.push(
-                                    LocationConstants.LOCATION_2,
+                                    ExpressionTranslatorLocation.MIDDLE,
                                     top.node,
                                     top.node.leftExpression.rightExpression,
                                     stack
                                 )
                             }
-                            LocationConstants.LOCATION_2 -> {
+                            ExpressionTranslatorLocation.MIDDLE -> {
                                 expressionTranslatorStackPusher.push(
-                                    LocationConstants.LOCATION_3,
+                                    ExpressionTranslatorLocation.END,
                                     top.node,
                                     top.node.rightExpression,
                                     stack
                                 )
                             }
-                            LocationConstants.LOCATION_3 -> {
+                            else -> {
                                 val rightExpression = resultStack.pop()
                                 val insideArrayExpression = resultStack.pop()
                                 val (address, tc) = tempGenerator.generateTempVariable(t)
@@ -190,15 +191,15 @@ internal class ExpressionTranslatorOrchestrator(
                         resultStack.push(translatedExpressionNode)
                     } else if (top.node.expression is ParsedBinaryArrayExpressionNode) {
                         when (top.location) {
-                            LocationConstants.LOCATION_1 -> {
+                            ExpressionTranslatorLocation.START -> {
                                 expressionTranslatorStackPusher.push(
-                                    LocationConstants.LOCATION_2,
+                                    ExpressionTranslatorLocation.END,
                                     top.node,
                                     top.node.expression.rightExpression,
                                     stack
                                 )
                             }
-                            LocationConstants.LOCATION_2 -> {
+                            else -> {
                                 val insideExpression = resultStack.pop()
                                 val (address, tc) = tempGenerator.generateTempVariable(t)
                                 t = tc
@@ -268,15 +269,15 @@ internal class ExpressionTranslatorOrchestrator(
                         resultStack.push(translatedExpressionNode)
                     } else if (top.node.expression is ParsedBinaryArrayExpressionNode) {
                         when (top.location) {
-                            LocationConstants.LOCATION_1 -> {
+                            ExpressionTranslatorLocation.START -> {
                                 expressionTranslatorStackPusher.push(
-                                    LocationConstants.LOCATION_2,
+                                    ExpressionTranslatorLocation.END,
                                     top.node,
                                     top.node.expression.rightExpression,
                                     stack
                                 )
                             }
-                            LocationConstants.LOCATION_2 -> {
+                            else -> {
                                 val insideExpression = resultStack.pop()
                                 val (address, tc) = tempGenerator.generateTempVariable(t)
                                 t = tc

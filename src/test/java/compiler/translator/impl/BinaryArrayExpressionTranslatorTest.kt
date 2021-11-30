@@ -4,8 +4,8 @@ import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.ParsedBinaryArrayExpressionNode
 import compiler.core.nodes.parsed.ParsedVariableExpressionNode
 import compiler.core.nodes.translated.TranslatedExpressionNode
+import compiler.core.stack.ExpressionTranslatorLocation
 import compiler.core.stack.ExpressionTranslatorStackItem
-import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
 import compiler.translator.impl.internal.IArrayCodeGenerator
 import compiler.translator.impl.internal.IExpressionTranslatorStackPusher
@@ -31,7 +31,7 @@ class BinaryArrayExpressionTranslatorTest {
     @Test
     fun location1Test() {
         val node = Mockito.mock(ParsedBinaryArrayExpressionNode::class.java)
-        val location = LocationConstants.LOCATION_1
+        val location = ExpressionTranslatorLocation.START
         val tempCounter = 1
         val variableToTypeMap = mapOf<String, String>()
         val stack = Stack<ExpressionTranslatorStackItem>()
@@ -50,7 +50,7 @@ class BinaryArrayExpressionTranslatorTest {
         )
         Assertions.assertEquals(tempCounter, actual)
         Mockito.verify(expressionTranslatorStackPusher).push(
-            LocationConstants.LOCATION_2,
+            ExpressionTranslatorLocation.END,
             node,
             expression,
             stack
@@ -67,7 +67,7 @@ class BinaryArrayExpressionTranslatorTest {
         val variableValue = "variableValue"
         Mockito.`when`(leftExpression.value).thenReturn(variableValue)
 
-        val location = LocationConstants.LOCATION_2
+        val location = ExpressionTranslatorLocation.END
         val tempCounter = 1
         val type = "type"
         val variableToTypeMap = mapOf(
@@ -116,25 +116,4 @@ class BinaryArrayExpressionTranslatorTest {
         Assertions.assertEquals(listOf(rightExpressionCode, tempDeclarationCode), top.code)
         Assertions.assertEquals(type, top.type)
     }
-
-    @Test
-    fun location3Test() {
-        val node = Mockito.mock(ParsedBinaryArrayExpressionNode::class.java)
-        val location = LocationConstants.LOCATION_3
-        val tempCounter = 1
-        val variableToTypeMap = mapOf<String, String>()
-        val stack = Stack<ExpressionTranslatorStackItem>()
-        val resultStack = Stack<TranslatedExpressionNode>()
-
-        val actual = binaryArrayExpressionTranslator.translate(
-            node,
-            location,
-            tempCounter,
-            variableToTypeMap,
-            stack,
-            resultStack
-        )
-        Assertions.assertEquals(tempCounter, actual)
-    }
-
 }

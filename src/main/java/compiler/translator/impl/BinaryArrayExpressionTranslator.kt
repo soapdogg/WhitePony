@@ -2,6 +2,7 @@ package compiler.translator.impl
 
 import compiler.core.nodes.parsed.ParsedBinaryArrayExpressionNode
 import compiler.core.nodes.translated.TranslatedExpressionNode
+import compiler.core.stack.ExpressionTranslatorLocation
 import compiler.core.stack.ExpressionTranslatorStackItem
 import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
@@ -19,23 +20,23 @@ internal class BinaryArrayExpressionTranslator(
 ):IBinaryArrayExpressionTranslator {
     override fun translate(
         node: ParsedBinaryArrayExpressionNode,
-        location: Int,
+        location: ExpressionTranslatorLocation,
         tempCounter: Int,
         variableToTypeMap: Map<String, String>,
         stack: Stack<ExpressionTranslatorStackItem>,
         resultStack: Stack<TranslatedExpressionNode>
     ): Int {
         return when(location) {
-            LocationConstants.LOCATION_1 -> {
+            ExpressionTranslatorLocation.START -> {
                 expressionTranslatorStackPusher.push(
-                    LocationConstants.LOCATION_2,
+                    ExpressionTranslatorLocation.END,
                     node,
                     node.rightExpression,
                     stack
                 )
                 tempCounter
             }
-            LocationConstants.LOCATION_2 -> {
+            else -> {
                 val rightExpression = resultStack.pop()
                 val (address, t) = tempGenerator.generateTempVariable(tempCounter)
                 val variableValue = node.leftExpression.value
@@ -55,9 +56,6 @@ internal class BinaryArrayExpressionTranslator(
                 )
                 resultStack.push(translatedExpressionNode)
                 t
-            }
-            else -> {
-                tempCounter
             }
         }
     }

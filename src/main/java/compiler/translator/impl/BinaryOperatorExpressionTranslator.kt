@@ -2,6 +2,7 @@ package compiler.translator.impl
 
 import compiler.core.nodes.parsed.ParsedBinaryOperatorExpressionNode
 import compiler.core.nodes.translated.TranslatedExpressionNode
+import compiler.core.stack.ExpressionTranslatorLocation
 import compiler.core.stack.ExpressionTranslatorStackItem
 import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
@@ -21,32 +22,32 @@ internal class BinaryOperatorExpressionTranslator(
 ): IBinaryOperatorExpressionTranslator {
     override fun translate(
         node: ParsedBinaryOperatorExpressionNode,
-        location: Int,
+        location: ExpressionTranslatorLocation,
         tempCounter: Int,
         variableToTypeMap: Map<String, String>,
         stack: Stack<ExpressionTranslatorStackItem>,
         resultStack: Stack<TranslatedExpressionNode>
     ): Int {
         return when (location) {
-            LocationConstants.LOCATION_1 -> {
+            ExpressionTranslatorLocation.START -> {
                 expressionTranslatorStackPusher.push(
-                    LocationConstants.LOCATION_2,
+                    ExpressionTranslatorLocation.MIDDLE,
                     node,
                     node.leftExpression,
                     stack
                 )
                 tempCounter
             }
-            LocationConstants.LOCATION_2 -> {
+            ExpressionTranslatorLocation.MIDDLE -> {
                 expressionTranslatorStackPusher.push(
-                    LocationConstants.LOCATION_3,
+                    ExpressionTranslatorLocation.END,
                     node,
                     node.rightExpression,
                     stack
                 )
                 tempCounter
             }
-            LocationConstants.LOCATION_3 -> {
+            else -> {
                 val rightExpression = resultStack.pop()
                 val leftExpression = resultStack.pop()
                 val (address, t) = tempGenerator.generateTempVariable(tempCounter)
@@ -73,8 +74,6 @@ internal class BinaryOperatorExpressionTranslator(
                 )
                 resultStack.push(translatedBinaryOperatorNode)
                 t
-            } else -> {
-                tempCounter
             }
         }
     }

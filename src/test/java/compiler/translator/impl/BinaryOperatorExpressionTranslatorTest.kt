@@ -3,6 +3,7 @@ package compiler.translator.impl
 import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.ParsedBinaryOperatorExpressionNode
 import compiler.core.nodes.translated.TranslatedExpressionNode
+import compiler.core.stack.ExpressionTranslatorLocation
 import compiler.core.stack.ExpressionTranslatorStackItem
 import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
@@ -29,7 +30,7 @@ class BinaryOperatorExpressionTranslatorTest {
     @Test
     fun location1Test() {
         val node = Mockito.mock(ParsedBinaryOperatorExpressionNode::class.java)
-        val location = LocationConstants.LOCATION_1
+        val location = ExpressionTranslatorLocation.START
         val tempCounter = 1
         val variableToTypeMap = mapOf<String, String>()
         val stack = Stack<ExpressionTranslatorStackItem>()
@@ -50,7 +51,7 @@ class BinaryOperatorExpressionTranslatorTest {
         Assertions.assertEquals(tempCounter, actual)
 
         Mockito.verify(expressionTranslatorStackPusher).push(
-            LocationConstants.LOCATION_2,
+            ExpressionTranslatorLocation.MIDDLE,
             node,
             leftExpression,
             stack
@@ -60,7 +61,7 @@ class BinaryOperatorExpressionTranslatorTest {
     @Test
     fun location2Test() {
         val node = Mockito.mock(ParsedBinaryOperatorExpressionNode::class.java)
-        val location = LocationConstants.LOCATION_2
+        val location = ExpressionTranslatorLocation.MIDDLE
         val tempCounter = 1
         val variableToTypeMap = mapOf<String, String>()
         val stack = Stack<ExpressionTranslatorStackItem>()
@@ -79,7 +80,7 @@ class BinaryOperatorExpressionTranslatorTest {
         )
         Assertions.assertEquals(tempCounter, actual)
         Mockito.verify(expressionTranslatorStackPusher).push(
-            LocationConstants.LOCATION_3,
+            ExpressionTranslatorLocation.END,
             node,
             rightExpression,
             stack
@@ -89,7 +90,7 @@ class BinaryOperatorExpressionTranslatorTest {
     @Test
     fun location3Test() {
         val node = Mockito.mock(ParsedBinaryOperatorExpressionNode::class.java)
-        val location = LocationConstants.LOCATION_3
+        val location = ExpressionTranslatorLocation.END
         val tempCounter = 1
         val variableToTypeMap = mapOf<String, String>()
         val stack = Stack<ExpressionTranslatorStackItem>()
@@ -149,26 +150,5 @@ class BinaryOperatorExpressionTranslatorTest {
         Assertions.assertEquals(address, top.address)
         Assertions.assertEquals(listOf(leftCode, rightCode, tempDeclarationCode), top.code)
         Assertions.assertEquals(type, top.type)
-    }
-
-    @Test
-    fun location0Test() {
-        val node = Mockito.mock(ParsedBinaryOperatorExpressionNode::class.java)
-        val location = 0
-        val tempCounter = 1
-        val variableToTypeMap = mapOf<String, String>()
-        val stack = Stack<ExpressionTranslatorStackItem>()
-        val resultStack = Stack<TranslatedExpressionNode>()
-
-        val actual = binaryOperatorExpressionTranslator.translate(
-            node,
-            location,
-            tempCounter,
-            variableToTypeMap,
-            stack,
-            resultStack
-        )
-
-        Assertions.assertEquals(tempCounter, actual)
     }
 }

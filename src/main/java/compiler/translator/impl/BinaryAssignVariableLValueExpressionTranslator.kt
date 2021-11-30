@@ -3,6 +3,7 @@ package compiler.translator.impl
 import compiler.core.nodes.parsed.ParsedBinaryAssignExpressionNode
 import compiler.core.nodes.parsed.ParsedVariableExpressionNode
 import compiler.core.nodes.translated.TranslatedExpressionNode
+import compiler.core.stack.ExpressionTranslatorLocation
 import compiler.core.stack.ExpressionTranslatorStackItem
 import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
@@ -17,21 +18,21 @@ internal class BinaryAssignVariableLValueExpressionTranslator(
     override fun translate(
         node: ParsedBinaryAssignExpressionNode,
         lValueNode: ParsedVariableExpressionNode,
-        location: Int,
+        location: ExpressionTranslatorLocation,
         variableToTypeMap: Map<String, String>,
         stack: Stack<ExpressionTranslatorStackItem>,
         resultStack: Stack<TranslatedExpressionNode>
     ) {
         when (location) {
-            LocationConstants.LOCATION_1 -> {
+            ExpressionTranslatorLocation.START -> {
                 expressionTranslatorStackPusher.push(
-                    LocationConstants.LOCATION_2,
+                    ExpressionTranslatorLocation.END,
                     node,
                     node.rightExpression,
                     stack
                 )
             }
-            LocationConstants.LOCATION_2 -> {
+            else -> {
                 val rightExpression = resultStack.pop()
                 val address = rightExpression.address
                 val type = variableToTypeMap.getValue(lValueNode.value)

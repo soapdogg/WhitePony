@@ -4,6 +4,7 @@ import compiler.core.constants.TokenizerConstants
 import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.ParsedUnaryExpressionNode
 import compiler.core.nodes.translated.TranslatedExpressionNode
+import compiler.core.stack.ExpressionTranslatorLocation
 import compiler.core.stack.ExpressionTranslatorStackItem
 import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
@@ -28,7 +29,7 @@ class UnaryExpressionTranslatorTest {
     @Test
     fun location1Test() {
         val node = Mockito.mock(ParsedUnaryExpressionNode::class.java)
-        val location = LocationConstants.LOCATION_1
+        val location = ExpressionTranslatorLocation.START
         val tempCounter = 1
         val stack = Stack<ExpressionTranslatorStackItem>()
         val resultStack = Stack<TranslatedExpressionNode>()
@@ -45,7 +46,7 @@ class UnaryExpressionTranslatorTest {
         )
         Assertions.assertEquals(tempCounter, actual)
         Mockito.verify(expressionTranslatorStackPusher).push(
-            LocationConstants.LOCATION_2,
+            ExpressionTranslatorLocation.END,
             node,
             expression,
             stack
@@ -55,7 +56,7 @@ class UnaryExpressionTranslatorTest {
     @Test
     fun location2PlusOperatorTest() {
         val node = Mockito.mock(ParsedUnaryExpressionNode::class.java)
-        val location = LocationConstants.LOCATION_2
+        val location = ExpressionTranslatorLocation.END
         val tempCounter = 1
         val stack = Stack<ExpressionTranslatorStackItem>()
         val resultStack = Stack<TranslatedExpressionNode>()
@@ -81,7 +82,7 @@ class UnaryExpressionTranslatorTest {
     @Test
     fun location2NotPlusOperatorTest() {
         val node = Mockito.mock(ParsedUnaryExpressionNode::class.java)
-        val location = LocationConstants.LOCATION_2
+        val location = ExpressionTranslatorLocation.END
         val tempCounter = 1
         val stack = Stack<ExpressionTranslatorStackItem>()
         val resultStack = Stack<TranslatedExpressionNode>()
@@ -129,23 +130,5 @@ class UnaryExpressionTranslatorTest {
         Assertions.assertEquals(address, top.address)
         Assertions.assertEquals(listOf(expressionCode, tempDeclarationCode), top.code)
         Assertions.assertEquals(type, top.type)
-    }
-
-    @Test
-    fun location3Test() {
-        val node = Mockito.mock(ParsedUnaryExpressionNode::class.java)
-        val location = LocationConstants.LOCATION_3
-        val tempCounter = 1
-        val stack = Stack<ExpressionTranslatorStackItem>()
-        val resultStack = Stack<TranslatedExpressionNode>()
-
-        val actual = unaryExpressionTranslator.translate(
-            node,
-            location,
-            tempCounter,
-            stack,
-            resultStack
-        )
-        Assertions.assertEquals(tempCounter, actual)
     }
 }

@@ -1,6 +1,7 @@
 package compiler.translator.impl
 
 import compiler.core.nodes.parsed.IParsedExpressionNode
+import compiler.core.stack.ExpressionTranslatorLocation
 import compiler.core.stack.ExpressionTranslatorStackItem
 import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
@@ -14,7 +15,7 @@ class ExpressionTranslatorStackPusherTest {
 
     @Test
     fun pushTest() {
-        val location = LocationConstants.LOCATION_2
+        val location = ExpressionTranslatorLocation.MIDDLE
         val expression1 = Mockito.mock(IParsedExpressionNode::class.java)
         val expression2 = Mockito.mock(IParsedExpressionNode::class.java)
         val stack = Stack<ExpressionTranslatorStackItem>()
@@ -27,7 +28,7 @@ class ExpressionTranslatorStackPusherTest {
         )
 
         val location1 = stack.pop()
-        Assertions.assertEquals(LocationConstants.LOCATION_1, location1.location)
+        Assertions.assertEquals(ExpressionTranslatorLocation.START, location1.location)
         Assertions.assertEquals(expression2, location1.node)
 
         val top = stack.pop()

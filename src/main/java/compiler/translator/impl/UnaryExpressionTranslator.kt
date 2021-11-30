@@ -3,6 +3,7 @@ package compiler.translator.impl
 import compiler.core.constants.TokenizerConstants
 import compiler.core.nodes.parsed.ParsedUnaryExpressionNode
 import compiler.core.nodes.translated.TranslatedExpressionNode
+import compiler.core.stack.ExpressionTranslatorLocation
 import compiler.core.stack.ExpressionTranslatorStackItem
 import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
@@ -18,22 +19,22 @@ internal class UnaryExpressionTranslator(
 ): IUnaryExpressionTranslator {
     override fun translate(
         node: ParsedUnaryExpressionNode,
-        location: Int,
+        location: ExpressionTranslatorLocation,
         tempCounter: Int,
         stack: Stack<ExpressionTranslatorStackItem>,
         resultStack: Stack<TranslatedExpressionNode>
     ): Int {
         return when (location) {
-            LocationConstants.LOCATION_1 -> {
+            ExpressionTranslatorLocation.START -> {
                 expressionTranslatorStackPusher.push(
-                    LocationConstants.LOCATION_2,
+                    ExpressionTranslatorLocation.END,
                     node,
                     node.expression,
                     stack
                 )
                 tempCounter
             }
-            LocationConstants.LOCATION_2 -> {
+            else -> {
                 val expression = resultStack.pop()
                 if (node.operator == TokenizerConstants.PLUS_OPERATOR) {
                     resultStack.push(expression)
@@ -55,9 +56,6 @@ internal class UnaryExpressionTranslator(
                     resultStack.push(translatedExpressionNode)
                     t
                 }
-            }
-            else -> {
-                tempCounter
             }
         }
     }

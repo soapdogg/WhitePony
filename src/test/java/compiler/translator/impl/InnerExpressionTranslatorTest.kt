@@ -2,6 +2,7 @@ package compiler.translator.impl
 
 import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.ParsedInnerExpressionNode
+import compiler.core.stack.ExpressionTranslatorLocation
 import compiler.core.stack.ExpressionTranslatorStackItem
 import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
@@ -24,7 +25,7 @@ class InnerExpressionTranslatorTest {
 
         val top = stack.pop()
 
-        Assertions.assertEquals(LocationConstants.LOCATION_1, top.location)
+        Assertions.assertEquals(ExpressionTranslatorLocation.START, top.location)
         Assertions.assertEquals(expression, top.node)
     }
 }

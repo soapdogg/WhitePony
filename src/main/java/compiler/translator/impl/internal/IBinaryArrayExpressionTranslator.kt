@@ -2,13 +2,14 @@ package compiler.translator.impl.internal
 
 import compiler.core.nodes.parsed.ParsedBinaryArrayExpressionNode
 import compiler.core.nodes.translated.TranslatedExpressionNode
+import compiler.core.stack.ExpressionTranslatorLocation
 import compiler.core.stack.ExpressionTranslatorStackItem
 import compiler.core.stack.Stack
 
 internal interface IBinaryArrayExpressionTranslator {
     fun translate(
         node: ParsedBinaryArrayExpressionNode,
-        location: Int,
+        location: ExpressionTranslatorLocation,
         tempCounter: Int,
         variableToTypeMap: Map<String, String>,
         stack: Stack<ExpressionTranslatorStackItem>,
