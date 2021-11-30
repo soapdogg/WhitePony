@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 
-class BooleanExpressionTranslatorTest {
+class BooleanExpressionTranslatorOrchestratorTest {
     private val stackGenerator = Mockito.mock(IStackGenerator::class.java)
     private val expressionNode = Mockito.mock(IParsedExpressionNode::class.java)
     private val translator = Mockito.mock(IBooleanExpressionTranslator::class.java)
