@@ -6,7 +6,7 @@ import compiler.core.nodes.translated.TranslatedBooleanExpressionNode
 import compiler.core.stack.BooleanExpressionTranslatorStackItem
 import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
-import compiler.translator.impl.internal.IBooleanExpressionNodeTranslator
+import compiler.translator.impl.internal.IBooleanExpressionTranslator
 import compiler.translator.impl.internal.IBooleanExpressionTranslatorStackPusher
 import compiler.translator.impl.internal.ILabelCodeGenerator
 import compiler.translator.impl.internal.ILabelGenerator
@@ -15,7 +15,7 @@ internal class BinaryOrOperatorExpressionTranslator(
     private val labelGenerator: ILabelGenerator,
     private val booleanExpressionTranslatorStackPusher: IBooleanExpressionTranslatorStackPusher,
     private val labelCodeGenerator: ILabelCodeGenerator
-): IBooleanExpressionNodeTranslator {
+): IBooleanExpressionTranslator {
     override fun translate(
         node: IParsedExpressionNode,
         location: Int,

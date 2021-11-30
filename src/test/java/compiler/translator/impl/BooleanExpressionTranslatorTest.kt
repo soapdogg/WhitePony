@@ -5,7 +5,7 @@ import compiler.core.nodes.translated.TranslatedBooleanExpressionNode
 import compiler.core.stack.BooleanExpressionTranslatorStackItem
 import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
-import compiler.translator.impl.internal.IBooleanExpressionNodeTranslator
+import compiler.translator.impl.internal.IBooleanExpressionTranslator
 import compiler.translator.impl.internal.IStackGenerator
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -14,12 +14,12 @@ import org.mockito.Mockito
 class BooleanExpressionTranslatorTest {
     private val stackGenerator = Mockito.mock(IStackGenerator::class.java)
     private val expressionNode = Mockito.mock(IParsedExpressionNode::class.java)
-    private val translator = Mockito.mock(IBooleanExpressionNodeTranslator::class.java)
-    private val translatorMap = mapOf<Class<out IParsedExpressionNode>, IBooleanExpressionNodeTranslator>(
+    private val translator = Mockito.mock(IBooleanExpressionTranslator::class.java)
+    private val translatorMap = mapOf<Class<out IParsedExpressionNode>, IBooleanExpressionTranslator>(
         expressionNode.javaClass to translator
     )
 
-    private val booleanExpressionTranslator = BooleanExpressionTranslator(
+    private val booleanExpressionTranslator = BooleanExpressionTranslatorOrchestrator(
         stackGenerator,
         translatorMap
     )

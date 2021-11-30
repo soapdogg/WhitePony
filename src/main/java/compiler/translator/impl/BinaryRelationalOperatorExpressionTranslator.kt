@@ -5,7 +5,7 @@ import compiler.core.nodes.parsed.ParsedBinaryRelationalOperatorExpressionNode
 import compiler.core.nodes.translated.TranslatedBooleanExpressionNode
 import compiler.core.stack.BooleanExpressionTranslatorStackItem
 import compiler.core.stack.Stack
-import compiler.translator.impl.internal.IBooleanExpressionNodeTranslator
+import compiler.translator.impl.internal.IBooleanExpressionTranslator
 import compiler.translator.impl.internal.IConditionalGotoCodeGenerator
 import compiler.translator.impl.internal.IExpressionTranslator
 import compiler.translator.impl.internal.IGotoCodeGenerator
@@ -14,7 +14,7 @@ internal class BinaryRelationalOperatorExpressionTranslator(
     private val expressionTranslator: IExpressionTranslator,
     private val conditionalGotoCodeGenerator: IConditionalGotoCodeGenerator,
     private val gotoCodeGenerator: IGotoCodeGenerator
-): IBooleanExpressionNodeTranslator {
+): IBooleanExpressionTranslator {
     override fun translate(
         node: IParsedExpressionNode,
         location: Int,

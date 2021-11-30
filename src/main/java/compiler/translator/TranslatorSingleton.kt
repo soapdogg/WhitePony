@@ -8,6 +8,7 @@ import compiler.translator.impl.ExpressionStatementTranslator
 import compiler.translator.impl.FunctionDeclarationTranslator
 import compiler.translator.impl.ReturnStatementTranslator
 import compiler.translator.impl.Translator
+import compiler.translator.impl.internal.IStatementTranslator
 
 enum class TranslatorSingleton {
     INSTANCE;
@@ -116,7 +117,7 @@ enum class TranslatorSingleton {
 
     private val stackGenerator = StackGenerator()
 
-    private val translatorMap = mapOf(
+    private val booleanExpressionTranslatorMap = mapOf(
         ParsedBinaryAndOperatorExpressionNode::class.java to binaryAndOperatorExpressionTranslator,
         ParsedBinaryOrOperatorExpressionNode::class.java to binaryOrOperatorExpressionTranslator,
         ParsedBinaryRelationalOperatorExpressionNode::class.java to binaryRelationalOperatorExpressionTranslator,
@@ -124,14 +125,19 @@ enum class TranslatorSingleton {
         ParsedInnerExpressionNode::class.java to innerBooleanExpressionTranslator
     )
 
-    private val booleanExpressionTranslator = BooleanExpressionTranslator(
+    private val booleanExpressionTranslator = BooleanExpressionTranslatorOrchestrator(
         stackGenerator,
-        translatorMap
+        booleanExpressionTranslatorMap
     )
     private val expressionStatementTranslator = ExpressionStatementTranslator(expressionTranslator)
     private val returnStatementTranslator = ReturnStatementTranslator(expressionStatementTranslator)
 
-    private val statementTranslator = StatementTranslator(
+    private val statementTranslatorMap = mapOf<Class<out IParsedStatementNode>, IStatementTranslator>()
+
+    private val statementTranslator = StatementTranslatorOrchestrator(
+        stackGenerator,
+        statementTranslatorMap,
+        labelGenerator,
         variableTypeRecorder,
         expressionTranslator,
         booleanExpressionTranslator,

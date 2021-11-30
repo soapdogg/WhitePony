@@ -3,13 +3,13 @@ package compiler.translator.impl
 import compiler.core.nodes.parsed.ParsedBasicBlockNode
 import compiler.core.nodes.parsed.ParsedFunctionDeclarationNode
 import compiler.core.nodes.translated.TranslatedBasicBlockNode
-import compiler.translator.impl.internal.IStatementTranslator
+import compiler.translator.impl.internal.IStatementTranslatorOrchestrator
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 
 class FunctionDeclarationTranslatorTest {
-    private val statementTranslator = Mockito.mock(IStatementTranslator::class.java)
+    private val statementTranslator = Mockito.mock(IStatementTranslatorOrchestrator::class.java)
 
     private val functionDeclarationTranslator = FunctionDeclarationTranslator(statementTranslator)
 

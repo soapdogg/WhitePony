@@ -6,12 +6,12 @@ import compiler.core.nodes.translated.TranslatedBooleanExpressionNode
 import compiler.core.stack.BooleanExpressionTranslatorStackItem
 import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
-import compiler.translator.impl.internal.IBooleanExpressionNodeTranslator
+import compiler.translator.impl.internal.IBooleanExpressionTranslator
 import compiler.translator.impl.internal.IBooleanExpressionTranslatorStackPusher
 
 internal class InnerBooleanExpressionTranslator(
     private val booleanExpressionTranslatorStackPusher: IBooleanExpressionTranslatorStackPusher
-): IBooleanExpressionNodeTranslator {
+): IBooleanExpressionTranslator {
     override fun translate(
         node: IParsedExpressionNode,
         location: Int,

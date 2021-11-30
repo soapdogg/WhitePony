@@ -4,14 +4,14 @@ import compiler.core.nodes.parsed.*
 import compiler.core.nodes.translated.TranslatedBooleanExpressionNode
 import compiler.core.stack.BooleanExpressionTranslatorStackItem
 import compiler.core.stack.LocationConstants
-import compiler.translator.impl.internal.IBooleanExpressionNodeTranslator
 import compiler.translator.impl.internal.IBooleanExpressionTranslator
+import compiler.translator.impl.internal.IBooleanExpressionTranslatorOrchestrator
 import compiler.translator.impl.internal.IStackGenerator
 
-internal class BooleanExpressionTranslator(
+internal class BooleanExpressionTranslatorOrchestrator(
     private val stackGenerator: IStackGenerator,
-    private val translatorMap: Map<Class<out IParsedExpressionNode>, IBooleanExpressionNodeTranslator>
-): IBooleanExpressionTranslator {
+    private val translatorMap: Map<Class<out IParsedExpressionNode>, IBooleanExpressionTranslator>
+): IBooleanExpressionTranslatorOrchestrator {
     override fun translate(
         expressionNode: IParsedExpressionNode,
         topTrueLabel: String,

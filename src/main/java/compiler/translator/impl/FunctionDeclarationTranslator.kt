@@ -3,10 +3,10 @@ package compiler.translator.impl
 import compiler.core.nodes.parsed.ParsedFunctionDeclarationNode
 import compiler.core.nodes.translated.TranslatedFunctionDeclarationNode
 import compiler.translator.impl.internal.IFunctionDeclarationTranslator
-import compiler.translator.impl.internal.IStatementTranslator
+import compiler.translator.impl.internal.IStatementTranslatorOrchestrator
 
 internal class FunctionDeclarationTranslator(
-    private val statementTranslator: IStatementTranslator
+    private val statementTranslator: IStatementTranslatorOrchestrator
 ): IFunctionDeclarationTranslator {
     override fun translate(
         functionDeclarationNode: ParsedFunctionDeclarationNode,
