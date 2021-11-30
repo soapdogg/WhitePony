@@ -25,7 +25,7 @@ class ExpressionStatementTranslatorTest {
         val location = StatementTranslatorLocation.END
         val tempCounter = 1
         val labelCounter = 2
-        val variableToTypeMap = mapOf<String,String>()
+        val variableToTypeMap = mutableMapOf<String,String>()
         val stack = Stack<StatementTranslatorStackItem>()
         val resultStack = Stack<ITranslatedStatementNode>()
         val expressionStack = Stack<ITranslatedExpressionNode>()

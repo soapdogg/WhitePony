@@ -1,5 +1,6 @@
 package compiler.translator
 
+import compiler.core.nodes.VariableDeclarationListNode
 import compiler.core.nodes.parsed.*
 import compiler.translator.impl.*
 import compiler.translator.impl.StackGenerator
@@ -149,6 +150,7 @@ enum class TranslatorSingleton {
         labelGenerator,
         booleanExpressionTranslatorOrchestrator
     )
+    private val variableDeclarationStatementTranslator = VariableDeclarationStatementTranslator(variableTypeRecorder)
     private val statementTranslatorMap = mapOf(
         ParsedBasicBlockNode::class.java to basicBlockStatementTranslator,
         ParsedDoWhileNode::class.java to doWhileStatementTranslator,
@@ -156,13 +158,13 @@ enum class TranslatorSingleton {
         ParsedForNode::class.java to forStatementTranslator,
         ParsedIfNode::class.java to ifStatementTranslator,
         ParsedReturnNode::class.java to returnStatementTranslator,
-        ParsedWhileNode::class.java to whileStatementTranslator
+        ParsedWhileNode::class.java to whileStatementTranslator,
+        VariableDeclarationListNode::class.java to variableDeclarationStatementTranslator
     )
 
     private val statementTranslator = StatementTranslatorOrchestrator(
         stackGenerator,
         statementTranslatorMap,
-        variableTypeRecorder,
     )
 
     private val functionDeclarationTranslator = FunctionDeclarationTranslator(

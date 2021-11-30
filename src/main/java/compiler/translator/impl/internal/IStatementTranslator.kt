@@ -13,7 +13,7 @@ internal interface IStatementTranslator {
         location: StatementTranslatorLocation,
         tempCounter: Int,
         labelCounter: Int,
-        variableToTypeMap: Map<String, String>,
+        variableToTypeMap: MutableMap<String, String>,
         stack: Stack<StatementTranslatorStackItem>,
         resultStack: Stack<ITranslatedStatementNode>,
         expressionStack: Stack<ITranslatedExpressionNode>,

@@ -1,20 +1,18 @@
 package compiler.translator.impl
 
+import compiler.core.nodes.VariableDeclarationListNode
 import compiler.core.nodes.parsed.IParsedStatementNode
-import compiler.core.nodes.parsed.ParsedExpressionStatementNode
 import compiler.core.nodes.translated.ITranslatedExpressionNode
 import compiler.core.nodes.translated.ITranslatedStatementNode
-import compiler.core.nodes.translated.TranslatedExpressionStatementNode
 import compiler.core.stack.Stack
 import compiler.core.stack.StatementTranslatorLocation
 import compiler.core.stack.StatementTranslatorStackItem
-import compiler.translator.impl.internal.IExpressionTranslatorOrchestrator
 import compiler.translator.impl.internal.IStatementTranslator
+import compiler.translator.impl.internal.IVariableTypeRecorder
 
-internal class ExpressionStatementTranslator(
-    private val expressionTranslator: IExpressionTranslatorOrchestrator
+internal class VariableDeclarationStatementTranslator(
+    private val variableTypeRecorder: IVariableTypeRecorder
 ): IStatementTranslator {
-
     override fun translate(
         node: IParsedStatementNode,
         location: StatementTranslatorLocation,
@@ -26,13 +24,12 @@ internal class ExpressionStatementTranslator(
         expressionStack: Stack<ITranslatedExpressionNode>,
         labelStack: Stack<String>
     ): Pair<Int, Int> {
-        node as ParsedExpressionStatementNode
-        val (expression, tempAfterExpression) = expressionTranslator.translate(
-            node.expressionNode,
-            variableToTypeMap,
-            tempCounter
+        node as VariableDeclarationListNode
+        variableTypeRecorder.recordVariableTypes(
+            node,
+            variableToTypeMap
         )
-        resultStack.push(TranslatedExpressionStatementNode(expression))
-        return Pair(tempAfterExpression, labelCounter)
+        resultStack.push(node)
+        return Pair(tempCounter, labelCounter)
     }
 }
