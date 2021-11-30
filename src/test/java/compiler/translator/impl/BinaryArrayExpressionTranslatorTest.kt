@@ -43,8 +43,8 @@ class BinaryArrayExpressionTranslatorTest {
         val actual = binaryArrayExpressionTranslator.translate(
             node,
             location,
-            tempCounter,
             variableToTypeMap,
+            tempCounter,
             stack,
             resultStack
         )
@@ -104,8 +104,8 @@ class BinaryArrayExpressionTranslatorTest {
         val actual = binaryArrayExpressionTranslator.translate(
             node,
             location,
-            tempCounter,
             variableToTypeMap,
+            tempCounter,
             stack,
             resultStack
         )

@@ -2,6 +2,8 @@ package compiler.translator.impl
 
 import compiler.core.nodes.parsed.ParsedVariableExpressionNode
 import compiler.core.nodes.translated.TranslatedExpressionNode
+import compiler.core.stack.ExpressionTranslatorLocation
+import compiler.core.stack.ExpressionTranslatorStackItem
 import compiler.core.stack.Stack
 import compiler.translator.impl.internal.ITempDeclarationCodeGenerator
 import compiler.translator.impl.internal.ITempGenerator
@@ -21,6 +23,7 @@ class VariableExpressionTranslatorTest {
     @Test
     fun translateTest() {
         val node = Mockito.mock(ParsedVariableExpressionNode::class.java)
+        val location = ExpressionTranslatorLocation.START
         val variable = "variable"
         Mockito.`when`(node.value).thenReturn(variable)
 
@@ -29,6 +32,7 @@ class VariableExpressionTranslatorTest {
             variable to type
         )
         val tempCounter = 3
+        val stack = Stack<ExpressionTranslatorStackItem>()
         val resultStack = Stack<TranslatedExpressionNode>()
 
         val address = "address"
@@ -46,8 +50,10 @@ class VariableExpressionTranslatorTest {
 
         val actual = variableExpressionTranslator.translate(
             node,
+            location,
             variableToTypeMap,
             tempCounter,
+            stack,
             resultStack
         )
 

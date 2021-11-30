@@ -30,6 +30,7 @@ class UnaryExpressionTranslatorTest {
     fun location1Test() {
         val node = Mockito.mock(ParsedUnaryExpressionNode::class.java)
         val location = ExpressionTranslatorLocation.START
+        val variableToTypeMap = mapOf<String, String>()
         val tempCounter = 1
         val stack = Stack<ExpressionTranslatorStackItem>()
         val resultStack = Stack<TranslatedExpressionNode>()
@@ -40,6 +41,7 @@ class UnaryExpressionTranslatorTest {
         val actual = unaryExpressionTranslator.translate(
             node,
             location,
+            variableToTypeMap,
             tempCounter,
             stack,
             resultStack
@@ -57,6 +59,7 @@ class UnaryExpressionTranslatorTest {
     fun location2PlusOperatorTest() {
         val node = Mockito.mock(ParsedUnaryExpressionNode::class.java)
         val location = ExpressionTranslatorLocation.END
+        val variableToTypeMap = mapOf<String, String>()
         val tempCounter = 1
         val stack = Stack<ExpressionTranslatorStackItem>()
         val resultStack = Stack<TranslatedExpressionNode>()
@@ -70,6 +73,7 @@ class UnaryExpressionTranslatorTest {
         val actual = unaryExpressionTranslator.translate(
             node,
             location,
+            variableToTypeMap,
             tempCounter,
             stack,
             resultStack
@@ -83,6 +87,7 @@ class UnaryExpressionTranslatorTest {
     fun location2NotPlusOperatorTest() {
         val node = Mockito.mock(ParsedUnaryExpressionNode::class.java)
         val location = ExpressionTranslatorLocation.END
+        val variableToTypeMap = mapOf<String, String>()
         val tempCounter = 1
         val stack = Stack<ExpressionTranslatorStackItem>()
         val resultStack = Stack<TranslatedExpressionNode>()
@@ -119,6 +124,7 @@ class UnaryExpressionTranslatorTest {
         val actual = unaryExpressionTranslator.translate(
             node,
             location,
+            variableToTypeMap,
             tempCounter,
             stack,
             resultStack

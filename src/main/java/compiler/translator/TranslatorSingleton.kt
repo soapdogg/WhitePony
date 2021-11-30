@@ -66,17 +66,18 @@ enum class TranslatorSingleton {
     )
     private val constantExpressionTranslator = ConstantExpressionTranslator()
 
-    private val translatorMap = mapOf<Class<out IParsedExpressionNode>, IExpressionTranslator>()
+    private val translatorMap = mapOf(
+        ParsedBinaryArrayExpressionNode::class.java to binaryArrayExpressionTranslator,
+        ParsedBinaryAssignExpressionNode::class.java to binaryAssignExpressionTranslator,
+        ParsedBinaryOperatorExpressionNode::class.java to binaryOperatorExpressionTranslator,
+        ParsedConstantExpressionNode::class.java to constantExpressionTranslator,
+        ParsedInnerExpressionNode::class.java to innerExpressionTranslator,
+        ParsedUnaryExpressionNode::class.java to unaryExpressionTranslator,
+        ParsedVariableExpressionNode::class.java to variableExpressionTranslator
+    )
 
     private val expressionTranslatorOrchestrator = ExpressionTranslatorOrchestrator(
         translatorMap,
-        binaryAssignExpressionTranslator,
-        binaryOperatorExpressionTranslator,
-        binaryArrayExpressionTranslator,
-        unaryExpressionTranslator,
-        innerExpressionTranslator,
-        variableExpressionTranslator,
-        constantExpressionTranslator,
         tempGenerator,
         tempDeclarationCodeGenerator,
         expressionTranslatorStackPusher,

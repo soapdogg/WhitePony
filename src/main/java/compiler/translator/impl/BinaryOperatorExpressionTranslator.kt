@@ -1,12 +1,13 @@
 package compiler.translator.impl
 
+import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.ParsedBinaryOperatorExpressionNode
 import compiler.core.nodes.translated.TranslatedExpressionNode
 import compiler.core.stack.ExpressionTranslatorLocation
 import compiler.core.stack.ExpressionTranslatorStackItem
-import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
-import compiler.translator.impl.internal.IBinaryOperatorExpressionTranslator
+import compiler.translator.impl.internal.*
+import compiler.translator.impl.internal.IExpressionTranslator
 import compiler.translator.impl.internal.IExpressionTranslatorStackPusher
 import compiler.translator.impl.internal.IOperationCodeGenerator
 import compiler.translator.impl.internal.ITempDeclarationCodeGenerator
@@ -19,15 +20,16 @@ internal class BinaryOperatorExpressionTranslator(
     private val typeDeterminer: ITypeDeterminer,
     private val operationCodeGenerator: IOperationCodeGenerator,
     private val tempDeclarationCodeGenerator: ITempDeclarationCodeGenerator
-): IBinaryOperatorExpressionTranslator {
+): IExpressionTranslator {
     override fun translate(
-        node: ParsedBinaryOperatorExpressionNode,
+        node: IParsedExpressionNode,
         location: ExpressionTranslatorLocation,
-        tempCounter: Int,
         variableToTypeMap: Map<String, String>,
+        tempCounter: Int,
         stack: Stack<ExpressionTranslatorStackItem>,
         resultStack: Stack<TranslatedExpressionNode>
     ): Int {
+        node as ParsedBinaryOperatorExpressionNode
         return when (location) {
             ExpressionTranslatorLocation.START -> {
                 expressionTranslatorStackPusher.push(

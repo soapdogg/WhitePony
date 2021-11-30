@@ -1,5 +1,6 @@
 package compiler.translator.impl
 
+import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.ParsedBinaryArrayExpressionNode
 import compiler.core.nodes.parsed.ParsedBinaryAssignExpressionNode
 import compiler.core.nodes.parsed.ParsedVariableExpressionNode
@@ -7,27 +8,27 @@ import compiler.core.nodes.translated.TranslatedExpressionNode
 import compiler.core.stack.ExpressionTranslatorLocation
 import compiler.core.stack.ExpressionTranslatorStackItem
 import compiler.core.stack.Stack
-import compiler.translator.impl.internal.IBinaryAssignArrayLValueExpressionTranslator
-import compiler.translator.impl.internal.IBinaryAssignExpressionTranslator
-import compiler.translator.impl.internal.IBinaryAssignVariableLValueExpressionTranslator
+import compiler.translator.impl.internal.IExpressionTranslator
 
 internal class BinaryAssignExpressionTranslator(
-    private val binaryAssignVariableLValueExpressionTranslator: IBinaryAssignVariableLValueExpressionTranslator,
-    private val binaryAssignArrayLValueExpressionTranslator: IBinaryAssignArrayLValueExpressionTranslator
-): IBinaryAssignExpressionTranslator {
+    private val binaryAssignVariableLValueExpressionTranslator: IExpressionTranslator,
+    private val binaryAssignArrayLValueExpressionTranslator: IExpressionTranslator
+): IExpressionTranslator {
     override fun translate(
-        node: ParsedBinaryAssignExpressionNode,
+        node: IParsedExpressionNode,
         location: ExpressionTranslatorLocation,
         variableToTypeMap: Map<String, String>,
+        tempCounter: Int,
         stack: Stack<ExpressionTranslatorStackItem>,
         resultStack: Stack<TranslatedExpressionNode>
-    ) {
-        if (node.leftExpression is ParsedVariableExpressionNode) {
+    ): Int {
+        node as ParsedBinaryAssignExpressionNode
+        return if (node.leftExpression is ParsedVariableExpressionNode) {
             binaryAssignVariableLValueExpressionTranslator.translate(
                 node,
-                node.leftExpression,
                 location,
                 variableToTypeMap,
+                tempCounter,
                 stack,
                 resultStack
             )
@@ -35,9 +36,9 @@ internal class BinaryAssignExpressionTranslator(
         else {
             binaryAssignArrayLValueExpressionTranslator.translate(
                 node,
-                node.leftExpression as ParsedBinaryArrayExpressionNode,
                 location,
                 variableToTypeMap,
+                tempCounter,
                 stack,
                 resultStack
             )

@@ -6,7 +6,6 @@ import compiler.core.nodes.parsed.ParsedVariableExpressionNode
 import compiler.core.nodes.translated.TranslatedExpressionNode
 import compiler.core.stack.ExpressionTranslatorLocation
 import compiler.core.stack.ExpressionTranslatorStackItem
-import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
 import compiler.translator.impl.internal.IAssignCodeGenerator
 import compiler.translator.impl.internal.IExpressionTranslatorStackPusher
@@ -27,22 +26,26 @@ class BinaryAssignVariableLValueExpressionTranslatorTest {
     fun location1Test() {
         val node = Mockito.mock(ParsedBinaryAssignExpressionNode::class.java)
         val lValueNode = Mockito.mock(ParsedVariableExpressionNode::class.java)
+        Mockito.`when`(node.leftExpression).thenReturn(lValueNode)
+
         val location = ExpressionTranslatorLocation.START
         val variableToTypeMap = mapOf<String, String>()
+        val tempCounter = 23
         val stack = Stack<ExpressionTranslatorStackItem>()
         val resultStack = Stack<TranslatedExpressionNode>()
 
         val rightExpression = Mockito.mock(IParsedExpressionNode::class.java)
         Mockito.`when`(node.rightExpression).thenReturn(rightExpression)
 
-        binaryAssignVariableLValueExpressionTranslator.translate(
+        val actual = binaryAssignVariableLValueExpressionTranslator.translate(
             node,
-            lValueNode,
             location,
             variableToTypeMap,
+            tempCounter,
             stack,
             resultStack
         )
+        Assertions.assertEquals(tempCounter, actual)
 
         Mockito.verify(expressionTranslatorStackPusher).push(
             ExpressionTranslatorLocation.END,
@@ -57,6 +60,8 @@ class BinaryAssignVariableLValueExpressionTranslatorTest {
         val node = Mockito.mock(ParsedBinaryAssignExpressionNode::class.java)
 
         val lValueNode = Mockito.mock(ParsedVariableExpressionNode::class.java)
+        Mockito.`when`(node.leftExpression).thenReturn(lValueNode)
+
         val value = "value"
         Mockito.`when`(lValueNode.value).thenReturn(value)
 
@@ -66,6 +71,7 @@ class BinaryAssignVariableLValueExpressionTranslatorTest {
         val variableToTypeMap = mapOf(
             value to type
         )
+        val tempCounter = 2
         val stack = Stack<ExpressionTranslatorStackItem>()
         val resultStack = Stack<TranslatedExpressionNode>()
 
@@ -81,14 +87,15 @@ class BinaryAssignVariableLValueExpressionTranslatorTest {
         val assignCode = "assignCode"
         Mockito.`when`(assignCodeGenerator.generateAssignCode(value,rightExpressionAddress)).thenReturn(assignCode)
 
-        binaryAssignVariableLValueExpressionTranslator.translate(
+        val actual = binaryAssignVariableLValueExpressionTranslator.translate(
             node,
-            lValueNode,
             location,
             variableToTypeMap,
+            tempCounter,
             stack,
             resultStack
         )
+        Assertions.assertEquals(tempCounter, actual)
 
         val top = resultStack.pop()
         Assertions.assertEquals(rightExpressionAddress, top.address)

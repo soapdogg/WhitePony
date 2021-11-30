@@ -1,29 +1,31 @@
 package compiler.translator.impl
 
 import compiler.core.constants.TokenizerConstants
+import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.ParsedUnaryExpressionNode
 import compiler.core.nodes.translated.TranslatedExpressionNode
 import compiler.core.stack.ExpressionTranslatorLocation
 import compiler.core.stack.ExpressionTranslatorStackItem
-import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
+import compiler.translator.impl.internal.IExpressionTranslator
 import compiler.translator.impl.internal.IExpressionTranslatorStackPusher
 import compiler.translator.impl.internal.ITempDeclarationCodeGenerator
 import compiler.translator.impl.internal.ITempGenerator
-import compiler.translator.impl.internal.IUnaryExpressionTranslator
 
 internal class UnaryExpressionTranslator(
     private val expressionTranslatorStackPusher: IExpressionTranslatorStackPusher,
     private val tempGenerator: ITempGenerator,
     private val tempDeclarationCodeGenerator: ITempDeclarationCodeGenerator
-): IUnaryExpressionTranslator {
+): IExpressionTranslator {
     override fun translate(
-        node: ParsedUnaryExpressionNode,
+        node: IParsedExpressionNode,
         location: ExpressionTranslatorLocation,
+        variableToTypeMap: Map<String, String>,
         tempCounter: Int,
         stack: Stack<ExpressionTranslatorStackItem>,
         resultStack: Stack<TranslatedExpressionNode>
     ): Int {
+        node as ParsedUnaryExpressionNode
         return when (location) {
             ExpressionTranslatorLocation.START -> {
                 expressionTranslatorStackPusher.push(
@@ -40,7 +42,7 @@ internal class UnaryExpressionTranslator(
                     resultStack.push(expression)
                     tempCounter
                 } else {
-                    val (address, t) = tempGenerator.generateTempVariable(tempCounter)
+                    val (address, tempAfterAddress) = tempGenerator.generateTempVariable(tempCounter)
                     val rValue = node.operator + expression.address
                     val tempDeclarationCode = tempDeclarationCodeGenerator.generateTempDeclarationCode(
                         expression.type,
@@ -54,7 +56,7 @@ internal class UnaryExpressionTranslator(
                         expression.type
                     )
                     resultStack.push(translatedExpressionNode)
-                    t
+                    tempAfterAddress
                 }
             }
         }

@@ -1,23 +1,30 @@
 package compiler.translator.impl
 
+import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.ParsedVariableExpressionNode
 import compiler.core.nodes.translated.TranslatedExpressionNode
+import compiler.core.stack.ExpressionTranslatorLocation
+import compiler.core.stack.ExpressionTranslatorStackItem
 import compiler.core.stack.Stack
+import compiler.translator.impl.internal.IExpressionTranslator
 import compiler.translator.impl.internal.ITempDeclarationCodeGenerator
 import compiler.translator.impl.internal.ITempGenerator
-import compiler.translator.impl.internal.IVariableExpressionTranslator
 
 internal class VariableExpressionTranslator(
     private val tempGenerator: ITempGenerator,
     private val tempDeclarationCodeGenerator: ITempDeclarationCodeGenerator
-): IVariableExpressionTranslator {
+): IExpressionTranslator {
+
     override fun translate(
-        node: ParsedVariableExpressionNode,
+        node: IParsedExpressionNode,
+        location: ExpressionTranslatorLocation,
         variableToTypeMap: Map<String, String>,
         tempCounter: Int,
+        stack: Stack<ExpressionTranslatorStackItem>,
         resultStack: Stack<TranslatedExpressionNode>
     ): Int {
-        val (address, t) = tempGenerator.generateTempVariable(tempCounter)
+        node as ParsedVariableExpressionNode
+        val (address, tempAfterAddress) = tempGenerator.generateTempVariable(tempCounter)
         val type = variableToTypeMap.getValue(node.value)
         val tempDeclarationCode = tempDeclarationCodeGenerator.generateTempDeclarationCode(
             type,
@@ -31,6 +38,6 @@ internal class VariableExpressionTranslator(
             type
         )
         resultStack.push(translatedVariableExpressionNode)
-        return t
+        return tempAfterAddress
     }
 }

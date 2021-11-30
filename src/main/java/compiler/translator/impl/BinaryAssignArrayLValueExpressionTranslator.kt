@@ -1,30 +1,32 @@
 package compiler.translator.impl
 
+import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.ParsedBinaryArrayExpressionNode
 import compiler.core.nodes.parsed.ParsedBinaryAssignExpressionNode
 import compiler.core.nodes.translated.TranslatedExpressionNode
 import compiler.core.stack.ExpressionTranslatorLocation
 import compiler.core.stack.ExpressionTranslatorStackItem
-import compiler.core.stack.LocationConstants
 import compiler.core.stack.Stack
 import compiler.translator.impl.internal.IArrayCodeGenerator
 import compiler.translator.impl.internal.IAssignCodeGenerator
-import compiler.translator.impl.internal.IBinaryAssignArrayLValueExpressionTranslator
+import compiler.translator.impl.internal.IExpressionTranslator
 import compiler.translator.impl.internal.IExpressionTranslatorStackPusher
 
 internal class BinaryAssignArrayLValueExpressionTranslator(
     private val expressionTranslatorStackPusher: IExpressionTranslatorStackPusher,
     private val arrayCodeGenerator: IArrayCodeGenerator,
     private val assignCodeGenerator: IAssignCodeGenerator
-): IBinaryAssignArrayLValueExpressionTranslator {
+): IExpressionTranslator {
     override fun translate(
-        node: ParsedBinaryAssignExpressionNode,
-        lValueNode: ParsedBinaryArrayExpressionNode,
+        node: IParsedExpressionNode,
         location: ExpressionTranslatorLocation,
         variableToTypeMap: Map<String, String>,
+        tempCounter: Int,
         stack: Stack<ExpressionTranslatorStackItem>,
         resultStack: Stack<TranslatedExpressionNode>
-    ) {
+    ): Int {
+        node as ParsedBinaryAssignExpressionNode
+        val lValueNode = node.leftExpression as ParsedBinaryArrayExpressionNode
         when (location) {
             ExpressionTranslatorLocation.START -> {
                 expressionTranslatorStackPusher.push(
@@ -64,5 +66,6 @@ internal class BinaryAssignArrayLValueExpressionTranslator(
                 resultStack.push(translatedExpressionNode)
             }
         }
+        return tempCounter
     }
 }
