@@ -25,10 +25,10 @@ internal class ParsedWhileStatementPrinter(
         node as ParsedWhileNode
         when(location) {
             StatementPrinterLocation.START -> {
-                statementPrinterStackPusher.push(node, numberOfTabs, StatementPrinterLocation.END_WHILE, stack)
+                statementPrinterStackPusher.push(node, numberOfTabs, StatementPrinterLocation.END, stack)
                 statementPrinterStackPusher.push(node.body, numberOfTabs, StatementPrinterLocation.START, stack)
             }
-            StatementPrinterLocation.END_WHILE -> {
+            else -> {
                 val bodyString = resultStack.pop()
                 val expressionString = expressionPrinter.printNode(node.expression)
                 val result = PrinterConstants.WHILE +

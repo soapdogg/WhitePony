@@ -25,12 +25,12 @@ internal class ParsedBasicBlockStatementPrinter(
         node as ParsedBasicBlockNode
         when (location) {
             StatementPrinterLocation.START -> {
-                statementPrinterStackPusher.push(node, numberOfTabs, StatementPrinterLocation.END_BASIC_BLOCK, stack)
+                statementPrinterStackPusher.push(node, numberOfTabs, StatementPrinterLocation.END, stack)
                 node.statements.forEach {
                     statementPrinterStackPusher.push(it, numberOfTabs + 1, StatementPrinterLocation.START, stack)
                 }
             }
-            StatementPrinterLocation.END_BASIC_BLOCK -> {
+            else -> {
                 val tabs = tabsGenerator.generateTabs(numberOfTabs + 1)
                 val closingTabs = tabsGenerator.generateTabs(numberOfTabs)
                 val basicBlockStatementCode = mutableListOf<String>()

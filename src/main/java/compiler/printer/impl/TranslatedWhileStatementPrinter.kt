@@ -28,10 +28,10 @@ internal class TranslatedWhileStatementPrinter(
         node as TranslatedWhileNode
         when(location) {
             StatementPrinterLocation.START -> {
-                statementPrinterStackPusher.push(node, numberOfTabs, StatementPrinterLocation.END_WHILE, stack)
+                statementPrinterStackPusher.push(node, numberOfTabs, StatementPrinterLocation.END, stack)
                 statementPrinterStackPusher.push(node.body, numberOfTabs, StatementPrinterLocation.START, stack)
             }
-            StatementPrinterLocation.END_WHILE -> {
+            else -> {
 
                 val bodyStatementCode = resultStack.pop()
                 val expressionCode = codeGenerator.generateCode(node.expression.code)

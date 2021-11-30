@@ -28,13 +28,13 @@ internal class TranslatedIfStatementPrinter(
         node as TranslatedIfNode
         when (location) {
             StatementPrinterLocation.START -> {
-                statementPrinterStackPusher.push(node, numberOfTabs, StatementPrinterLocation.END_IF, stack)
+                statementPrinterStackPusher.push(node, numberOfTabs, StatementPrinterLocation.END, stack)
                 statementPrinterStackPusher.push(node.ifBody, numberOfTabs, StatementPrinterLocation.START, stack)
                 if (node.elseBody != null) {
                     statementPrinterStackPusher.push(node.elseBody, numberOfTabs, StatementPrinterLocation.START, stack)
                 }
             }
-            StatementPrinterLocation.END_IF -> {
+            else -> {
                 val ifBodyCode = resultStack.pop()
                 val expressionCode = codeGenerator.generateCode(node.expression.code)
                 val trueLabelCode = labelCodeGenerator.generateLabelCode(node.trueLabel)

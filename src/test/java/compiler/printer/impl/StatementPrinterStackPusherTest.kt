@@ -15,7 +15,7 @@ class StatementPrinterStackPusherTest {
     fun pushTest() {
         val node = Mockito.mock(IStatementNode::class.java)
         val numberOfTabs = 1
-        val location = StatementPrinterLocation.END_DO_WHILE
+        val location = StatementPrinterLocation.END
         val stack = Stack<StatementPrinterStackItem>()
 
         statementPrinterStackPusher.push(node, numberOfTabs, location, stack)

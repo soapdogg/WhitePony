@@ -24,12 +24,12 @@ internal class TranslatedBasicBlockStatementPrinter(
         node as TranslatedBasicBlockNode
         when(location)  {
             StatementPrinterLocation.START -> {
-                statementPrinterStackPusher.push(node, numberOfTabs, StatementPrinterLocation.END_BASIC_BLOCK, stack)
+                statementPrinterStackPusher.push(node, numberOfTabs, StatementPrinterLocation.END, stack)
                 node.statements.forEach {
                     statementPrinterStackPusher.push(it, numberOfTabs, StatementPrinterLocation.START, stack)
                 }
             }
-            StatementPrinterLocation.END_BASIC_BLOCK -> {
+            else -> {
                 val basicBlockCode = mutableListOf<String>()
                 for (i in 0 until node.statements.size) {
                     basicBlockCode.add(resultStack.pop())

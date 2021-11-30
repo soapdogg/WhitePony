@@ -25,10 +25,10 @@ internal class ParsedForStatementPrinter(
         node as ParsedForNode
         when(location) {
             StatementPrinterLocation.START -> {
-                statementPrinterStackPusher.push(node, numberOfTabs, StatementPrinterLocation.END_FOR, stack)
+                statementPrinterStackPusher.push(node, numberOfTabs, StatementPrinterLocation.END, stack)
                 statementPrinterStackPusher.push(node.body, numberOfTabs, StatementPrinterLocation.START, stack)
             }
-            StatementPrinterLocation.END_FOR -> {
+            else -> {
                 val bodyString = resultStack.pop()
                 val initExpressionString = expressionPrinter.printNode(node.initExpression)
                 val testExpressionString = expressionPrinter.printNode(node.testExpression)

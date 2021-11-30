@@ -18,7 +18,7 @@ class VariableDeclarationListStatementPrinterTest {
     fun printNodeTest() {
         val node = Mockito.mock(VariableDeclarationListNode::class.java)
         val numberOfTabs = 1
-        val location = StatementPrinterLocation.END_FOR
+        val location = StatementPrinterLocation.END
         val stack = Stack<StatementPrinterStackItem>()
         val resultStack = Stack<String>()
 

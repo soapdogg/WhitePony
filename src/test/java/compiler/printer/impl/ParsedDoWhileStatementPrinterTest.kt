@@ -36,7 +36,7 @@ class ParsedDoWhileStatementPrinterTest {
 
         parsedDoWhileStatementPrinter.printNode(node, numberOfTabs, location, stack, resultStack, false)
 
-        Mockito.verify(statementPrinterStackPusher).push(node, numberOfTabs, StatementPrinterLocation.END_DO_WHILE, stack)
+        Mockito.verify(statementPrinterStackPusher).push(node, numberOfTabs, StatementPrinterLocation.END, stack)
         Mockito.verify(statementPrinterStackPusher).push(body, numberOfTabs, StatementPrinterLocation.START, stack)
     }
 
@@ -44,7 +44,7 @@ class ParsedDoWhileStatementPrinterTest {
     fun endDoWhileLocationTest() {
         val node = Mockito.mock(ParsedDoWhileNode::class.java)
         val numberOfTabs = 1
-        val location = StatementPrinterLocation.END_DO_WHILE
+        val location = StatementPrinterLocation.END
         val stack = Stack<StatementPrinterStackItem>()
         val resultStack = Stack<String>()
 

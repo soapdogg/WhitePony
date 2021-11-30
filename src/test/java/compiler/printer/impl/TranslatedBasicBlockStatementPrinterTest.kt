@@ -35,7 +35,7 @@ class TranslatedBasicBlockStatementPrinterTest {
         Mockito.`when`(node.statements).thenReturn(statements)
 
         translatedBasicBlockStatementPrinter.printNode(node, numberOfTabs, location, stack, resultStack, appendSemicolon)
-        Mockito.verify(statementPrinterStackPusher).push(node, numberOfTabs, StatementPrinterLocation.END_BASIC_BLOCK, stack)
+        Mockito.verify(statementPrinterStackPusher).push(node, numberOfTabs, StatementPrinterLocation.END, stack)
         Mockito.verify(statementPrinterStackPusher).push(statement1, numberOfTabs, StatementPrinterLocation.START, stack)
         Mockito.verify(statementPrinterStackPusher).push(statement2, numberOfTabs, StatementPrinterLocation.START, stack)
     }
@@ -44,7 +44,7 @@ class TranslatedBasicBlockStatementPrinterTest {
     fun endLocationTest() {
         val node = Mockito.mock(TranslatedBasicBlockNode::class.java)
         val numberOfTabs = 1
-        val location = StatementPrinterLocation.END_BASIC_BLOCK
+        val location = StatementPrinterLocation.END
         val stack = Stack<StatementPrinterStackItem>()
         val resultStack = Stack<String>()
         val appendSemicolon = true

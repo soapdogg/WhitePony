@@ -26,10 +26,10 @@ internal class TranslatedDoWhileStatementPrinter(
         node as TranslatedDoWhileNode
         when(location) {
             StatementPrinterLocation.START -> {
-                statementPrinterStackPusher.push(node, numberOfTabs, StatementPrinterLocation.END_DO_WHILE, stack)
+                statementPrinterStackPusher.push(node, numberOfTabs, StatementPrinterLocation.END, stack)
                 statementPrinterStackPusher.push(node.body, numberOfTabs, StatementPrinterLocation.START, stack)
             }
-            StatementPrinterLocation.END_DO_WHILE -> {
+            else -> {
                 val bodyStatementCode = resultStack.pop()
                 val expressionCode = codeGenerator.generateCode(node.expressionNode.code)
                 val trueLabelCode = labelCodeGenerator.generateLabelCode(node.trueLabel)

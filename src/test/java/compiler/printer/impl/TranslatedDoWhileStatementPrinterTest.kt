@@ -38,7 +38,7 @@ class TranslatedDoWhileStatementPrinterTest {
         Mockito.`when`(node.body).thenReturn(body)
 
         translatedDoWhileStatementPrinter.printNode(node, numberOfTabs, location, stack, resultStack, appendSemicolon)
-        Mockito.verify(statementPrinterStackPusher).push(node, numberOfTabs, StatementPrinterLocation.END_DO_WHILE, stack)
+        Mockito.verify(statementPrinterStackPusher).push(node, numberOfTabs, StatementPrinterLocation.END, stack)
         Mockito.verify(statementPrinterStackPusher).push(body, numberOfTabs, StatementPrinterLocation.START, stack)
     }
 
@@ -46,7 +46,7 @@ class TranslatedDoWhileStatementPrinterTest {
     fun endLocationTest() {
         val node = Mockito.mock(TranslatedDoWhileNode::class.java)
         val numberOfTabs = 1
-        val location = StatementPrinterLocation.END_DO_WHILE
+        val location = StatementPrinterLocation.END
         val stack = Stack<StatementPrinterStackItem>()
         val resultStack = Stack<String>()
         val appendSemicolon = true

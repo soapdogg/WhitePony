@@ -38,7 +38,7 @@ class ParsedIfStatementPrinterTest {
         Mockito.`when`(node.ifBody).thenReturn(ifBody)
 
         parsedIfStatementPrinter.printNode(node, numberOfTabs, location, stack, resultStack, appendSemicolon)
-        Mockito.verify(statementPrinterStackPusher).push(node, numberOfTabs, StatementPrinterLocation.END_IF, stack)
+        Mockito.verify(statementPrinterStackPusher).push(node, numberOfTabs, StatementPrinterLocation.END, stack)
         Mockito.verify(statementPrinterStackPusher).push(ifBody, numberOfTabs, StatementPrinterLocation.START, stack)
     }
 
@@ -58,7 +58,7 @@ class ParsedIfStatementPrinterTest {
         Mockito.`when`(node.elseBody).thenReturn(elseBody)
 
         parsedIfStatementPrinter.printNode(node, numberOfTabs, location, stack, resultStack, appendSemicolon)
-        Mockito.verify(statementPrinterStackPusher).push(node, numberOfTabs, StatementPrinterLocation.END_IF, stack)
+        Mockito.verify(statementPrinterStackPusher).push(node, numberOfTabs, StatementPrinterLocation.END, stack)
         Mockito.verify(statementPrinterStackPusher).push(ifBody, numberOfTabs, StatementPrinterLocation.START, stack)
         Mockito.verify(statementPrinterStackPusher).push(elseBody, numberOfTabs, StatementPrinterLocation.START, stack)
     }
@@ -67,7 +67,7 @@ class ParsedIfStatementPrinterTest {
     fun endLocationElseNotPresentTest() {
         val node = Mockito.mock(ParsedIfNode::class.java)
         val numberOfTabs = 1
-        val location = StatementPrinterLocation.END_IF
+        val location = StatementPrinterLocation.END
         val stack = Stack<StatementPrinterStackItem>()
         val resultStack = Stack<String>()
         val appendSemicolon = true
@@ -95,7 +95,7 @@ class ParsedIfStatementPrinterTest {
     fun endLocationElsePresentTest() {
         val node = Mockito.mock(ParsedIfNode::class.java)
         val numberOfTabs = 1
-        val location = StatementPrinterLocation.END_IF
+        val location = StatementPrinterLocation.END
         val stack = Stack<StatementPrinterStackItem>()
         val resultStack = Stack<String>()
         val appendSemicolon = true

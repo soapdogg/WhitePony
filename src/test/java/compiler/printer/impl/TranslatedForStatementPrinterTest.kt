@@ -38,7 +38,7 @@ class TranslatedForStatementPrinterTest {
 
         translatedForStatementPrinter.printNode(node, numberOfTabs, location, stack, resultStack, appendSemicolon)
 
-        Mockito.verify(statementPrinterStackPusher).push(node, numberOfTabs, StatementPrinterLocation.END_FOR, stack)
+        Mockito.verify(statementPrinterStackPusher).push(node, numberOfTabs, StatementPrinterLocation.END, stack)
         Mockito.verify(statementPrinterStackPusher).push(body, numberOfTabs, StatementPrinterLocation.START, stack)
     }
 
@@ -46,7 +46,7 @@ class TranslatedForStatementPrinterTest {
     fun endForLocationTest() {
         val node = Mockito.mock(TranslatedForNode::class.java)
         val numberOfTabs = 1
-        val location = StatementPrinterLocation.END_FOR
+        val location = StatementPrinterLocation.END
         val stack = Stack<StatementPrinterStackItem>()
         val resultStack = Stack<String>()
         val appendSemicolon = false
