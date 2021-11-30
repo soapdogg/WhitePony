@@ -125,7 +125,7 @@ enum class TranslatorSingleton {
         ParsedInnerExpressionNode::class.java to innerBooleanExpressionTranslator
     )
 
-    private val booleanExpressionTranslator = BooleanExpressionTranslatorOrchestrator(
+    private val booleanExpressionTranslatorOrchestrator = BooleanExpressionTranslatorOrchestrator(
         stackGenerator,
         booleanExpressionTranslatorMap
     )
@@ -133,8 +133,13 @@ enum class TranslatorSingleton {
     private val returnStatementTranslator = ReturnStatementTranslator(expressionStatementTranslator)
 
     private val basicBlockStatementTranslator = BasicBlockStatementTranslator()
-    private val statementTranslatorMap = mapOf<Class<out IParsedStatementNode>, IStatementTranslator>(
-        ParsedBasicBlockNode::class.java to basicBlockStatementTranslator
+    private val doWhileStatementTranslator = DoWhileStatementTranslator(
+        labelGenerator,
+        booleanExpressionTranslatorOrchestrator
+    )
+    private val statementTranslatorMap = mapOf(
+        ParsedBasicBlockNode::class.java to basicBlockStatementTranslator,
+        ParsedDoWhileNode::class.java to doWhileStatementTranslator
     )
 
     private val statementTranslator = StatementTranslatorOrchestrator(
@@ -143,7 +148,7 @@ enum class TranslatorSingleton {
         labelGenerator,
         variableTypeRecorder,
         expressionTranslator,
-        booleanExpressionTranslator,
+        booleanExpressionTranslatorOrchestrator,
         returnStatementTranslator,
         expressionStatementTranslator
     )

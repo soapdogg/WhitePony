@@ -21,6 +21,7 @@ class BasicBlockStatementTranslatorTest {
         val location = StatementTranslatorLocation.START
         val tempCounter = 1
         val labelCounter = 2
+        val variableToTypeMap = mapOf<String,String>()
         val stack = Stack<StatementTranslatorStackItem>()
         val resultStack = Stack<ITranslatedStatementNode>()
         val expressionStack = Stack<ITranslatedExpressionNode>()
@@ -30,7 +31,7 @@ class BasicBlockStatementTranslatorTest {
         val statement2 = Mockito.mock(IParsedStatementNode::class.java)
         Mockito.`when`(node.statements).thenReturn(listOf(statement1, statement2))
 
-        val (actualTemp, actualLabel) = basicBlockStatementTranslator.translate(node, location, tempCounter, labelCounter, stack, resultStack, expressionStack, labelStack)
+        val (actualTemp, actualLabel) = basicBlockStatementTranslator.translate(node, location, tempCounter, labelCounter, variableToTypeMap, stack, resultStack, expressionStack, labelStack)
         Assertions.assertEquals(tempCounter, actualTemp)
         Assertions.assertEquals(labelCounter, actualLabel)
 
@@ -48,6 +49,7 @@ class BasicBlockStatementTranslatorTest {
         val location = StatementTranslatorLocation.END
         val tempCounter = 1
         val labelCounter = 2
+        val variableToTypeMap = mapOf<String,String>()
         val stack = Stack<StatementTranslatorStackItem>()
         val resultStack = Stack<ITranslatedStatementNode>()
         val expressionStack = Stack<ITranslatedExpressionNode>()
@@ -62,7 +64,7 @@ class BasicBlockStatementTranslatorTest {
         resultStack.push(result1)
         resultStack.push(result2)
 
-        val (actualTemp, actualLabel) = basicBlockStatementTranslator.translate(node, location, tempCounter, labelCounter, stack, resultStack, expressionStack, labelStack)
+        val (actualTemp, actualLabel) = basicBlockStatementTranslator.translate(node, location, tempCounter, labelCounter, variableToTypeMap, stack, resultStack, expressionStack, labelStack)
         Assertions.assertEquals(tempCounter, actualTemp)
         Assertions.assertEquals(labelCounter, actualLabel)
 
