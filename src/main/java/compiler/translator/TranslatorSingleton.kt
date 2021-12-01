@@ -9,7 +9,6 @@ import compiler.translator.impl.ExpressionStatementTranslator
 import compiler.translator.impl.FunctionDeclarationTranslator
 import compiler.translator.impl.ReturnStatementTranslator
 import compiler.translator.impl.Translator
-import compiler.translator.impl.internal.IExpressionTranslator
 
 enum class TranslatorSingleton {
     INSTANCE;
@@ -36,6 +35,28 @@ enum class TranslatorSingleton {
     private val binaryAssignExpressionTranslator = BinaryAssignExpressionTranslator(
         binaryAssignVariableLValueExpressionTranslator,
         binaryAssignArrayLValueExpressionTranslator
+    )
+
+    private val binaryAssignOperatorVariableLValueExpressionTranslator = BinaryAssignOperatorVariableLValueExpressionTranslator(
+        expressionTranslatorStackPusher,
+        tempGenerator,
+        operationCodeGenerator,
+        tempDeclarationCodeGenerator,
+        assignCodeGenerator
+    )
+
+    private val binaryAssignOperatorArrayLValueExpressionTranslator = BinaryAssignOperatorArrayLValueExpressionTranslator(
+        expressionTranslatorStackPusher,
+        tempGenerator,
+        arrayCodeGenerator,
+        tempDeclarationCodeGenerator,
+        operationCodeGenerator,
+        assignCodeGenerator
+    )
+
+    private val binaryAssignOperatorExpressionTranslator = BinaryAssignOperatorExpressionTranslator(
+        binaryAssignOperatorVariableLValueExpressionTranslator,
+        binaryAssignOperatorArrayLValueExpressionTranslator
     )
 
     private val binaryOperatorExpressionTranslator = BinaryOperatorExpressionTranslator(
@@ -69,6 +90,7 @@ enum class TranslatorSingleton {
     private val translatorMap = mapOf(
         ParsedBinaryArrayExpressionNode::class.java to binaryArrayExpressionTranslator,
         ParsedBinaryAssignExpressionNode::class.java to binaryAssignExpressionTranslator,
+        ParsedBinaryAssignOperatorExpressionNode::class.java to binaryAssignOperatorExpressionTranslator,
         ParsedBinaryOperatorExpressionNode::class.java to binaryOperatorExpressionTranslator,
         ParsedConstantExpressionNode::class.java to constantExpressionTranslator,
         ParsedInnerExpressionNode::class.java to innerExpressionTranslator,

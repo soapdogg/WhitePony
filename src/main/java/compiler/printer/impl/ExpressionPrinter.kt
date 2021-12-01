@@ -44,7 +44,7 @@ internal class ExpressionPrinter: IExpressionPrinter {
                                             PrinterConstants.SPACE +
                                             rightExpressionString
                                 }
-                                is ParsedBinaryAssignOperatorNode -> {
+                                is ParsedBinaryAssignOperatorExpressionNode -> {
                                     val rightExpressionString = resultStack.pop()
                                     val leftExpressionString = resultStack.pop()
                                     leftExpressionString +

@@ -30,7 +30,7 @@ internal class ExpressionParser: IExpressionParser {
             val resultNode =  if (binaryAssignToken.type == TokenType.BINARY_ASSIGN) {
                 ParsedBinaryAssignExpressionNode(leftExpression, rightExpression)
             } else {
-                ParsedBinaryAssignOperatorNode(leftExpression, rightExpression, binaryAssignToken.value.replace("=", ""))
+                ParsedBinaryAssignOperatorExpressionNode(leftExpression, rightExpression, binaryAssignToken.value.replace("=", ""))
             }
             return Pair(resultNode, positionAfterRightExpression)
         }
