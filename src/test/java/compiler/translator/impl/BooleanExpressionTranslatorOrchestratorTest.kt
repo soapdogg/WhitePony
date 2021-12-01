@@ -19,7 +19,7 @@ class BooleanExpressionTranslatorOrchestratorTest {
         expressionNode.javaClass to translator
     )
 
-    private val booleanExpressionTranslator = BooleanExpressionTranslatorOrchestrator(
+    private val booleanExpressionTranslatorOrchestrator = BooleanExpressionTranslatorOrchestrator(
         stackGenerator,
         translatorMap
     )
@@ -63,7 +63,7 @@ class BooleanExpressionTranslatorOrchestratorTest {
             return@then Pair(labelCountAfterTranslate, tempCountAfterTranslate)
         }
 
-        val (actual, l, t) = booleanExpressionTranslator.translate(
+        val (actual, l, t) = booleanExpressionTranslatorOrchestrator.translate(
             expressionNode,
             trueLabel,
             falseLabel,

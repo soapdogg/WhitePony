@@ -132,7 +132,10 @@ enum class TranslatorSingleton {
         ParsedVariableExpressionNode::class.java to variableExpressionTranslator
     )
 
+    private val stackGenerator = StackGenerator()
+
     private val expressionTranslatorOrchestrator = ExpressionTranslatorOrchestrator(
+        stackGenerator,
         translatorMap
     )
 
@@ -171,7 +174,6 @@ enum class TranslatorSingleton {
         booleanExpressionTranslatorStackPusher
     )
 
-    private val stackGenerator = StackGenerator()
 
     private val booleanExpressionTranslatorMap = mapOf(
         ParsedBinaryAndOperatorExpressionNode::class.java to binaryAndOperatorExpressionTranslator,

@@ -4,11 +4,11 @@ import compiler.core.nodes.parsed.*
 import compiler.core.nodes.translated.TranslatedExpressionNode
 import compiler.core.stack.ExpressionTranslatorLocation
 import compiler.core.stack.ExpressionTranslatorStackItem
-import compiler.core.stack.Stack
 import compiler.translator.impl.internal.*
 import compiler.translator.impl.internal.IExpressionTranslatorOrchestrator
 
 internal class ExpressionTranslatorOrchestrator(
+    private val stackGenerator: IStackGenerator,
     private val translatorMap: Map<Class<out IParsedExpressionNode>, IExpressionTranslator>
 ): IExpressionTranslatorOrchestrator {
     override fun translate(
@@ -16,9 +16,9 @@ internal class ExpressionTranslatorOrchestrator(
         variableToTypeMap: Map<String, String>,
         tempCounter: Int
     ): Pair<TranslatedExpressionNode, Int> {
-        val stack = Stack<ExpressionTranslatorStackItem>()
+        val stack = stackGenerator.generateNewStack(ExpressionTranslatorStackItem::class.java)
         stack.push(ExpressionTranslatorStackItem(ExpressionTranslatorLocation.START, expressionNode))
-        val resultStack = Stack<TranslatedExpressionNode>()
+        val resultStack = stackGenerator.generateNewStack(TranslatedExpressionNode::class.java)
         var localTemp = tempCounter
 
         while(stack.isNotEmpty()) {
