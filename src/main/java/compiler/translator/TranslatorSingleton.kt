@@ -80,6 +80,25 @@ enum class TranslatorSingleton {
         tempDeclarationCodeGenerator
     )
 
+    private val unaryPreOperatorVariableExpressionTranslator = UnaryPreOperatorVariableExpressionTranslator(
+        operationCodeGenerator,
+        assignCodeGenerator
+    )
+
+    private val unaryPreOperatorArrayExpressionTranslator = UnaryPreOperatorArrayExpressionTranslator(
+        expressionTranslatorStackPusher,
+        tempGenerator,
+        arrayCodeGenerator,
+        tempDeclarationCodeGenerator,
+        operationCodeGenerator,
+        assignCodeGenerator
+    )
+
+    private val unaryPreOperatorExpressionTranslator = UnaryPreOperatorExpressionTranslator(
+        unaryPreOperatorVariableExpressionTranslator,
+        unaryPreOperatorArrayExpressionTranslator
+    )
+
     private val innerExpressionTranslator = InnerExpressionTranslator()
     private val variableExpressionTranslator = VariableExpressionTranslator(
         tempGenerator,
@@ -95,6 +114,7 @@ enum class TranslatorSingleton {
         ParsedConstantExpressionNode::class.java to constantExpressionTranslator,
         ParsedInnerExpressionNode::class.java to innerExpressionTranslator,
         ParsedUnaryExpressionNode::class.java to unaryExpressionTranslator,
+        ParsedUnaryPreOperatorNode::class.java to unaryPreOperatorExpressionTranslator,
         ParsedVariableExpressionNode::class.java to variableExpressionTranslator
     )
 
