@@ -1,10 +1,7 @@
 package compiler.translator.impl
 
 import compiler.core.constants.PrinterConstants
-import compiler.core.nodes.parsed.IParsedExpressionNode
-import compiler.core.nodes.parsed.ParsedBinaryArrayExpressionNode
-import compiler.core.nodes.parsed.ParsedUnaryPreOperatorExpressionNode
-import compiler.core.nodes.parsed.ParsedVariableExpressionNode
+import compiler.core.nodes.parsed.*
 import compiler.core.nodes.translated.TranslatedExpressionNode
 import compiler.core.stack.ExpressionTranslatorLocation
 import compiler.core.stack.ExpressionTranslatorStackItem
@@ -14,7 +11,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 
-class UnaryPreOperatorArrayExpressionTranslatorTest {
+class UnaryPostOperatorArrayExpressionTranslatorTest {
     private val expressionTranslatorStackPusher = Mockito.mock(IExpressionTranslatorStackPusher::class.java)
     private val tempGenerator = Mockito.mock(ITempGenerator::class.java)
     private val arrayCodeGenerator = Mockito.mock(IArrayCodeGenerator::class.java)
@@ -22,13 +19,13 @@ class UnaryPreOperatorArrayExpressionTranslatorTest {
     private val operationCodeGenerator = Mockito.mock(IOperationCodeGenerator::class.java)
     private val assignCodeGenerator = Mockito.mock(IAssignCodeGenerator::class.java)
 
-    private val unaryPreOperatorArrayExpressionTranslator = UnaryPreOperatorArrayExpressionTranslator(
+    private val unaryPostOperatorArrayExpressionTranslator = UnaryPostOperatorArrayExpressionTranslator(
         expressionTranslatorStackPusher, tempGenerator, arrayCodeGenerator, tempDeclarationCodeGenerator, operationCodeGenerator, assignCodeGenerator
     )
 
     @Test
     fun startLocationTest() {
-        val node = Mockito.mock(ParsedUnaryPreOperatorExpressionNode::class.java)
+        val node = Mockito.mock(ParsedUnaryPostOperatorExpressionNode::class.java)
         val lValueNode = Mockito.mock(ParsedBinaryArrayExpressionNode::class.java)
         Mockito.`when`(node.expression).thenReturn(lValueNode)
 
@@ -41,7 +38,7 @@ class UnaryPreOperatorArrayExpressionTranslatorTest {
         val rightExpression = Mockito.mock(IParsedExpressionNode::class.java)
         Mockito.`when`(lValueNode.rightExpression).thenReturn(rightExpression)
 
-        val actual = unaryPreOperatorArrayExpressionTranslator.translate(
+        val actual = unaryPostOperatorArrayExpressionTranslator.translate(
             node, location, variableToTypeMap, tempCounter, stack, resultStack
         )
         Assertions.assertEquals(tempCounter, actual)
@@ -56,8 +53,9 @@ class UnaryPreOperatorArrayExpressionTranslatorTest {
 
     @Test
     fun endLocationTest() {
-        val node = Mockito.mock(ParsedUnaryPreOperatorExpressionNode::class.java)
+        val node = Mockito.mock(ParsedUnaryPostOperatorExpressionNode::class.java)
         val lValueNode = Mockito.mock(ParsedBinaryArrayExpressionNode::class.java)
+        Mockito.`when`(node.expression).thenReturn(lValueNode)
         Mockito.`when`(node.expression).thenReturn(lValueNode)
         val variableNode = Mockito.mock(ParsedVariableExpressionNode::class.java)
         Mockito.`when`(lValueNode.leftExpression).thenReturn(variableNode)
@@ -80,7 +78,6 @@ class UnaryPreOperatorArrayExpressionTranslatorTest {
         val tempAfterAddress = 456
         Mockito.`when`(tempGenerator.generateTempVariable(tempCounter)).thenReturn(Pair(address, tempAfterAddress))
 
-
         val insideExpressionAddress = "insideExpressionAddress"
         Mockito.`when`(insideExpression.address).thenReturn(insideExpressionAddress)
 
@@ -102,14 +99,23 @@ class UnaryPreOperatorArrayExpressionTranslatorTest {
         val arrayAssignCode = "arrayAssignCode"
         Mockito.`when`(assignCodeGenerator.generateAssignCode(arrayCode, address)).thenReturn(arrayAssignCode)
 
+        val oppositeOperator = "oppositeOperator"
+        Mockito.`when`(node.oppositeOperator).thenReturn(oppositeOperator)
+
+        val oppositeOperationCode = "oppositeOperationCode"
+        Mockito.`when`(operationCodeGenerator.generateOperationCode(address, oppositeOperator, PrinterConstants.ONE)).thenReturn(oppositeOperationCode)
+
+        val oppositeOperationAssignCode = "oppositeOperationAssignCode"
+        Mockito.`when`(assignCodeGenerator.generateAssignCode(address, oppositeOperationCode)).thenReturn(oppositeOperationAssignCode)
+
         val insideExpressionCode = "insideExpressionCode"
         Mockito.`when`(insideExpression.code).thenReturn(listOf(insideExpressionCode))
 
-        val actual = unaryPreOperatorArrayExpressionTranslator.translate(node, location, variableToTypeMap, tempCounter, stack, resultStack)
+        val actual = unaryPostOperatorArrayExpressionTranslator.translate(node, location, variableToTypeMap, tempCounter, stack, resultStack)
         Assertions.assertEquals(tempAfterAddress, actual)
         val top = resultStack.pop()
         Assertions.assertEquals(address, top.address)
-        Assertions.assertEquals(listOf(insideExpressionCode, tempDeclarationCode, operationAssignCode, arrayAssignCode), top.code)
+        Assertions.assertEquals(listOf(insideExpressionCode, tempDeclarationCode, operationAssignCode, arrayAssignCode, oppositeOperationAssignCode), top.code)
         Assertions.assertEquals(type, top.type)
     }
 }

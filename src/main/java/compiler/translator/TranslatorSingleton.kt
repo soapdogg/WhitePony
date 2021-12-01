@@ -99,6 +99,19 @@ enum class TranslatorSingleton {
         unaryPreOperatorArrayExpressionTranslator
     )
 
+    private val unaryPostOperatorVariableExpressionTranslator = UnaryPostOperatorVariableExpressionTranslator(
+        tempGenerator, tempDeclarationCodeGenerator, operationCodeGenerator, assignCodeGenerator
+    )
+
+    private val unaryPostOperatorArrayExpressionTranslator = UnaryPostOperatorArrayExpressionTranslator(
+        expressionTranslatorStackPusher, tempGenerator, arrayCodeGenerator, tempDeclarationCodeGenerator, operationCodeGenerator, assignCodeGenerator
+    )
+
+    private val unaryPostOperatorExpressionTranslator = UnaryPostOperatorExpressionTranslator(
+        unaryPostOperatorVariableExpressionTranslator,
+        unaryPostOperatorArrayExpressionTranslator
+    )
+
     private val innerExpressionTranslator = InnerExpressionTranslator()
     private val variableExpressionTranslator = VariableExpressionTranslator(
         tempGenerator,
@@ -114,17 +127,13 @@ enum class TranslatorSingleton {
         ParsedConstantExpressionNode::class.java to constantExpressionTranslator,
         ParsedInnerExpressionNode::class.java to innerExpressionTranslator,
         ParsedUnaryExpressionNode::class.java to unaryExpressionTranslator,
-        ParsedUnaryPreOperatorNode::class.java to unaryPreOperatorExpressionTranslator,
+        ParsedUnaryPreOperatorExpressionNode::class.java to unaryPreOperatorExpressionTranslator,
+        ParsedUnaryPostOperatorExpressionNode::class.java to unaryPostOperatorExpressionTranslator,
         ParsedVariableExpressionNode::class.java to variableExpressionTranslator
     )
 
     private val expressionTranslatorOrchestrator = ExpressionTranslatorOrchestrator(
-        translatorMap,
-        tempGenerator,
-        tempDeclarationCodeGenerator,
-        expressionTranslatorStackPusher,
-        assignCodeGenerator,
-        arrayCodeGenerator
+        translatorMap
     )
 
     private val labelGenerator = LabelGenerator()

@@ -2,7 +2,7 @@ package compiler.translator.impl
 
 import compiler.core.constants.PrinterConstants
 import compiler.core.nodes.parsed.IParsedExpressionNode
-import compiler.core.nodes.parsed.ParsedUnaryPreOperatorExpressionNode
+import compiler.core.nodes.parsed.ParsedUnaryPostOperatorExpressionNode
 import compiler.core.nodes.parsed.ParsedVariableExpressionNode
 import compiler.core.nodes.translated.TranslatedExpressionNode
 import compiler.core.stack.ExpressionTranslatorLocation
@@ -11,8 +11,12 @@ import compiler.core.stack.Stack
 import compiler.translator.impl.internal.IAssignCodeGenerator
 import compiler.translator.impl.internal.IExpressionTranslator
 import compiler.translator.impl.internal.IOperationCodeGenerator
+import compiler.translator.impl.internal.ITempDeclarationCodeGenerator
+import compiler.translator.impl.internal.ITempGenerator
 
-internal class UnaryPreOperatorVariableExpressionTranslator(
+internal class UnaryPostOperatorVariableExpressionTranslator(
+    private val tempGenerator: ITempGenerator,
+    private val tempDeclarationCodeGenerator: ITempDeclarationCodeGenerator,
     private val operationCodeGenerator: IOperationCodeGenerator,
     private val assignCodeGenerator: IAssignCodeGenerator
 ): IExpressionTranslator {
@@ -24,9 +28,16 @@ internal class UnaryPreOperatorVariableExpressionTranslator(
         stack: Stack<ExpressionTranslatorStackItem>,
         resultStack: Stack<TranslatedExpressionNode>
     ): Int {
-        node as ParsedUnaryPreOperatorExpressionNode
+        node as ParsedUnaryPostOperatorExpressionNode
         node.expression as ParsedVariableExpressionNode
         val variableValue = node.expression.value
+        val (address, tempAfterAddress) = tempGenerator.generateTempVariable(tempCounter)
+        val type = variableToTypeMap.getValue(variableValue)
+        val tempDeclarationCode = tempDeclarationCodeGenerator.generateTempDeclarationCode(
+            type,
+            address,
+            variableValue
+        )
         val operationCode = operationCodeGenerator.generateOperationCode(
             variableValue,
             node.operator,
@@ -36,14 +47,16 @@ internal class UnaryPreOperatorVariableExpressionTranslator(
             variableValue,
             operationCode
         )
-        val code = listOf(assignCode)
-        val type = variableToTypeMap.getValue(variableValue)
+        val code = listOf(
+            tempDeclarationCode,
+            assignCode
+        )
         val translatedExpressionNode = TranslatedExpressionNode(
-            variableValue,
+            address,
             code,
-            type
+            type,
         )
         resultStack.push(translatedExpressionNode)
-        return tempCounter
+        return tempAfterAddress
     }
 }

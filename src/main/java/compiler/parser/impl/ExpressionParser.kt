@@ -215,7 +215,7 @@ internal class ExpressionParser: IExpressionParser {
             } else if (unaryToken.type == TokenType.UNARY_NOT) {
                 ParsedUnaryNotOperatorExpressionNode(rightExpression)
             } else {
-                ParsedUnaryPreOperatorNode(rightExpression, unaryToken.value[0].toString())
+                ParsedUnaryPreOperatorExpressionNode(rightExpression, unaryToken.value[0].toString())
             }
             return Pair(resultExpression, positionAfterRightExpression)
         }
@@ -265,7 +265,7 @@ internal class ExpressionParser: IExpressionParser {
             currentPosition++
             val operator = prePostToken.value[0].toString()
             val oppositeOperator = if (operator == TokenizerConstants.PLUS_OPERATOR) TokenizerConstants.MINUS_OPERATOR else TokenizerConstants.PLUS_OPERATOR
-            result = ParsedUnaryPostOperatorNode(result, prePostToken.value[0].toString(), oppositeOperator)
+            result = ParsedUnaryPostOperatorExpressionNode(result, prePostToken.value[0].toString(), oppositeOperator)
         }
         return Pair(result, currentPosition)
     }

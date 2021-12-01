@@ -3,7 +3,7 @@ package compiler.translator.impl
 import compiler.core.constants.PrinterConstants
 import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.ParsedBinaryArrayExpressionNode
-import compiler.core.nodes.parsed.ParsedUnaryPreOperatorExpressionNode
+import compiler.core.nodes.parsed.ParsedUnaryPostOperatorExpressionNode
 import compiler.core.nodes.translated.TranslatedExpressionNode
 import compiler.core.stack.ExpressionTranslatorLocation
 import compiler.core.stack.ExpressionTranslatorStackItem
@@ -15,7 +15,7 @@ import compiler.translator.impl.internal.IExpressionTranslatorStackPusher
 import compiler.translator.impl.internal.ITempDeclarationCodeGenerator
 import compiler.translator.impl.internal.ITempGenerator
 
-internal class UnaryPreOperatorArrayExpressionTranslator(
+internal class UnaryPostOperatorArrayExpressionTranslator(
     private val expressionTranslatorStackPusher: IExpressionTranslatorStackPusher,
     private val tempGenerator: ITempGenerator,
     private val arrayCodeGenerator: IArrayCodeGenerator,
@@ -31,7 +31,7 @@ internal class UnaryPreOperatorArrayExpressionTranslator(
         stack: Stack<ExpressionTranslatorStackItem>,
         resultStack: Stack<TranslatedExpressionNode>
     ): Int {
-        node as ParsedUnaryPreOperatorExpressionNode
+        node as ParsedUnaryPostOperatorExpressionNode
         node.expression as ParsedBinaryArrayExpressionNode
         when (location) {
             ExpressionTranslatorLocation.START -> {
@@ -70,16 +70,26 @@ internal class UnaryPreOperatorArrayExpressionTranslator(
                     arrayCode,
                     address
                 )
+                val oppositeOperationCode = operationCodeGenerator.generateOperationCode(
+                    address,
+                    node.oppositeOperator,
+                    PrinterConstants.ONE
+                )
+                val oppositeOperationAssignCode = assignCodeGenerator.generateAssignCode(
+                    address,
+                    oppositeOperationCode
+                )
                 val code = insideExpression.code +
                         listOf(
                             tempDeclarationCode,
                             operationAssignCode,
-                            arrayAssignCode
+                            arrayAssignCode,
+                            oppositeOperationAssignCode
                         )
                 val translatedExpressionNode = TranslatedExpressionNode(
                     address,
                     code,
-                    type
+                    type,
                 )
                 resultStack.push(translatedExpressionNode)
                 return tempAfterAddress

@@ -48,12 +48,12 @@ class ExpressionPrinterTest {
             Mockito.`when`(parsedUnaryNotOperator.expression).thenReturn(parsedValueExpressionNode)
             val expectedUnaryNotOperatorString = PrinterConstants.EXCLAMATION_POINT + value
 
-            val parsedUnaryPreOperator = Mockito.mock(ParsedUnaryPreOperatorNode::class.java)
+            val parsedUnaryPreOperator = Mockito.mock(ParsedUnaryPreOperatorExpressionNode::class.java)
             Mockito.`when`(parsedUnaryPreOperator.expression).thenReturn(parsedValueExpressionNode)
             Mockito.`when`(parsedUnaryPreOperator.operator).thenReturn(operator)
             val expectedUnaryPreOperatorString = operator + operator + value
 
-            val parsedUnaryPostOperator = Mockito.mock(ParsedUnaryPostOperatorNode::class.java)
+            val parsedUnaryPostOperator = Mockito.mock(ParsedUnaryPostOperatorExpressionNode::class.java)
             Mockito.`when`(parsedUnaryPostOperator.expression).thenReturn(parsedValueExpressionNode)
             Mockito.`when`(parsedUnaryPostOperator.operator).thenReturn(operator)
             val expectedUnaryPostOperatorString = value + operator + operator

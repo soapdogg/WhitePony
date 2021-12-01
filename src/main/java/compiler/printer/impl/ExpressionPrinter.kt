@@ -131,11 +131,11 @@ internal class ExpressionPrinter: IExpressionPrinter {
                                     val expressionString = resultStack.pop()
                                     PrinterConstants.EXCLAMATION_POINT + expressionString
                                 }
-                                is ParsedUnaryPreOperatorNode -> {
+                                is ParsedUnaryPreOperatorExpressionNode -> {
                                     val expressionString = resultStack.pop()
                                     top.node.operator + top.node.operator + expressionString
                                 }
-                                is ParsedUnaryPostOperatorNode -> {
+                                is ParsedUnaryPostOperatorExpressionNode -> {
                                     val expressionString = resultStack.pop()
                                     expressionString + top.node.operator + top.node.operator
                                 }
