@@ -114,7 +114,6 @@ enum class ParserSingleton {
 
     private val endDoStatementParser = EndDoStatementParser(
         tokenTypeAsserter,
-        recursiveExpressionParser,
         shiftReduceExpressionParser
     )
 
