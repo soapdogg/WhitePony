@@ -14,11 +14,13 @@ import org.mockito.Mockito
 
 class StartWhileStatementParserTest {
     private val tokenTypeAsserter = Mockito.mock(ITokenTypeAsserter::class.java)
-    private val expressionParser = Mockito.mock(IExpressionParser::class.java)
+    private val recursiveExpressionParser = Mockito.mock(IExpressionParser::class.java)
+    private val shiftReduceExpressionParser = Mockito.mock(IExpressionParser::class.java)
 
     private val startWhileStatementParser = StartWhileStatementParser(
         tokenTypeAsserter,
-        expressionParser
+        recursiveExpressionParser,
+        shiftReduceExpressionParser
     )
 
     @Test
@@ -36,7 +38,7 @@ class StartWhileStatementParserTest {
 
         val expression = Mockito.mock(IParsedExpressionNode::class.java)
         val positionAfterExpression = 2
-        Mockito.`when`(expressionParser.parse(tokens, positionAfterWhile)).thenReturn(Pair(expression, positionAfterExpression))
+        Mockito.`when`(recursiveExpressionParser.parse(tokens, positionAfterWhile)).thenReturn(Pair(expression, positionAfterExpression))
 
         val actual = startWhileStatementParser.parse(tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack)
         Assertions.assertEquals(positionAfterExpression, actual)

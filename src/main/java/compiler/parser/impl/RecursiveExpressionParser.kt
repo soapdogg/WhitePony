@@ -7,7 +7,7 @@ import compiler.core.tokenizer.Token
 import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.internal.IExpressionParser
 
-internal class ExpressionParser: IExpressionParser {
+internal class RecursiveExpressionParser: IExpressionParser {
 
     override fun parse(
         tokens: List<Token>,

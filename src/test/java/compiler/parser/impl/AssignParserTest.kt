@@ -12,11 +12,13 @@ import org.mockito.Mockito
 class AssignParserTest {
 
     private val tokenTypeAsserter = Mockito.mock(ITokenTypeAsserter::class.java)
-    private val expressionParser = Mockito.mock(IExpressionParser::class.java)
+    private val recursiveExpressionParser = Mockito.mock(IExpressionParser::class.java)
+    private val shiftReduceExpressionParser = Mockito.mock(IExpressionParser::class.java)
 
     private val assignParser = AssignParser(
         tokenTypeAsserter,
-        expressionParser
+        recursiveExpressionParser,
+        shiftReduceExpressionParser
     )
 
     @Test
@@ -28,7 +30,7 @@ class AssignParserTest {
         val expressionNode = Mockito.mock(IParsedExpressionNode::class.java)
         val positionAfterExpression = positionAfterAssign + 1
         Mockito.`when`(
-            expressionParser.parse(
+            recursiveExpressionParser.parse(
                 tokens,
                 positionAfterAssign,
             )

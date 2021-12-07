@@ -9,13 +9,14 @@ import compiler.parser.impl.internal.ITokenTypeAsserter
 
 internal class ExpressionStatementParser(
     private val tokenTypeAsserter: ITokenTypeAsserter,
-    private val expressionParser: IExpressionParser
+    private val recursiveExpressionParser: IExpressionParser,
+    private val shiftReduceExpressionParser: IExpressionParser,
 ): IExpressionStatementParser {
     override fun parse(
         tokens: List<Token>,
         startingPosition: Int
     ): Pair<ParsedExpressionStatementNode, Int> {
-        val (expressionNode, positionAfterExpression) = expressionParser.parse(tokens, startingPosition)
+        val (expressionNode, positionAfterExpression) = recursiveExpressionParser.parse(tokens, startingPosition)
         tokenTypeAsserter.assertTokenType(tokens, positionAfterExpression, TokenType.SEMICOLON)
         val positionAfterSemicolon = positionAfterExpression + 1
         val expressionStatementNode = ParsedExpressionStatementNode(expressionNode)

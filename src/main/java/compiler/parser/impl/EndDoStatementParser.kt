@@ -13,7 +13,8 @@ import compiler.parser.impl.internal.ITokenTypeAsserter
 
 internal class EndDoStatementParser(
     private val tokenTypeAsserter: ITokenTypeAsserter,
-    private val expressionParser: IExpressionParser
+    private val recursiveExpressionParser: IExpressionParser,
+    private val shiftReduceExpressionParser: IExpressionParser
 ): IStatementParser {
     override fun parse(
         tokens: List<Token>,
@@ -25,7 +26,7 @@ internal class EndDoStatementParser(
     ): Int {
         val body = resultStack.pop()
         val (_, positionAfterWhile) = tokenTypeAsserter.assertTokenType(tokens, tokenPosition, TokenType.WHILE)
-        val (expression, positionAfterExpression) = expressionParser.parse(tokens, positionAfterWhile)
+        val (expression, positionAfterExpression) = recursiveExpressionParser.parse(tokens, positionAfterWhile)
         val (_, positionAfterSemicolon) = tokenTypeAsserter.assertTokenType(tokens, positionAfterExpression, TokenType.SEMICOLON)
         val doStatement = ParsedDoWhileNode(
             expression,

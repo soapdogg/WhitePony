@@ -15,9 +15,10 @@ import org.mockito.Mockito
 
 class EndDoStatementParserTest {
     private val tokenTypeAsserter = Mockito.mock(ITokenTypeAsserter::class.java)
-    private val expressionParser = Mockito.mock(IExpressionParser::class.java)
+    private val recursiveExpressionParser = Mockito.mock(IExpressionParser::class.java)
+    private val shiftReduceExpressionParser = Mockito.mock(IExpressionParser::class.java)
 
-    private val endDoStatementParser = EndDoStatementParser(tokenTypeAsserter, expressionParser)
+    private val endDoStatementParser = EndDoStatementParser(tokenTypeAsserter, recursiveExpressionParser, shiftReduceExpressionParser)
 
     @Test
     fun parseTest() {
@@ -36,7 +37,7 @@ class EndDoStatementParserTest {
 
         val expression = Mockito.mock(IParsedExpressionNode::class.java)
         val positionAfterExpression = 2
-        Mockito.`when`(expressionParser.parse(tokens, positionAfterWhile)).thenReturn(Pair(expression, positionAfterExpression))
+        Mockito.`when`(recursiveExpressionParser.parse(tokens, positionAfterWhile)).thenReturn(Pair(expression, positionAfterExpression))
 
         val positionAfterSemiColon = 3
         Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, positionAfterExpression, TokenType.SEMICOLON)).thenReturn(Pair(Mockito.mock(Token::class.java), positionAfterSemiColon))

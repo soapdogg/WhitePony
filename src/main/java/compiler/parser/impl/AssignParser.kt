@@ -9,7 +9,8 @@ import compiler.parser.impl.internal.ITokenTypeAsserter
 
 internal class AssignParser(
     private val tokenTypeAsserter: ITokenTypeAsserter,
-    private val expressionParser: IExpressionParser
+    private val recursiveExpressionParser: IExpressionParser,
+    private val shiftReduceExpressionParser: IExpressionParser
 ): IAssignParser {
     override fun parse(
         tokens: List<Token>,
@@ -17,7 +18,7 @@ internal class AssignParser(
     ): Pair<AssignNode, Int> {
         tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.BINARY_ASSIGN)
         val positionAfterAssign = startingPosition + 1
-        val (expressionNode, positionAfterExpression) = expressionParser.parse(tokens, positionAfterAssign)
+        val (expressionNode, positionAfterExpression) = recursiveExpressionParser.parse(tokens, positionAfterAssign)
         val assignNode = AssignNode(expressionNode)
         return Pair(assignNode, positionAfterExpression)
     }

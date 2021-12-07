@@ -14,14 +14,18 @@ enum class ParserSingleton {
 
     private val stackGenerator = StackGenerator()
 
-    private val expressionParser = ExpressionParser()
+    private val recursiveExpressionParser = RecursiveExpressionParser()
+    private val shiftReduceExpressionParser = ShiftReduceExpressionParser()
+
     private val arrayParser = ArrayParser(
         tokenTypeAsserter,
-        expressionParser
+        recursiveExpressionParser,
+        shiftReduceExpressionParser
     )
     private val assignParser = AssignParser(
         tokenTypeAsserter,
-        expressionParser,
+        recursiveExpressionParser,
+        shiftReduceExpressionParser
     )
     private val variableDeclarationParser = VariableDeclarationParser(
         tokenTypeAsserter,
@@ -36,7 +40,8 @@ enum class ParserSingleton {
 
     private val expressionStatementParser = ExpressionStatementParser(
         tokenTypeAsserter,
-        expressionParser
+        recursiveExpressionParser,
+        shiftReduceExpressionParser
     )
 
     private val returnStatementParser = ReturnStatementParser(
@@ -50,12 +55,14 @@ enum class ParserSingleton {
 
     private val startForStatementParser = StartForStatementParser(
         tokenTypeAsserter,
-        expressionParser
+        recursiveExpressionParser,
+        shiftReduceExpressionParser
     )
 
     private val startIfStatementParser = StartIfStatementParser(
         tokenTypeAsserter,
-        expressionParser
+        recursiveExpressionParser,
+        shiftReduceExpressionParser
     )
 
     private val startBasicBlockStatementParser = StartBasicBlockStatementParser(
@@ -72,7 +79,8 @@ enum class ParserSingleton {
 
     private val startWhileStatementParser = StartWhileStatementParser(
         tokenTypeAsserter,
-        expressionParser
+        recursiveExpressionParser,
+        shiftReduceExpressionParser
     )
 
     private val startExpressionStatementParser = StartExpressionStatementParser(
@@ -96,7 +104,8 @@ enum class ParserSingleton {
 
     private val endDoStatementParser = EndDoStatementParser(
         tokenTypeAsserter,
-        expressionParser
+        recursiveExpressionParser,
+        shiftReduceExpressionParser
     )
 
     private val endForStatementParser = EndForStatementParser()
