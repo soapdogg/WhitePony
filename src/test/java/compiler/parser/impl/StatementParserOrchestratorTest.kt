@@ -6,7 +6,6 @@ import compiler.core.nodes.parsed.ParsedBasicBlockNode
 import compiler.core.stack.Stack
 import compiler.core.stack.StatementParserLocation
 import compiler.core.tokenizer.Token
-import compiler.parser.impl.internal.IExpressionParser
 import compiler.parser.impl.internal.IStackGenerator
 import compiler.parser.impl.internal.IStatementParser
 import org.junit.jupiter.api.Assertions
@@ -52,14 +51,19 @@ class StatementParserOrchestratorTest {
                 stack,
                 resultStack,
                 expressionStack,
-                numberOfStatementsBlockStack
+                numberOfStatementsBlockStack,
+                false
             )
         ).then{
             resultStack.push(result)
             return@then positionAfterStatement
         }
 
-        val (actual, actualPosition) = statementParserOrchestrator.parse(tokens, startingPosition)
+        val (actual, actualPosition) = statementParserOrchestrator.parse(
+            tokens,
+            startingPosition,
+            false
+        )
         Assertions.assertEquals(result, actual)
         Assertions.assertEquals(positionAfterStatement, actualPosition)
     }

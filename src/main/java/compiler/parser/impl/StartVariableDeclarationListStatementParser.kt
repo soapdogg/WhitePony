@@ -17,9 +17,13 @@ internal class StartVariableDeclarationListStatementParser(
         stack: Stack<StatementParserLocation>,
         resultStack: Stack<IParsedStatementNode>,
         expressionStack: Stack<IParsedExpressionNode>,
-        numberOfStatementsBlockStack: Stack<Int>
+        numberOfStatementsBlockStack: Stack<Int>,
+        useShiftReduce: Boolean
     ): Int {
-        val (variableStatement, positionAfterVariable) = variableDeclarationListParser.parse(tokens, tokenPosition)
+        val (variableStatement, positionAfterVariable) = variableDeclarationListParser.parse(
+            tokens,
+            tokenPosition
+        )
         resultStack.push(variableStatement)
         return positionAfterVariable
     }

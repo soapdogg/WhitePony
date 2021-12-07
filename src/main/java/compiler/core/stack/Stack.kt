@@ -13,4 +13,6 @@ class Stack<T> {
     }
 
     fun isNotEmpty(): Boolean = elements.isNotEmpty()
+
+    fun isEmpty(): Boolean = elements.isEmpty()
 }

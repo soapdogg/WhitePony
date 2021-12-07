@@ -34,7 +34,15 @@ class StartBasicBlockStatementParserTest {
         val tokenType = TokenType.WHILE
         Mockito.`when`(secondToken.type).thenReturn(tokenType)
 
-        val actual = startBasicBlockStatementParser.parse(tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack)
+        val actual = startBasicBlockStatementParser.parse(
+            tokens,
+            tokenPosition,
+            stack,
+            resultStack,
+            expressionStack,
+            numberOfStatementsBlockStack,
+            false
+        )
         Assertions.assertEquals(positionAfterLeftBrace, actual)
         val start = stack.pop()
         Assertions.assertEquals(StatementParserLocation.LOCATION_START, start)
@@ -64,7 +72,15 @@ class StartBasicBlockStatementParserTest {
         val positionAfterRightBrace = 2
         Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, positionAfterLeftBrace, TokenType.RIGHT_BRACE)).thenReturn(Pair(Mockito.mock(Token::class.java), positionAfterRightBrace))
 
-        val actual = startBasicBlockStatementParser.parse(tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack)
+        val actual = startBasicBlockStatementParser.parse(
+            tokens,
+            tokenPosition,
+            stack,
+            resultStack,
+            expressionStack,
+            numberOfStatementsBlockStack,
+            false
+        )
         Assertions.assertEquals(positionAfterRightBrace, actual)
         val top = resultStack.pop() as ParsedBasicBlockNode
         Assertions.assertEquals(listOf<IParsedStatementNode>(), top.statements)

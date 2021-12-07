@@ -40,7 +40,15 @@ class StartIfStatementParserTest {
         val positionAfterBooleanExpression = 2
         Mockito.`when`(recursiveExpressionParser.parse(tokens, positionAfterIf)).thenReturn(Pair(booleanExpression, positionAfterBooleanExpression))
 
-        val actual = startIfStatementParser.parse(tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack)
+        val actual = startIfStatementParser.parse(
+            tokens,
+            tokenPosition,
+            stack,
+            resultStack,
+            expressionStack,
+            numberOfStatementsBlockStack,
+            false
+        )
         Assertions.assertEquals(positionAfterBooleanExpression, actual)
 
         val startLocation = stack.pop()

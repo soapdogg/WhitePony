@@ -18,7 +18,8 @@ internal class StartDoStatementParser(
         stack: Stack<StatementParserLocation>,
         resultStack: Stack<IParsedStatementNode>,
         expressionStack: Stack<IParsedExpressionNode>,
-        numberOfStatementsBlockStack: Stack<Int>
+        numberOfStatementsBlockStack: Stack<Int>,
+        useShiftReduce: Boolean
     ): Int {
         val (_, positionAfterDo) = tokenTypeAsserter.assertTokenType(tokens, tokenPosition, TokenType.DO)
         stack.push(StatementParserLocation.LOCATION_DO)

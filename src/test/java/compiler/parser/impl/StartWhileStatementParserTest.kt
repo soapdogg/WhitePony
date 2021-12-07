@@ -40,7 +40,15 @@ class StartWhileStatementParserTest {
         val positionAfterExpression = 2
         Mockito.`when`(recursiveExpressionParser.parse(tokens, positionAfterWhile)).thenReturn(Pair(expression, positionAfterExpression))
 
-        val actual = startWhileStatementParser.parse(tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack)
+        val actual = startWhileStatementParser.parse(
+            tokens,
+            tokenPosition,
+            stack,
+            resultStack,
+            expressionStack,
+            numberOfStatementsBlockStack,
+            false
+        )
         Assertions.assertEquals(positionAfterExpression, actual)
 
         val locationStart = stack.pop()

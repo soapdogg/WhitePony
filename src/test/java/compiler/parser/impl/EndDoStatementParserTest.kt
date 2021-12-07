@@ -43,7 +43,13 @@ class EndDoStatementParserTest {
         Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, positionAfterExpression, TokenType.SEMICOLON)).thenReturn(Pair(Mockito.mock(Token::class.java), positionAfterSemiColon))
 
         val actual = endDoStatementParser.parse(
-            tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack
+            tokens,
+            tokenPosition,
+            stack,
+            resultStack,
+            expressionStack,
+            numberOfStatementsBlockStack,
+            false
         )
 
         Assertions.assertEquals(positionAfterSemiColon, actual)

@@ -15,7 +15,8 @@ internal class EndWhileStatementParser: IStatementParser {
         stack: Stack<StatementParserLocation>,
         resultStack: Stack<IParsedStatementNode>,
         expressionStack: Stack<IParsedExpressionNode>,
-        numberOfStatementsBlockStack: Stack<Int>
+        numberOfStatementsBlockStack: Stack<Int>,
+        useShiftReduce: Boolean
     ): Int {
         val expression = expressionStack.pop()
         val body = resultStack.pop()

@@ -17,7 +17,6 @@ class AssignParserTest {
 
     private val assignParser = AssignParser(
         tokenTypeAsserter,
-        recursiveExpressionParser,
         shiftReduceExpressionParser
     )
 
@@ -36,7 +35,10 @@ class AssignParserTest {
             )
         ).thenReturn(Pair(expressionNode, positionAfterExpression))
 
-        val (actualAssignNode, actualFinalPosition) = assignParser.parse(tokens, startingPosition)
+        val (actualAssignNode, actualFinalPosition) = assignParser.parse(
+            tokens,
+            startingPosition
+        )
         Assertions.assertEquals(expressionNode, actualAssignNode.expressionNode)
         Assertions.assertEquals(positionAfterExpression, actualFinalPosition)
         Mockito.verify(tokenTypeAsserter).assertTokenType(tokens, startingPosition, TokenType.BINARY_ASSIGN)

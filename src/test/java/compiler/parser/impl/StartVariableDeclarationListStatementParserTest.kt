@@ -29,10 +29,19 @@ class StartVariableDeclarationListStatementParserTest {
 
         val variableStatement = Mockito.mock(VariableDeclarationListNode::class.java)
         val positionAfterVariable = 1
-        Mockito.`when`(variableDeclarationListParser.parse(tokens, tokenPosition)).thenReturn(Pair(variableStatement, positionAfterVariable))
+        Mockito.`when`(variableDeclarationListParser.parse(
+            tokens,
+            tokenPosition
+        )).thenReturn(Pair(variableStatement, positionAfterVariable))
 
         val actual = startVariableDeclarationListStatementParser.parse(
-            tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack
+            tokens,
+            tokenPosition,
+            stack,
+            resultStack,
+            expressionStack,
+            numberOfStatementsBlockStack,
+            false
         )
         Assertions.assertEquals(positionAfterVariable, actual)
 

@@ -24,6 +24,7 @@ internal class FunctionDeclarationParser(
         val (basicBlockNode, finalPosition) = statementParserOrchestrator.parse(
             tokens,
             positionAfterRightParentheses,
+            true,
         )
         val functionDeclarationNode = ParsedFunctionDeclarationNode(
             identifierToken.value,

@@ -34,7 +34,13 @@ class EndBasicBlockStatementParserTest {
         numberOfStatementsBlockStack.push(number)
 
         val actual = endBasicBlockStatementParser.parse(
-            tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack
+            tokens,
+            tokenPosition,
+            stack,
+            resultStack,
+            expressionStack,
+            numberOfStatementsBlockStack,
+            false
         )
 
         Assertions.assertEquals(tokenPosition, actual)
@@ -73,7 +79,13 @@ class EndBasicBlockStatementParserTest {
         numberOfStatementsBlockStack.push(number)
 
         val actual = endBasicBlockStatementParser.parse(
-            tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack
+            tokens,
+            tokenPosition,
+            stack,
+            resultStack,
+            expressionStack,
+            numberOfStatementsBlockStack,
+            false
         )
 
         Assertions.assertEquals(positionAfterRightBrace, actual)

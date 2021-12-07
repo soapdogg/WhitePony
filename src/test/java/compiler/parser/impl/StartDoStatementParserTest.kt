@@ -26,7 +26,15 @@ class StartDoStatementParserTest {
 
         val positionAfterDo = 1
         Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, tokenPosition, TokenType.DO)).thenReturn(Pair(Mockito.mock(Token::class.java), positionAfterDo))
-        val actual = startDoStatementParser.parse(tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack)
+        val actual = startDoStatementParser.parse(
+            tokens,
+            tokenPosition,
+            stack,
+            resultStack,
+            expressionStack,
+            numberOfStatementsBlockStack,
+            false
+        )
         Assertions.assertEquals(positionAfterDo, actual)
         val startLocation = stack.pop()
         Assertions.assertEquals(StatementParserLocation.LOCATION_START, startLocation)

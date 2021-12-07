@@ -28,7 +28,15 @@ class StartExpressionStatementParserTest {
         val positionAfterExpression = 1
         Mockito.`when`(expressionStatementParser.parse(tokens, tokenPosition)).thenReturn(Pair(expressionStatement, positionAfterExpression))
 
-        val actual = startExpressionStatementParser.parse(tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack)
+        val actual = startExpressionStatementParser.parse(
+            tokens,
+            tokenPosition,
+            stack,
+            resultStack,
+            expressionStack,
+            numberOfStatementsBlockStack,
+            false
+        )
         Assertions.assertEquals(positionAfterExpression, actual)
         val top = resultStack.pop()
         Assertions.assertEquals(expressionStatement, top)

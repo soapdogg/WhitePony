@@ -60,7 +60,15 @@ class StartForStatementParserTest {
         val positionAfterRightParentheses = 8
         Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, positionAfterIncrementExpression, TokenType.RIGHT_PARENTHESES)).thenReturn(Pair(token, positionAfterRightParentheses))
 
-        val actual = startForStatementParser.parse(tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack)
+        val actual = startForStatementParser.parse(
+            tokens,
+            tokenPosition,
+            stack,
+            resultStack,
+            expressionStack,
+            numberOfStatementsBlockStack,
+            false
+        )
         Assertions.assertEquals(positionAfterRightParentheses, actual)
 
         val startLocation = stack.pop()

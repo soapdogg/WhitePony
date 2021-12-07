@@ -50,7 +50,8 @@ class FunctionDeclarationParserTest {
         Mockito.`when`(
             statementParser.parse(
                 tokens,
-                positionAfterRightParentheses
+                positionAfterRightParentheses,
+                false
             )
         ).thenReturn(Pair(basicBlockNode, finalPosition))
 

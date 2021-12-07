@@ -34,9 +34,25 @@ class StartLocationStatementParserTest {
         val numberOfStatementsBlockStack = Stack<Int>()
 
         val expected = 23
-        Mockito.`when`(parser.parse(tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack)).thenReturn(expected)
+        Mockito.`when`(parser.parse(
+            tokens,
+            tokenPosition,
+            stack,
+            resultStack,
+            expressionStack,
+            numberOfStatementsBlockStack,
+            false
+        )).thenReturn(expected)
 
-        val actual = startLocationStatementParser.parse(tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack)
+        val actual = startLocationStatementParser.parse(
+            tokens,
+            tokenPosition,
+            stack,
+            resultStack,
+            expressionStack,
+            numberOfStatementsBlockStack,
+            false
+        )
         Assertions.assertEquals(expected, actual)
     }
 
@@ -52,9 +68,25 @@ class StartLocationStatementParserTest {
         val numberOfStatementsBlockStack = Stack<Int>()
 
         val expected = 233
-        Mockito.`when`(startExpressionStatementParser.parse(tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack)).thenReturn(expected)
+        Mockito.`when`(startExpressionStatementParser.parse(
+            tokens,
+            tokenPosition,
+            stack,
+            resultStack,
+            expressionStack,
+            numberOfStatementsBlockStack,
+            false
+        )).thenReturn(expected)
 
-        val actual = startLocationStatementParser.parse(tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack)
+        val actual = startLocationStatementParser.parse(
+            tokens,
+            tokenPosition,
+            stack,
+            resultStack,
+            expressionStack,
+            numberOfStatementsBlockStack,
+            false
+        )
         Assertions.assertEquals(expected, actual)
     }
 }

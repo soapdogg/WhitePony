@@ -1,11 +1,11 @@
 package compiler.parser.impl
 
 import compiler.core.constants.PrinterConstants
-import compiler.core.nodes.parsed.IParsedExpressionNode
-import compiler.core.nodes.parsed.ParsedConstantExpressionNode
-import compiler.core.nodes.parsed.ParsedVariableExpressionNode
+import compiler.core.constants.TokenizerConstants
+import compiler.core.nodes.parsed.*
 import compiler.core.stack.IShiftReduceStackItem
 import compiler.core.stack.NodeShiftReduceStackItem
+import compiler.core.stack.OperatorShiftReduceStackItem
 import compiler.core.stack.Stack
 import compiler.core.tokenizer.Token
 import compiler.core.tokenizer.TokenType
@@ -23,17 +23,55 @@ internal class ShiftReduceExpressionParser(
         var lookAhead = tokens[currentPosition]
 
         do {
-
-            if (lookAhead.type == TokenType.INTEGER || lookAhead.type == TokenType.FLOATING_POINT) {
-                val type = if (lookAhead.type == TokenType.INTEGER) PrinterConstants.INT else PrinterConstants.DOUBLE
-                parseStack.push(NodeShiftReduceStackItem(ParsedConstantExpressionNode(lookAhead.value, type)))
-            } else if (lookAhead.type == TokenType.IDENTIFIER) {
-                parseStack.push(NodeShiftReduceStackItem(ParsedVariableExpressionNode(lookAhead.value)))
+            //Shift
+            val stackItem = when (lookAhead.type) {
+                TokenType.INTEGER, TokenType.FLOATING_POINT -> {
+                    val type = if (lookAhead.type == TokenType.INTEGER) PrinterConstants.INT else PrinterConstants.DOUBLE
+                    NodeShiftReduceStackItem(ParsedConstantExpressionNode(lookAhead.value, type))
+                }
+                TokenType.IDENTIFIER -> {
+                    NodeShiftReduceStackItem(ParsedVariableExpressionNode(lookAhead.value))
+                }
+                else -> {
+                    OperatorShiftReduceStackItem(lookAhead.value)
+                }
             }
 
+            parseStack.push(stackItem)
+
+            //Reduce
+            var canReduce = true
+            while(canReduce) {
+                val top = parseStack.pop()
+                if (top is NodeShiftReduceStackItem) {
+                    val node = top.node
+                    if (parseStack.isNotEmpty()) {
+                        val operatorItem = parseStack.pop() as OperatorShiftReduceStackItem
+                        if (operatorItem.operator == TokenizerConstants.MINUS_OPERATOR) {
+                            val resultNode = ParsedUnaryExpressionNode(node, operatorItem.operator)
+                            parseStack.push(NodeShiftReduceStackItem(resultNode))
+                        }
+                        else if (operatorItem.operator == TokenizerConstants.DIVIDE_OPERATOR) {
+                            val leftItem = parseStack.pop() as NodeShiftReduceStackItem
+                            val resultNode = ParsedBinaryOperatorExpressionNode(leftItem.node, node, operatorItem.operator)
+                            parseStack.push(NodeShiftReduceStackItem(resultNode))
+                        }
+                    }else {
+                        parseStack.push(top)
+                    }
+                    canReduce = false
+                } else {
+                    top as OperatorShiftReduceStackItem
+                    val operator = top.operator
+
+                    parseStack.push(top)
+                    canReduce = false
+                }
+            }
+
+            //Update look ahead
             ++currentPosition
             lookAhead = tokens[currentPosition]
-
         } while (acceptedTokenTypes.contains(lookAhead.type))
 
         val resultStackItem = parseStack.pop() as NodeShiftReduceStackItem

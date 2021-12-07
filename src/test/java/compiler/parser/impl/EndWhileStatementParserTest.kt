@@ -29,7 +29,15 @@ class EndWhileStatementParserTest {
         val body = Mockito.mock(IParsedStatementNode::class.java)
         resultStack.push(body)
 
-        val actual = endWhileStatementParser.parse(tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack)
+        val actual = endWhileStatementParser.parse(
+            tokens,
+            tokenPosition,
+            stack,
+            resultStack,
+            expressionStack,
+            numberOfStatementsBlockStack,
+            false
+        )
         Assertions.assertEquals(tokenPosition, actual)
         val top = resultStack.pop() as ParsedWhileNode
         Assertions.assertEquals(expression, top.expression)

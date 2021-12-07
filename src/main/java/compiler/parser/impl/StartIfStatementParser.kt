@@ -21,7 +21,8 @@ internal class StartIfStatementParser(
         stack: Stack<StatementParserLocation>,
         resultStack: Stack<IParsedStatementNode>,
         expressionStack: Stack<IParsedExpressionNode>,
-        numberOfStatementsBlockStack: Stack<Int>
+        numberOfStatementsBlockStack: Stack<Int>,
+        useShiftReduce: Boolean
     ): Int {
         val (_, positionAfterIf) = tokenTypeAsserter.assertTokenType(tokens, tokenPosition, TokenType.IF)
         val (booleanExpression, positionAfterBooleanExpression) = recursiveExpressionParser.parse(tokens, positionAfterIf)

@@ -17,7 +17,8 @@ internal class StartReturnStatementParser(
         stack: Stack<StatementParserLocation>,
         resultStack: Stack<IParsedStatementNode>,
         expressionStack: Stack<IParsedExpressionNode>,
-        numberOfStatementsBlockStack: Stack<Int>
+        numberOfStatementsBlockStack: Stack<Int>,
+        useShiftReduce: Boolean
     ): Int {
         val (resultStatement, positionAfterReturn) = returnStatementParser.parse(tokens, tokenPosition)
         resultStack.push(resultStatement)

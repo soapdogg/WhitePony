@@ -31,7 +31,15 @@ class EndElseStatementParserTest {
         val elseBody = Mockito.mock(IParsedStatementNode::class.java)
         resultStack.push(elseBody)
 
-        val actual = endElseStatementParser.parse(tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack)
+        val actual = endElseStatementParser.parse(
+            tokens,
+            tokenPosition,
+            stack,
+            resultStack,
+            expressionStack,
+            numberOfStatementsBlockStack,
+            false
+        )
         Assertions.assertEquals(tokenPosition, actual)
         val top = resultStack.pop() as ParsedIfNode
         Assertions.assertEquals(booleanExpression, top.booleanExpression)

@@ -46,12 +46,18 @@ class VariableDeclarationParserTest {
 
         val assignNode = Mockito.mock(AssignNode::class.java)
         val positionAfterAssign = positionAfterArray + 1
-        Mockito.`when`(assignParser.parse(tokens, positionAfterArray)).thenReturn(Pair(assignNode, positionAfterAssign))
+        Mockito.`when`(assignParser.parse(
+            tokens,
+            positionAfterArray
+        )).thenReturn(Pair(assignNode, positionAfterAssign))
 
         val id = "id"
         Mockito.`when`(identifierToken.value).thenReturn(id)
 
-        val (actualVariableDeclarationNode, actualFinalPosition) = variableDeclarationParser.parse(tokens, startingPosition)
+        val (actualVariableDeclarationNode, actualFinalPosition) = variableDeclarationParser.parse(
+            tokens,
+            startingPosition
+        )
         Assertions.assertEquals(id, actualVariableDeclarationNode.id)
         Assertions.assertEquals(arrayNode, actualVariableDeclarationNode.arrayNode)
         Assertions.assertEquals(assignNode, actualVariableDeclarationNode.assignNode)
@@ -73,7 +79,10 @@ class VariableDeclarationParserTest {
         val id = "id"
         Mockito.`when`(identifierToken.value).thenReturn(id)
 
-        val (actualVariableDeclarationNode, actualFinalPosition) = variableDeclarationParser.parse(tokens, startingPosition)
+        val (actualVariableDeclarationNode, actualFinalPosition) = variableDeclarationParser.parse(
+            tokens,
+            startingPosition
+        )
         Assertions.assertEquals(id, actualVariableDeclarationNode.id)
         Assertions.assertNull(actualVariableDeclarationNode.arrayNode)
         Assertions.assertNull(actualVariableDeclarationNode.assignNode)

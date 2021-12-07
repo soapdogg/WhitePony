@@ -36,7 +36,15 @@ class EndIfStatementParserTest {
         val ifBody = Mockito.mock(IParsedStatementNode::class.java)
         resultStack.push(ifBody)
 
-        val actual = endIfStatementParser.parse(tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack)
+        val actual = endIfStatementParser.parse(
+            tokens,
+            tokenPosition,
+            stack,
+            resultStack,
+            expressionStack,
+            numberOfStatementsBlockStack,
+            false
+        )
         Assertions.assertEquals(tokenPosition, actual)
         val top = resultStack.pop() as ParsedIfNode
         Assertions.assertEquals(booleanExpression, top.booleanExpression)
@@ -59,7 +67,15 @@ class EndIfStatementParserTest {
 
         val positionAfterElse = 1
         Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, tokenPosition, TokenType.ELSE)).thenReturn(Pair(Mockito.mock(Token::class.java), positionAfterElse))
-        val actual = endIfStatementParser.parse(tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack)
+        val actual = endIfStatementParser.parse(
+            tokens,
+            tokenPosition,
+            stack,
+            resultStack,
+            expressionStack,
+            numberOfStatementsBlockStack,
+            false
+        )
         Assertions.assertEquals(positionAfterElse, actual)
         val start = stack.pop()
         Assertions.assertEquals(StatementParserLocation.LOCATION_START, start)

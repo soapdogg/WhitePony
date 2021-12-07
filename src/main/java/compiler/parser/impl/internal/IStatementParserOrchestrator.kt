@@ -6,6 +6,7 @@ import compiler.core.tokenizer.Token
 internal interface IStatementParserOrchestrator {
     fun parse(
         tokens: List<Token>,
-        startingPosition: Int
+        startingPosition: Int,
+        useShiftReduce: Boolean
     ): Pair<ParsedBasicBlockNode, Int>
 }

@@ -19,7 +19,9 @@ enum class ParserSingleton {
     private val acceptedTokenTypes = setOf(
         TokenType.FLOATING_POINT,
         TokenType.INTEGER,
-        TokenType.IDENTIFIER
+        TokenType.IDENTIFIER,
+        TokenType.PLUS_MINUS,
+        TokenType.BINARY_OPERATOR
     )
     private val shiftReduceExpressionParser = ShiftReduceExpressionParser(
         acceptedTokenTypes
@@ -31,7 +33,6 @@ enum class ParserSingleton {
     )
     private val assignParser = AssignParser(
         tokenTypeAsserter,
-        recursiveExpressionParser,
         shiftReduceExpressionParser
     )
     private val variableDeclarationParser = VariableDeclarationParser(

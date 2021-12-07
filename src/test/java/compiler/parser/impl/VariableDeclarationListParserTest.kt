@@ -41,12 +41,18 @@ class VariableDeclarationListParserTest {
 
         val variableDeclaration1 = Mockito.mock(VariableDeclarationNode::class.java)
         val positionAfterDeclaration1 = positionAfterType + 1
-        Mockito.`when`(variableDeclarationParser.parse(tokens, positionAfterType)).thenReturn(Pair(variableDeclaration1, positionAfterDeclaration1))
+        Mockito.`when`(variableDeclarationParser.parse(
+            tokens,
+            positionAfterType
+        )).thenReturn(Pair(variableDeclaration1, positionAfterDeclaration1))
 
         val positionAfterComma = positionAfterDeclaration1 + 1
         val variableDeclaration2 = Mockito.mock(VariableDeclarationNode::class.java)
         val positionAfterDeclaration2 = positionAfterComma + 1
-        Mockito.`when`(variableDeclarationParser.parse(tokens, positionAfterComma)).thenReturn(Pair(variableDeclaration2, positionAfterDeclaration2))
+        Mockito.`when`(variableDeclarationParser.parse(
+            tokens,
+            positionAfterComma
+        )).thenReturn(Pair(variableDeclaration2, positionAfterDeclaration2))
 
         val positionAfterSemicolon = positionAfterDeclaration2 + 1
         Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, positionAfterDeclaration2, TokenType.SEMICOLON)).thenReturn(Pair(semicolonToken, positionAfterSemicolon))
@@ -54,7 +60,10 @@ class VariableDeclarationListParserTest {
         val typeTokenValue = "value"
         Mockito.`when`(typeToken.value).thenReturn(typeTokenValue)
 
-        val (actualVariableDeclarationListNode, actualFinalPosition) = variableDeclarationListParser.parse(tokens, startingPosition)
+        val (actualVariableDeclarationListNode, actualFinalPosition) = variableDeclarationListParser.parse(
+            tokens,
+            startingPosition
+        )
         Assertions.assertEquals(typeTokenValue, actualVariableDeclarationListNode.type)
         Assertions.assertEquals(variableDeclaration1, actualVariableDeclarationListNode.variableDeclarations[0])
         Assertions.assertEquals(variableDeclaration2, actualVariableDeclarationListNode.variableDeclarations[1])

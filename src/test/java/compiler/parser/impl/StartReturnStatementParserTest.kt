@@ -33,7 +33,13 @@ class StartReturnStatementParserTest {
         Mockito.`when`(returnStatementParser.parse(tokens, tokenPosition)).thenReturn(Pair(returnStatement, positionAfterReturn))
 
         val actual = startReturnStatementParser.parse(
-            tokens, tokenPosition, stack, resultStack, expressionStack, numberOfStatementsBlockStack
+            tokens,
+            tokenPosition,
+            stack,
+            resultStack,
+            expressionStack,
+            numberOfStatementsBlockStack,
+            false
         )
         Assertions.assertEquals(positionAfterReturn, actual)
 
