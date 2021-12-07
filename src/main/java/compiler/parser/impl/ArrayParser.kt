@@ -9,7 +9,6 @@ import compiler.parser.impl.internal.ITokenTypeAsserter
 
 internal class ArrayParser(
     private val tokenTypeAsserter: ITokenTypeAsserter,
-    private val recursiveExpressionParser: IExpressionParser,
     private val shiftReduceExpressionParser: IExpressionParser
 ): IArrayParser {
     override fun parse(
@@ -20,7 +19,7 @@ internal class ArrayParser(
         val positionAfterLeftBracket = startingPosition + 1
         val hasIndex = tokens[positionAfterLeftBracket].type != TokenType.RIGHT_BRACKET
         val (expressionNode, positionAfterExpression) = if (hasIndex) {
-            recursiveExpressionParser.parse(tokens, positionAfterLeftBracket)
+            shiftReduceExpressionParser.parse(tokens, positionAfterLeftBracket)
         } else {
             Pair(null, positionAfterLeftBracket)
         }

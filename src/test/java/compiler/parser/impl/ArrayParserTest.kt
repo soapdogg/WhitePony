@@ -17,7 +17,6 @@ class ArrayParserTest {
 
     private val arrayParser = ArrayParser(
         tokenTypeAsserter,
-        recursiveExpressionParser,
         shiftReduceExpressionParser
     )
 

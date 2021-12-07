@@ -15,11 +15,18 @@ enum class ParserSingleton {
     private val stackGenerator = StackGenerator()
 
     private val recursiveExpressionParser = RecursiveExpressionParser()
-    private val shiftReduceExpressionParser = ShiftReduceExpressionParser()
+
+    private val acceptedTokenTypes = setOf(
+        TokenType.FLOATING_POINT,
+        TokenType.INTEGER,
+        TokenType.IDENTIFIER
+    )
+    private val shiftReduceExpressionParser = ShiftReduceExpressionParser(
+        acceptedTokenTypes
+    )
 
     private val arrayParser = ArrayParser(
         tokenTypeAsserter,
-        recursiveExpressionParser,
         shiftReduceExpressionParser
     )
     private val assignParser = AssignParser(
