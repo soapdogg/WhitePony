@@ -21,7 +21,10 @@ enum class ParserSingleton {
         TokenType.INTEGER,
         TokenType.IDENTIFIER,
         TokenType.PLUS_MINUS,
-        TokenType.BINARY_OPERATOR
+        TokenType.BINARY_OPERATOR,
+        TokenType.BINARY_RELATIONAL_OPERATOR,
+        TokenType.LEFT_PARENTHESES,
+        TokenType.RIGHT_PARENTHESES
     )
     private val shiftReduceExpressionParser = ShiftReduceExpressionParser(
         acceptedTokenTypes
@@ -87,7 +90,6 @@ enum class ParserSingleton {
 
     private val startWhileStatementParser = StartWhileStatementParser(
         tokenTypeAsserter,
-        recursiveExpressionParser,
         shiftReduceExpressionParser
     )
 

@@ -21,6 +21,8 @@ internal class ShiftReduceExpressionParser(
         val parseStack = Stack<IShiftReduceStackItem>()
         var currentPosition = startingPosition
         var lookAhead = tokens[currentPosition]
+        var hasNotSeenParentheses = true
+        var leftRight = 0
 
         do {
             //Shift
@@ -56,23 +58,49 @@ internal class ShiftReduceExpressionParser(
                             val resultNode = ParsedBinaryOperatorExpressionNode(leftItem.node, node, operatorItem.operator)
                             parseStack.push(NodeShiftReduceStackItem(resultNode))
                         }
-                    }else {
-                        parseStack.push(top)
+                        else if (operatorItem.operator == TokenizerConstants.LESS_THAN_OPERATOR) {
+                            val leftItem = parseStack.pop() as NodeShiftReduceStackItem
+                            val resultNode = ParsedBinaryRelationalOperatorExpressionNode(leftItem.node, node, operatorItem.operator)
+                            parseStack.push(NodeShiftReduceStackItem(resultNode))
+                        }
+                        else {
+                            parseStack.push(operatorItem)
+                            parseStack.push(top)
+                            canReduce = false
+                        }
                     }
-                    canReduce = false
+                    else {
+                        parseStack.push(top)
+                        canReduce = false
+                    }
                 } else {
                     top as OperatorShiftReduceStackItem
                     val operator = top.operator
 
-                    parseStack.push(top)
-                    canReduce = false
+                    if (operator == TokenizerConstants.RIGHT_PARENTHESES) {
+                        --leftRight
+                        hasNotSeenParentheses = false
+                        val nodeItem = parseStack.pop() as NodeShiftReduceStackItem
+                        parseStack.pop() //LEFT_PARENTHESES
+                        parseStack.push(NodeShiftReduceStackItem(ParsedInnerExpressionNode(nodeItem.node)))
+                    }
+                    else if (operator == TokenizerConstants.LEFT_PARENTHESES) {
+                        ++leftRight
+                        hasNotSeenParentheses = false
+                        parseStack.push(top)
+                        canReduce = false
+                    }
+                    else {
+                        parseStack.push(top)
+                        canReduce = false
+                    }
                 }
             }
 
             //Update look ahead
             ++currentPosition
             lookAhead = tokens[currentPosition]
-        } while (acceptedTokenTypes.contains(lookAhead.type))
+        } while (acceptedTokenTypes.contains(lookAhead.type) && (hasNotSeenParentheses || leftRight > 0))
 
         val resultStackItem = parseStack.pop() as NodeShiftReduceStackItem
         return Pair(resultStackItem.node, currentPosition)

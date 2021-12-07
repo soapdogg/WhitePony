@@ -51,7 +51,7 @@ class FunctionDeclarationParserTest {
             statementParser.parse(
                 tokens,
                 positionAfterRightParentheses,
-                false
+                true
             )
         ).thenReturn(Pair(basicBlockNode, finalPosition))
 

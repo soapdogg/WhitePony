@@ -12,7 +12,6 @@ import compiler.parser.impl.internal.ITokenTypeAsserter
 
 internal class StartWhileStatementParser(
     private val tokenTypeAsserter: ITokenTypeAsserter,
-    private val recursiveExpressionParser: IExpressionParser,
     private val shiftReduceExpressionParser: IExpressionParser
 ): IStatementParser {
     override fun parse(
@@ -25,7 +24,8 @@ internal class StartWhileStatementParser(
         useShiftReduce: Boolean
     ): Int {
         val (_, positionAfterWhile) = tokenTypeAsserter.assertTokenType(tokens, tokenPosition, TokenType.WHILE)
-        val (expression, positionAfterExpression) = recursiveExpressionParser.parse(tokens, positionAfterWhile)
+        val (expression, positionAfterExpression) = shiftReduceExpressionParser.parse(tokens, positionAfterWhile)
+
         expressionStack.push(expression)
         stack.push(StatementParserLocation.LOCATION_WHILE)
         stack.push(StatementParserLocation.LOCATION_START)

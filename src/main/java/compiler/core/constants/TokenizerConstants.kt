@@ -4,6 +4,7 @@ object TokenizerConstants {
 
     const val LEFT_BRACKET = "["
     const val LEFT_PARENTHESES = "("
+    const val RIGHT_PARENTHESES = ")"
 
     const val INCREMENT = "++"
     const val DECREMENT = "--"
