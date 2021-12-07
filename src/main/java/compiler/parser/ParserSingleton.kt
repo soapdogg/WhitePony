@@ -23,6 +23,9 @@ enum class ParserSingleton {
         TokenType.PLUS_MINUS,
         TokenType.BINARY_OPERATOR,
         TokenType.BINARY_RELATIONAL_OPERATOR,
+        TokenType.BINARY_AND,
+        TokenType.BINARY_OR,
+        TokenType.UNARY_NOT,
         TokenType.LEFT_PARENTHESES,
         TokenType.RIGHT_PARENTHESES
     )
@@ -72,7 +75,6 @@ enum class ParserSingleton {
 
     private val startIfStatementParser = StartIfStatementParser(
         tokenTypeAsserter,
-        recursiveExpressionParser,
         shiftReduceExpressionParser
     )
 

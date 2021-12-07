@@ -12,7 +12,6 @@ import compiler.parser.impl.internal.ITokenTypeAsserter
 
 internal class StartIfStatementParser(
     private val tokenTypeAsserter: ITokenTypeAsserter,
-    private val recursiveExpressionParser: IExpressionParser,
     private val shiftReduceExpressionParser: IExpressionParser
 ): IStatementParser {
     override fun parse(
@@ -25,7 +24,7 @@ internal class StartIfStatementParser(
         useShiftReduce: Boolean
     ): Int {
         val (_, positionAfterIf) = tokenTypeAsserter.assertTokenType(tokens, tokenPosition, TokenType.IF)
-        val (booleanExpression, positionAfterBooleanExpression) = recursiveExpressionParser.parse(tokens, positionAfterIf)
+        val (booleanExpression, positionAfterBooleanExpression) = shiftReduceExpressionParser.parse(tokens, positionAfterIf)
         expressionStack.push(booleanExpression)
         stack.push(StatementParserLocation.LOCATION_IF)
         stack.push(StatementParserLocation.LOCATION_START)

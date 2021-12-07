@@ -14,12 +14,10 @@ import org.mockito.Mockito
 
 class StartIfStatementParserTest {
     private val tokenTypeAsserter = Mockito.mock(ITokenTypeAsserter::class.java)
-    private val recursiveExpressionParser = Mockito.mock(IExpressionParser::class.java)
     private val shiftReduceExpressionParser = Mockito.mock(IExpressionParser::class.java)
 
     private val startIfStatementParser = StartIfStatementParser(
         tokenTypeAsserter,
-        recursiveExpressionParser,
         shiftReduceExpressionParser
     )
 
@@ -38,7 +36,7 @@ class StartIfStatementParserTest {
 
         val booleanExpression = Mockito.mock(IParsedExpressionNode::class.java)
         val positionAfterBooleanExpression = 2
-        Mockito.`when`(recursiveExpressionParser.parse(tokens, positionAfterIf)).thenReturn(Pair(booleanExpression, positionAfterBooleanExpression))
+        Mockito.`when`(shiftReduceExpressionParser.parse(tokens, positionAfterIf)).thenReturn(Pair(booleanExpression, positionAfterBooleanExpression))
 
         val actual = startIfStatementParser.parse(
             tokens,

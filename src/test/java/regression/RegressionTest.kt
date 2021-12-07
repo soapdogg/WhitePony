@@ -41,8 +41,7 @@ class RegressionTest {
 
     @Test
     fun regressionIndividualTest() {
-
-        val input = Program9
+        val input = Program18
         val intermediateCode = null
         val (parseTreeString, translatedTreeString) = recursiveCompiler.compile(input)
         Assertions.assertEquals(input, parseTreeString)
