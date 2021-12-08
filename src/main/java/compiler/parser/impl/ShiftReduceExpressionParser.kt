@@ -8,7 +8,8 @@ import compiler.core.stack.OperatorShiftReduceStackItem
 import compiler.core.stack.Stack
 import compiler.core.tokenizer.Token
 import compiler.core.tokenizer.TokenType
-import compiler.parser.impl.internal.IBinaryExpressionNodeReducer
+import compiler.parser.impl.internal.IExpressionNodeReducer
+import compiler.parser.impl.internal.IExpressionNodeReductionOrchestrator
 import compiler.parser.impl.internal.IExpressionParser
 import compiler.parser.impl.internal.IOperatorPrecedenceDeterminer
 import compiler.parser.impl.internal.IReductionEnder
@@ -16,13 +17,13 @@ import compiler.parser.impl.internal.IShifter
 
 internal class ShiftReduceExpressionParser(
     private val shifter: IShifter,
-    private val binaryExpressionNodeReducerMap: Map<String, IBinaryExpressionNodeReducer>,
+    private val expressionNodeReductionOrchestrator: IExpressionNodeReductionOrchestrator,
+    private val expressionNodeReducerMap: Map<String, IExpressionNodeReducer>,
+    private val plusMinusOperatorSet: Set<String>,
     private val reductionEnder: IReductionEnder,
     private val operatorPrecedenceDeterminer: IOperatorPrecedenceDeterminer,
     private val acceptedTokenTypes: Set<TokenType>,
     private val binaryOperatorExpressionNodeReducer: BinaryOperatorExpressionNodeReducer,
-    private val unaryPreExpressionOperatorNodeReducer: UnaryPreExpressionOperatorNodeReducer,
-    private val unaryNotExpressionNodeReducer: UnaryNotExpressionNodeReducer,
     private val unaryExpressionNodeReducer: UnaryExpressionNodeReducer
 ): IExpressionParser {
     override fun parse(
@@ -48,69 +49,24 @@ internal class ShiftReduceExpressionParser(
                     val node = top.node
                     if (parseStack.isNotEmpty()) {
                         val operatorItem = parseStack.pop() as OperatorShiftReduceStackItem
+                        val operator = operatorItem.operator
 
-                        if (binaryExpressionNodeReducerMap.containsKey(operatorItem.operator)) {
-                            val operator = operatorItem.operator
-                            val isLookaheadLowerPrecedence = operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(
-                                operator,
-                                lookAhead.value
-                            )
-                            if (isLookaheadLowerPrecedence) {
-                                canReduce = reductionEnder.endReduction(parseStack, listOf(operatorItem, top))
+                        if (expressionNodeReducerMap.containsKey(operator)) {
+                            canReduce = expressionNodeReductionOrchestrator.reduce(lookAhead.value, top, operatorItem, parseStack)
+                        } else if (plusMinusOperatorSet.contains(operator)) {
+                            if (parseStack.isNotEmpty()) {
+                                if (
+                                    operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operator, lookAhead.value)
+                                ) {
+                                    canReduce = reductionEnder.endReduction(parseStack, listOf(operatorItem, top))
+                                } else {
+                                    binaryOperatorExpressionNodeReducer.reduceToExpressionNode(node, operator, parseStack)
+                                }
                             } else {
-                                val binaryExpressionReducer = binaryExpressionNodeReducerMap.getValue(operator)
-                                binaryExpressionReducer.reduceToBinaryNode(
-                                    node,
-                                    operatorItem.operator,
-                                    parseStack
-                                )
+                                unaryExpressionNodeReducer.reduceToExpressionNode(node, operator, parseStack)
                             }
                         } else {
-                            when (operatorItem.operator) {
-                                TokenizerConstants.INCREMENT, TokenizerConstants.DECREMENT -> {
-                                    if (
-                                        operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operatorItem.operator, lookAhead.value)
-                                    ) {
-                                        canReduce = reductionEnder.endReduction(parseStack, listOf(operatorItem, top))
-                                    } else {
-                                        unaryPreExpressionOperatorNodeReducer.reduceToUnaryNode(node, operatorItem.operator, parseStack)
-                                    }
-                                }
-                                TokenizerConstants.NEGATION -> {
-                                    if (
-                                        operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operatorItem.operator, lookAhead.value)
-                                    ) {
-                                        canReduce = reductionEnder.endReduction(parseStack, listOf(operatorItem, top))
-                                    } else {
-                                        unaryNotExpressionNodeReducer.reduceToUnaryNode(node, operatorItem.operator, parseStack)
-                                    }
-                                }
-                                TokenizerConstants.BIT_NEGATION -> {
-                                    if (
-                                        operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operatorItem.operator, lookAhead.value)
-                                    ) {
-                                        canReduce = reductionEnder.endReduction(parseStack, listOf(operatorItem, top))
-                                    } else {
-                                        unaryExpressionNodeReducer.reduceToUnaryNode(node, operatorItem.operator, parseStack)
-                                    }
-                                }
-                                TokenizerConstants.MINUS_OPERATOR, TokenizerConstants.PLUS_OPERATOR -> {
-                                    if (parseStack.isNotEmpty()) {
-                                        if (
-                                            operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operatorItem.operator, lookAhead.value)
-                                        ) {
-                                            canReduce = reductionEnder.endReduction(parseStack, listOf(operatorItem, top))
-                                        } else {
-                                            binaryOperatorExpressionNodeReducer.reduceToBinaryNode(node, operatorItem.operator, parseStack)
-                                        }
-                                    } else {
-                                        unaryExpressionNodeReducer.reduceToUnaryNode(node, operatorItem.operator, parseStack)
-                                    }
-                                }
-                                else -> {
-                                    canReduce = reductionEnder.endReduction(parseStack, listOf(operatorItem, top))
-                                }
-                            }
+                            canReduce = reductionEnder.endReduction(parseStack, listOf(operatorItem, top))
                         }
                     }
                     else {

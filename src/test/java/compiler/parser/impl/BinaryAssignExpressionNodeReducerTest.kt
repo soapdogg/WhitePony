@@ -2,7 +2,6 @@ package compiler.parser.impl
 
 import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.ParsedBinaryAssignExpressionNode
-import compiler.core.nodes.parsed.ParsedBinaryOperatorExpressionNode
 import compiler.core.stack.IShiftReduceStackItem
 import compiler.core.stack.NodeShiftReduceStackItem
 import compiler.core.stack.Stack
@@ -25,7 +24,7 @@ class BinaryAssignExpressionNodeReducerTest {
         val leftNode = Mockito.mock(IParsedExpressionNode::class.java)
         Mockito.`when`(leftItem.node).thenReturn(leftNode)
 
-        binaryAssignExpressionNodeReducer.reduceToBinaryNode(rightNode, operator, parseStack)
+        binaryAssignExpressionNodeReducer.reduceToExpressionNode(rightNode, operator, parseStack)
         val top = parseStack.pop() as NodeShiftReduceStackItem
         val resultNode = top.node as ParsedBinaryAssignExpressionNode
         Assertions.assertEquals(leftNode, resultNode.leftExpression)

@@ -18,7 +18,7 @@ class UnaryPreExpressionNodeReducerTest {
         val operator = "operator"
         val parseStack = Stack<IShiftReduceStackItem>()
 
-        unaryPreExpressionOperatorNodeReducer.reduceToUnaryNode(insideNode, operator, parseStack)
+        unaryPreExpressionOperatorNodeReducer.reduceToExpressionNode(insideNode, operator, parseStack)
         val top = parseStack.pop() as NodeShiftReduceStackItem
         val node = top.node as ParsedUnaryPreOperatorExpressionNode
         Assertions.assertEquals(insideNode, node.expression)

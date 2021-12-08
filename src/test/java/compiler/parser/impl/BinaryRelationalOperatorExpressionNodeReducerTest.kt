@@ -24,7 +24,7 @@ class BinaryRelationalOperatorExpressionNodeReducerTest {
         val leftNode = Mockito.mock(IParsedExpressionNode::class.java)
         Mockito.`when`(leftItem.node).thenReturn(leftNode)
 
-        binaryRelationalOperatorExpressionNodeReducer.reduceToBinaryNode(rightNode, operator, parseStack)
+        binaryRelationalOperatorExpressionNodeReducer.reduceToExpressionNode(rightNode, operator, parseStack)
         val top = parseStack.pop() as NodeShiftReduceStackItem
         val resultNode = top.node as ParsedBinaryRelationalOperatorExpressionNode
         Assertions.assertEquals(leftNode, resultNode.leftExpression)

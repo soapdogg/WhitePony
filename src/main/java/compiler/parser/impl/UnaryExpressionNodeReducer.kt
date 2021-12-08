@@ -5,15 +5,15 @@ import compiler.core.nodes.parsed.ParsedUnaryExpressionNode
 import compiler.core.stack.IShiftReduceStackItem
 import compiler.core.stack.NodeShiftReduceStackItem
 import compiler.core.stack.Stack
-import compiler.parser.impl.internal.IUnaryExpressionNodeReducer
+import compiler.parser.impl.internal.IExpressionNodeReducer
 
-internal class UnaryExpressionNodeReducer: IUnaryExpressionNodeReducer {
-    override fun reduceToUnaryNode(
-        insideNode: IParsedExpressionNode,
+internal class UnaryExpressionNodeReducer: IExpressionNodeReducer {
+    override fun reduceToExpressionNode(
+        rightNode: IParsedExpressionNode,
         operator: String,
         parseStack: Stack<IShiftReduceStackItem>
     ) {
-        val resultNode = ParsedUnaryExpressionNode(insideNode, operator)
+        val resultNode = ParsedUnaryExpressionNode(rightNode, operator)
         parseStack.push(NodeShiftReduceStackItem(resultNode))
     }
 }

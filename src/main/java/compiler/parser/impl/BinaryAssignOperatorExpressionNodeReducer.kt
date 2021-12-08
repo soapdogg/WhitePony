@@ -7,10 +7,10 @@ import compiler.core.nodes.parsed.ParsedBinaryAssignOperatorExpressionNode
 import compiler.core.stack.IShiftReduceStackItem
 import compiler.core.stack.NodeShiftReduceStackItem
 import compiler.core.stack.Stack
-import compiler.parser.impl.internal.IBinaryExpressionNodeReducer
+import compiler.parser.impl.internal.IExpressionNodeReducer
 
-internal class BinaryAssignOperatorExpressionNodeReducer: IBinaryExpressionNodeReducer {
-    override fun reduceToBinaryNode(
+internal class BinaryAssignOperatorExpressionNodeReducer: IExpressionNodeReducer {
+    override fun reduceToExpressionNode(
         rightNode: IParsedExpressionNode,
         operator: String,
         parseStack: Stack<IShiftReduceStackItem>

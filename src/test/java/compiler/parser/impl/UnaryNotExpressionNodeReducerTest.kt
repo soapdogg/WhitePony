@@ -2,7 +2,6 @@ package compiler.parser.impl
 
 import compiler.core.nodes.parsed.IParsedExpressionNode
 import compiler.core.nodes.parsed.ParsedUnaryNotOperatorExpressionNode
-import compiler.core.nodes.parsed.ParsedUnaryPreOperatorExpressionNode
 import compiler.core.stack.IShiftReduceStackItem
 import compiler.core.stack.NodeShiftReduceStackItem
 import compiler.core.stack.Stack
@@ -19,7 +18,7 @@ class UnaryNotExpressionNodeReducerTest {
         val operator = "operator"
         val parseStack = Stack<IShiftReduceStackItem>()
 
-        unaryNotExpressionNodeReducer.reduceToUnaryNode(insideNode, operator, parseStack)
+        unaryNotExpressionNodeReducer.reduceToExpressionNode(insideNode, operator, parseStack)
         val top = parseStack.pop() as NodeShiftReduceStackItem
         val node = top.node as ParsedUnaryNotOperatorExpressionNode
         Assertions.assertEquals(insideNode, node.expression)
