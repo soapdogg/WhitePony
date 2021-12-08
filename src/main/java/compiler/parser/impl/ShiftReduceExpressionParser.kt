@@ -57,8 +57,14 @@ internal class ShiftReduceExpressionParser(
                         val operatorItem = parseStack.pop() as OperatorShiftReduceStackItem
                         when (operatorItem.operator) {
                             TokenizerConstants.INCREMENT -> {
-                                val resultNode = ParsedUnaryPreOperatorExpressionNode(node, TokenizerConstants.PLUS_OPERATOR)
-                                parseStack.push(NodeShiftReduceStackItem(resultNode))
+                                if (lookAhead.value == TokenizerConstants.LEFT_BRACKET) {
+                                    parseStack.push(operatorItem)
+                                    parseStack.push(top)
+                                    canReduce = false
+                                } else {
+                                    val resultNode = ParsedUnaryPreOperatorExpressionNode(node, TokenizerConstants.PLUS_OPERATOR)
+                                    parseStack.push(NodeShiftReduceStackItem(resultNode))
+                                }
                             }
                             TokenizerConstants.DECREMENT -> {
                                 val resultNode = ParsedUnaryPreOperatorExpressionNode(node, TokenizerConstants.MINUS_OPERATOR)
@@ -191,6 +197,9 @@ internal class ShiftReduceExpressionParser(
                                     || lookAhead.value == TokenizerConstants.BITWISE_XOR_OPERATOR
                                     || lookAhead.value == TokenizerConstants.BITWISE_AND_OPERATOR
                                     || lookAhead.value == TokenizerConstants.ASSIGN_OPERATOR
+                                    || lookAhead.value == TokenizerConstants.INCREMENT
+                                    || lookAhead.value == TokenizerConstants.DECREMENT
+                                    || lookAhead.value == TokenizerConstants.LEFT_BRACKET
                                 ){
                                     parseStack.push(leftItem)
                                     parseStack.push(operatorItem)
@@ -212,6 +221,7 @@ internal class ShiftReduceExpressionParser(
                                     || lookAhead.value == TokenizerConstants.BITWISE_OR_OPERATOR
                                     || lookAhead.value == TokenizerConstants.BITWISE_XOR_OPERATOR
                                     || lookAhead.value == TokenizerConstants.BITWISE_AND_OPERATOR
+                                    || lookAhead.value == TokenizerConstants.MULTIPLY_OPERATOR
                                 ){
                                     parseStack.push(leftItem)
                                     parseStack.push(operatorItem)
