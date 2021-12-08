@@ -79,16 +79,15 @@ internal class ShiftReduceExpressionParser(
                             }
                             TokenizerConstants.MINUS_OPERATOR, TokenizerConstants.PLUS_OPERATOR -> {
                                 if (parseStack.isNotEmpty() ) {
-                                    val leftItem = parseStack.pop() as NodeShiftReduceStackItem
                                     if (lookAhead.value == TokenizerConstants.MULTIPLY_OPERATOR
                                         || lookAhead.value == TokenizerConstants.DIVIDE_OPERATOR
                                         || lookAhead.value == TokenizerConstants.MODULUS_OPERATOR
                                     ) { //TODO this is precedence
-                                        parseStack.push(leftItem)
                                         parseStack.push(operatorItem)
                                         parseStack.push(top)
                                         canReduce = false
                                     } else {
+                                        val leftItem = parseStack.pop() as NodeShiftReduceStackItem
                                         val resultItem = ParsedBinaryOperatorExpressionNode(leftItem.node, node, operatorItem.operator)
                                         parseStack.push(NodeShiftReduceStackItem(resultItem))
                                     }
@@ -98,31 +97,29 @@ internal class ShiftReduceExpressionParser(
                                 }
                             }
                             TokenizerConstants.DIVIDE_OPERATOR, TokenizerConstants.MODULUS_OPERATOR, TokenizerConstants.MULTIPLY_OPERATOR -> {
-                                val leftItem = parseStack.pop() as NodeShiftReduceStackItem
                                 if (
                                     lookAhead.value == TokenizerConstants.LEFT_BRACKET
                                 ) { //TODO precedence
-                                    parseStack.push(leftItem)
                                     parseStack.push(operatorItem)
                                     parseStack.push(top)
                                     canReduce = false
                                 } else {
+                                    val leftItem = parseStack.pop() as NodeShiftReduceStackItem
                                     val resultNode = ParsedBinaryOperatorExpressionNode(leftItem.node, node, operatorItem.operator)
                                     parseStack.push(NodeShiftReduceStackItem(resultNode))
                                 }
                             }
                             TokenizerConstants.LEFT_SHIFT_OPERATOR, TokenizerConstants.RIGHT_SHIFT_OPERATOR -> {
-                                val leftItem = parseStack.pop() as NodeShiftReduceStackItem
                                 if (
                                     lookAhead.value == TokenizerConstants.PLUS_OPERATOR
                                     || lookAhead.value == TokenizerConstants.MINUS_OPERATOR
                                     || lookAhead.value == TokenizerConstants.MULTIPLY_OPERATOR
                                 ) { //TODO precedence
-                                    parseStack.push(leftItem)
                                     parseStack.push(operatorItem)
                                     parseStack.push(top)
                                     canReduce = false
                                 } else {
+                                    val leftItem = parseStack.pop() as NodeShiftReduceStackItem
                                     val resultNode = ParsedBinaryOperatorExpressionNode(leftItem.node, node, operatorItem.operator)
                                     parseStack.push(NodeShiftReduceStackItem(resultNode))
                                 }
@@ -136,52 +133,48 @@ internal class ShiftReduceExpressionParser(
                                 parseStack.push(NodeShiftReduceStackItem(resultNode))
                             }
                             TokenizerConstants.BITWISE_AND_OPERATOR -> {
-                                val leftItem = parseStack.pop() as NodeShiftReduceStackItem
                                 if (
                                     lookAhead.value == TokenizerConstants.PLUS_OPERATOR
                                     || lookAhead.value == TokenizerConstants.GREATER_THAN_OPERATOR
                                 ) { //TODO precedence
-                                    parseStack.push(leftItem)
                                     parseStack.push(operatorItem)
                                     parseStack.push(top)
                                     canReduce = false
                                 } else {
+                                    val leftItem = parseStack.pop() as NodeShiftReduceStackItem
                                     val resultNode = ParsedBinaryOperatorExpressionNode(leftItem.node, node, operatorItem.operator)
                                     parseStack.push(NodeShiftReduceStackItem(resultNode))
                                 }
                             }
                             TokenizerConstants.BITWISE_XOR_OPERATOR -> {
-                                val leftItem = parseStack.pop() as NodeShiftReduceStackItem
                                 if (
                                     lookAhead.value == TokenizerConstants.PLUS_OPERATOR
                                     || lookAhead.value == TokenizerConstants.GREATER_THAN_OPERATOR
                                 ) { //TODO precedence
-                                    parseStack.push(leftItem)
                                     parseStack.push(operatorItem)
                                     parseStack.push(top)
                                     canReduce = false
                                 } else {
+                                    val leftItem = parseStack.pop() as NodeShiftReduceStackItem
                                     val resultNode = ParsedBinaryOperatorExpressionNode(leftItem.node, node, operatorItem.operator)
                                     parseStack.push(NodeShiftReduceStackItem(resultNode))
                                 }
                             }
                             TokenizerConstants.BITWISE_OR_OPERATOR -> {
-                                val leftItem = parseStack.pop() as NodeShiftReduceStackItem
                                 if (
                                     lookAhead.value == TokenizerConstants.PLUS_OPERATOR
                                     || lookAhead.value == TokenizerConstants.GREATER_THAN_OPERATOR
                                 ) { //TODO precedence
-                                    parseStack.push(leftItem)
                                     parseStack.push(operatorItem)
                                     parseStack.push(top)
                                     canReduce = false
                                 } else {
+                                    val leftItem = parseStack.pop() as NodeShiftReduceStackItem
                                     val resultNode = ParsedBinaryOperatorExpressionNode(leftItem.node, node, operatorItem.operator)
                                     parseStack.push(NodeShiftReduceStackItem(resultNode))
                                 }
                             }
                             TokenizerConstants.AND_OPERATOR -> {
-                                val leftItem = parseStack.pop() as NodeShiftReduceStackItem
                                 if (lookAhead.value == TokenizerConstants.GREATER_THAN_EQUALS_OPERATOR
                                     || lookAhead.value == TokenizerConstants.GREATER_THAN_OPERATOR
                                     || lookAhead.value == TokenizerConstants.LESS_THAN_OPERATOR
@@ -189,32 +182,30 @@ internal class ShiftReduceExpressionParser(
                                     || lookAhead.value == TokenizerConstants.RELATIONAL_EQUALS
                                     || lookAhead.value == TokenizerConstants.RELATIONAL_NOT_EQUALS
                                 ) { //TODO This needs to be precedence
-                                    parseStack.push(leftItem)
                                     parseStack.push(operatorItem)
                                     parseStack.push(top)
                                     canReduce = false
                                 } else {
+                                    val leftItem = parseStack.pop() as NodeShiftReduceStackItem
                                     val resultNode = ParsedBinaryAndOperatorExpressionNode(leftItem.node, node)
                                     parseStack.push(NodeShiftReduceStackItem(resultNode))
                                 }
                             }
                             TokenizerConstants.OR_OPERATOR -> {
-                                val leftItem = parseStack.pop() as NodeShiftReduceStackItem
                                 if (lookAhead.value == TokenizerConstants.LESS_THAN_OPERATOR
                                     || lookAhead.value == TokenizerConstants.MODULUS_OPERATOR
                                     || lookAhead.value == TokenizerConstants.RELATIONAL_EQUALS
                                 ) { //TODO this is supposed to be precedence
-                                    parseStack.push(leftItem)
                                     parseStack.push(operatorItem)
                                     parseStack.push(top)
                                     canReduce = false
                                 } else {
+                                    val leftItem = parseStack.pop() as NodeShiftReduceStackItem
                                     val resultNode = ParsedBinaryOrOperatorExpressionNode(leftItem.node, node)
                                     parseStack.push(NodeShiftReduceStackItem(resultNode))
                                 }
                             }
                             TokenizerConstants.ASSIGN_OPERATOR -> {
-                                val leftItem = parseStack.pop() as NodeShiftReduceStackItem
                                 if (
                                     lookAhead.value == TokenizerConstants.PLUS_OPERATOR
                                     || lookAhead.value == TokenizerConstants.MINUS_OPERATOR
@@ -227,11 +218,11 @@ internal class ShiftReduceExpressionParser(
                                     || lookAhead.value == TokenizerConstants.DECREMENT
                                     || lookAhead.value == TokenizerConstants.LEFT_BRACKET
                                 ){
-                                    parseStack.push(leftItem)
                                     parseStack.push(operatorItem)
                                     parseStack.push(top)
                                     canReduce = false
                                 } else {
+                                    val leftItem = parseStack.pop() as NodeShiftReduceStackItem
                                     val resultNode = ParsedBinaryAssignExpressionNode(leftItem.node, node)
                                     parseStack.push(NodeShiftReduceStackItem(resultNode))
                                 }
