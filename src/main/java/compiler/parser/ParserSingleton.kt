@@ -158,11 +158,21 @@ enum class ParserSingleton {
         expressionNodeReducerMap, expressionNodeReductionOrchestrator, plusMinusOperatorSet, plusMinusExpressionNodeReductionOrchestrator, reductionEnder
     )
 
+    private val operators = plusMinusOperatorSet + expressionNodeReducerMap.keys
+
+    private val binaryArrayExpressionNodeReducer = BinaryArrayExpressionNodeReducer()
+    private val innerExpressionNodeReducer = InnerExpressionNodeReducer()
+    private val unaryPostExpressionNodeReducer = UnaryPostExpressionNodeReducer()
+
     private val shiftReduceExpressionParser = ShiftReduceExpressionParser(
         shifter,
         nodeReducer,
         reductionEnder,
-        acceptedTokenTypes
+        acceptedTokenTypes,
+        operators,
+        binaryArrayExpressionNodeReducer,
+        innerExpressionNodeReducer,
+        unaryPostExpressionNodeReducer
     )
 
     private val arrayParser = ArrayParser(

@@ -17,7 +17,11 @@ internal class ShiftReduceExpressionParser(
     private val shifter: IShifter,
     private val nodeReducer: INodeReducer,
     private val reductionEnder: IReductionEnder,
-    private val acceptedTokenTypes: Set<TokenType>
+    private val acceptedTokenTypes: Set<TokenType>,
+    private val operators: Set<String>,
+    private val binaryArrayExpressionNodeReducer: BinaryArrayExpressionNodeReducer,
+    private val innerExpressionNodeReducer: InnerExpressionNodeReducer,
+    private val unaryPostExpressionNodeReducer: UnaryPostExpressionNodeReducer
 ): IExpressionParser {
     override fun parse(
         tokens: List<Token>,
@@ -51,10 +55,9 @@ internal class ShiftReduceExpressionParser(
                                 currentPosition--
                                 break@top
                             }
-                            hasNotSeenParentheses = lookAhead.value == TokenizerConstants.MINUS_OPERATOR //TODO this is hack
+                            hasNotSeenParentheses = operators.contains(lookAhead.value)
                             val nodeItem = parseStack.pop() as NodeShiftReduceStackItem
-                            parseStack.pop() //LEFT_PARENTHESES
-                            parseStack.push(NodeShiftReduceStackItem(ParsedInnerExpressionNode(nodeItem.node)))
+                            innerExpressionNodeReducer.reduceToExpressionNode(nodeItem.node, top.operator, parseStack)
                         }
                         TokenizerConstants.LEFT_PARENTHESES -> {
                             ++leftRightParentheses
@@ -68,20 +71,17 @@ internal class ShiftReduceExpressionParser(
                                 break@top
                             }
                             val nodeItem = parseStack.pop() as NodeShiftReduceStackItem
-                            parseStack.pop() //LEFT_BRACKET
-                            val variableItem = parseStack.pop() as NodeShiftReduceStackItem
-                            parseStack.push(NodeShiftReduceStackItem(ParsedBinaryArrayExpressionNode(variableItem.node as ParsedVariableExpressionNode, nodeItem.node)))
+                            binaryArrayExpressionNodeReducer.reduceToExpressionNode(nodeItem.node, top.operator, parseStack)
                         }
                         TokenizerConstants.LEFT_BRACKET -> {
                             ++leftRightBracket
                             continueReducing = reductionEnder.endReduction(parseStack, listOf(top))
                         }
-                        TokenizerConstants.INCREMENT -> {
+                        TokenizerConstants.INCREMENT, TokenizerConstants.DECREMENT -> {
                             if (parseStack.isNotEmpty()) {
                                 val nodeItem = parseStack.pop()
                                 if (nodeItem is NodeShiftReduceStackItem) {
-                                    val resultNode = ParsedUnaryPostOperatorExpressionNode(nodeItem.node, TokenizerConstants.PLUS_OPERATOR, TokenizerConstants.MINUS_OPERATOR)
-                                    parseStack.push(NodeShiftReduceStackItem(resultNode))
+                                    unaryPostExpressionNodeReducer.reduceToExpressionNode(nodeItem.node, top.operator, parseStack)
                                 } else {
                                     continueReducing = reductionEnder.endReduction(parseStack, listOf(nodeItem, top))
                                 }
