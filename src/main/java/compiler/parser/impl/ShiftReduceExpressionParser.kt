@@ -60,6 +60,10 @@ internal class ShiftReduceExpressionParser(
                                 val resultNode = ParsedUnaryPreOperatorExpressionNode(node, TokenizerConstants.PLUS_OPERATOR)
                                 parseStack.push(NodeShiftReduceStackItem(resultNode))
                             }
+                            TokenizerConstants.DECREMENT -> {
+                                val resultNode = ParsedUnaryPreOperatorExpressionNode(node, TokenizerConstants.MINUS_OPERATOR)
+                                parseStack.push(NodeShiftReduceStackItem(resultNode))
+                            }
                             TokenizerConstants.NEGATION -> {
                                 val resultNode = ParsedUnaryNotOperatorExpressionNode(node)
                                 parseStack.push(NodeShiftReduceStackItem(resultNode))
@@ -270,9 +274,16 @@ internal class ShiftReduceExpressionParser(
                     }
                     else if (operator == TokenizerConstants.INCREMENT) {
                         if (parseStack.isNotEmpty()) {
-                            val nodeItem = parseStack.pop() as NodeShiftReduceStackItem
-                            val resultNode = ParsedUnaryPostOperatorExpressionNode(nodeItem.node, TokenizerConstants.PLUS_OPERATOR, TokenizerConstants.MINUS_OPERATOR)
-                            parseStack.push(NodeShiftReduceStackItem(resultNode))
+                            val nodeItem = parseStack.pop()
+                            if (nodeItem is NodeShiftReduceStackItem) {
+                                val resultNode = ParsedUnaryPostOperatorExpressionNode(nodeItem.node, TokenizerConstants.PLUS_OPERATOR, TokenizerConstants.MINUS_OPERATOR)
+                                parseStack.push(NodeShiftReduceStackItem(resultNode))
+                            }
+                            else {
+                                parseStack.push(nodeItem)
+                                parseStack.push(top)
+                                canReduce = false
+                            }
                         } else {
                             parseStack.push(top)
                             canReduce = false
