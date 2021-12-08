@@ -23,7 +23,6 @@ internal class ShiftReduceExpressionParser(
         var lookAhead = tokens[currentPosition]
         var hasNotSeenParentheses = true
         var leftRightParentheses = 0
-        var hasNotSeenBrackets = true
         var leftRightBracket = 0
 
         top@ do {
@@ -304,7 +303,6 @@ internal class ShiftReduceExpressionParser(
                     }
                     else if (operator == TokenizerConstants.LEFT_BRACKET) {
                         ++leftRightBracket
-                        hasNotSeenBrackets = false
                         parseStack.push(top)
                         canReduce = false
                     }
@@ -335,7 +333,6 @@ internal class ShiftReduceExpressionParser(
 
         } while (acceptedTokenTypes.contains(lookAhead.type)
             && (hasNotSeenParentheses || leftRightParentheses > 0)
-            //&& (hasNotSeenBrackets || leftRightBracket > 0)
         )
 
         val resultStackItem = parseStack.pop() as NodeShiftReduceStackItem
