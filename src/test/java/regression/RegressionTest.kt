@@ -92,8 +92,8 @@ class RegressionTest {
                 TestInput(Program20, IProgram20, true),
                 TestInput(Program21, IProgram21, false),
                 TestInput(Program22, IProgram22, false),
-                TestInput(Program23, IProgram23, false),
-                TestInput(Program24, IProgram24, false)
+                TestInput(Program23, IProgram23, true),
+                TestInput(Program24, IProgram24, true)
             )
         }
 
