@@ -20,7 +20,10 @@ internal class ShiftReduceExpressionParser(
     private val reductionEnder: IReductionEnder,
     private val operatorPrecedenceDeterminer: IOperatorPrecedenceDeterminer,
     private val acceptedTokenTypes: Set<TokenType>,
-    private val binaryOperatorExpressionNodeReducer: BinaryOperatorExpressionNodeReducer
+    private val binaryOperatorExpressionNodeReducer: BinaryOperatorExpressionNodeReducer,
+    private val unaryPreExpressionOperatorNodeReducer: UnaryPreExpressionOperatorNodeReducer,
+    private val unaryNotExpressionNodeReducer: UnaryNotExpressionNodeReducer,
+    private val unaryExpressionNodeReducer: UnaryExpressionNodeReducer
 ): IExpressionParser {
     override fun parse(
         tokens: List<Token>,
@@ -70,23 +73,26 @@ internal class ShiftReduceExpressionParser(
                                     ) {
                                         canReduce = reductionEnder.endReduction(parseStack, listOf(operatorItem, top))
                                     } else {
-                                        val resultNode = ParsedUnaryPreOperatorExpressionNode(
-                                            node,
-                                            operatorItem.operator[0].toString()
-                                        )
-                                        parseStack.push(NodeShiftReduceStackItem(resultNode))
+                                        unaryPreExpressionOperatorNodeReducer.reduceToUnaryNode(node, operatorItem.operator, parseStack)
                                     }
                                 }
                                 TokenizerConstants.NEGATION -> {
-                                    val resultNode = ParsedUnaryNotOperatorExpressionNode(node)
-                                    parseStack.push(NodeShiftReduceStackItem(resultNode))
+                                    if (
+                                        operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operatorItem.operator, lookAhead.value)
+                                    ) {
+                                        canReduce = reductionEnder.endReduction(parseStack, listOf(operatorItem, top))
+                                    } else {
+                                        unaryNotExpressionNodeReducer.reduceToUnaryNode(node, operatorItem.operator, parseStack)
+                                    }
                                 }
                                 TokenizerConstants.BIT_NEGATION -> {
-                                    val resultNode = ParsedUnaryExpressionNode(
-                                        node,
-                                        operatorItem.operator
-                                    )
-                                    parseStack.push(NodeShiftReduceStackItem(resultNode))
+                                    if (
+                                        operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operatorItem.operator, lookAhead.value)
+                                    ) {
+                                        canReduce = reductionEnder.endReduction(parseStack, listOf(operatorItem, top))
+                                    } else {
+                                        unaryExpressionNodeReducer.reduceToUnaryNode(node, operatorItem.operator, parseStack)
+                                    }
                                 }
                                 TokenizerConstants.MINUS_OPERATOR, TokenizerConstants.PLUS_OPERATOR -> {
                                     if (parseStack.isNotEmpty()) {
@@ -98,8 +104,7 @@ internal class ShiftReduceExpressionParser(
                                             binaryOperatorExpressionNodeReducer.reduceToBinaryNode(node, operatorItem.operator, parseStack)
                                         }
                                     } else {
-                                        val resultNode = ParsedUnaryExpressionNode(node, operatorItem.operator)
-                                        parseStack.push(NodeShiftReduceStackItem(resultNode))
+                                        unaryExpressionNodeReducer.reduceToUnaryNode(node, operatorItem.operator, parseStack)
                                     }
                                 }
                                 else -> {
