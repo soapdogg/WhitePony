@@ -61,7 +61,6 @@ internal class ShiftReduceExpressionParser(
                         }
                         TokenizerConstants.LEFT_PARENTHESES -> {
                             ++leftRightParentheses
-                            hasNotSeenParentheses = false
                             continueReducing = reductionEnder.endReduction(parseStack, listOf(top))
                         }
                         TokenizerConstants.RIGHT_BRACKET -> {
