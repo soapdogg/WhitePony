@@ -11,8 +11,10 @@ import compiler.core.tokenizer.Token
 import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.internal.IExpressionParser
 import compiler.parser.impl.internal.IOperatorPrecedenceDeterminer
+import compiler.parser.impl.internal.IShifter
 
 internal class ShiftReduceExpressionParser(
+    private val shifter: IShifter,
     private val operatorPrecedenceDeterminer: IOperatorPrecedenceDeterminer,
     private val acceptedTokenTypes: Set<TokenType>
 ): IExpressionParser {
@@ -22,31 +24,15 @@ internal class ShiftReduceExpressionParser(
     ): Pair<IParsedExpressionNode, Int> {
         val parseStack = Stack<IShiftReduceStackItem>()
         var currentPosition = startingPosition
-        var lookAhead = tokens[currentPosition]
         var hasNotSeenParentheses = true
         var leftRightParentheses = 0
         var leftRightBracket = 0
 
         top@ do {
-            //Shift
-            val stackItem = when (lookAhead.type) {
-                TokenType.INTEGER, TokenType.FLOATING_POINT -> {
-                    val type = if (lookAhead.type == TokenType.INTEGER) PrinterConstants.INT else PrinterConstants.DOUBLE
-                    NodeShiftReduceStackItem(ParsedConstantExpressionNode(lookAhead.value, type))
-                }
-                TokenType.IDENTIFIER -> {
-                    NodeShiftReduceStackItem(ParsedVariableExpressionNode(lookAhead.value))
-                }
-                else -> {
-                    OperatorShiftReduceStackItem(lookAhead.value)
-                }
-            }
 
-            parseStack.push(stackItem)
+            currentPosition = shifter.shift(tokens, currentPosition, parseStack)
 
-            //Update look ahead
-            ++currentPosition
-            lookAhead = tokens[currentPosition]
+            val lookAhead = tokens[currentPosition]
 
             //Reduce
             var canReduce = true
@@ -277,7 +263,7 @@ internal class ShiftReduceExpressionParser(
                             currentPosition--
                             break@top
                         }
-                        hasNotSeenParentheses = lookAhead.value == TokenizerConstants.MINUS_OPERATOR
+                        hasNotSeenParentheses = lookAhead.value == TokenizerConstants.MINUS_OPERATOR //TODO this is hack
                         val nodeItem = parseStack.pop() as NodeShiftReduceStackItem
                         parseStack.pop() //LEFT_PARENTHESES
                         parseStack.push(NodeShiftReduceStackItem(ParsedInnerExpressionNode(nodeItem.node)))

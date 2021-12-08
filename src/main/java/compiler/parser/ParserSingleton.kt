@@ -15,6 +15,8 @@ enum class ParserSingleton {
 
     private val stackGenerator = StackGenerator()
 
+    private val shifter = Shifter()
+
     private val operatorPrecedenceMap = mapOf(
         TokenizerConstants.LEFT_BRACKET to 0,
         TokenizerConstants.INCREMENT to 1,
@@ -89,6 +91,7 @@ enum class ParserSingleton {
         TokenType.RIGHT_BRACKET
     )
     private val shiftReduceExpressionParser = ShiftReduceExpressionParser(
+        shifter,
         operatorPrecedenceDeterminer,
         acceptedTokenTypes
     )
