@@ -3,6 +3,7 @@ package compiler.core.constants
 object TokenizerConstants {
 
     const val LEFT_BRACKET = "["
+    const val RIGHT_BRACKET = "]"
     const val LEFT_PARENTHESES = "("
     const val RIGHT_PARENTHESES = ")"
 

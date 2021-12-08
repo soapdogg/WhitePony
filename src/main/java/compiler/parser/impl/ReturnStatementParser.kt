@@ -17,7 +17,11 @@ internal class ReturnStatementParser(
     ): Pair<ParsedReturnNode, Int> {
         tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.RETURN)
         val positionAfterReturn = startingPosition + 1
-        val (expressionStatementNode, positionAfterExpressionStatement) = expressionStatementParser.parse(tokens, positionAfterReturn)
+        val (expressionStatementNode, positionAfterExpressionStatement) = expressionStatementParser.parse(
+            tokens,
+            positionAfterReturn,
+            true
+        )
         val returnNode = ParsedReturnNode(expressionStatementNode)
         return Pair(returnNode, positionAfterExpressionStatement)
     }

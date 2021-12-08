@@ -26,7 +26,11 @@ class StartExpressionStatementParserTest {
 
         val expressionStatement = Mockito.mock(ParsedExpressionStatementNode::class.java)
         val positionAfterExpression = 1
-        Mockito.`when`(expressionStatementParser.parse(tokens, tokenPosition)).thenReturn(Pair(expressionStatement, positionAfterExpression))
+        Mockito.`when`(expressionStatementParser.parse(
+            tokens,
+            tokenPosition,
+            false
+        )).thenReturn(Pair(expressionStatement, positionAfterExpression))
 
         val actual = startExpressionStatementParser.parse(
             tokens,

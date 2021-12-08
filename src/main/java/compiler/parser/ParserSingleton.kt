@@ -29,7 +29,9 @@ enum class ParserSingleton {
         TokenType.BINARY_ASSIGN,
         TokenType.UNARY_NOT,
         TokenType.LEFT_PARENTHESES,
-        TokenType.RIGHT_PARENTHESES
+        TokenType.RIGHT_PARENTHESES,
+        TokenType.LEFT_BRACKET,
+        TokenType.RIGHT_BRACKET
     )
     private val shiftReduceExpressionParser = ShiftReduceExpressionParser(
         acceptedTokenTypes

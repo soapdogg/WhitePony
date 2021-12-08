@@ -34,7 +34,11 @@ class ExpressionStatementParserTest {
             )
         ).thenReturn(Pair(expressionNode, positionAfterExpression))
         val positionAfterSemicolon = positionAfterExpression + 1
-        val (actualExpressionStatementNode, actualFinalPosition) = expressionStatementParser.parse(tokens, startingPosition)
+        val (actualExpressionStatementNode, actualFinalPosition) = expressionStatementParser.parse(
+            tokens,
+            startingPosition,
+            false
+        )
         Assertions.assertEquals(actualExpressionStatementNode.expressionNode, expressionNode)
         Assertions.assertEquals(positionAfterSemicolon, actualFinalPosition)
         Mockito.verify(tokenTypeAsserter).assertTokenType(tokens, positionAfterExpression, TokenType.SEMICOLON)

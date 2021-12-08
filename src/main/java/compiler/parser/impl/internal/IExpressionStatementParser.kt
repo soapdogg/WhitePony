@@ -6,6 +6,7 @@ import compiler.core.tokenizer.Token
 internal interface IExpressionStatementParser {
     fun parse(
         tokens: List<Token>,
-        startingPosition: Int
+        startingPosition: Int,
+        useShiftReduce: Boolean
     ): Pair<ParsedExpressionStatementNode, Int>
 }

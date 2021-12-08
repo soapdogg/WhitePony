@@ -14,9 +14,14 @@ internal class ExpressionStatementParser(
 ): IExpressionStatementParser {
     override fun parse(
         tokens: List<Token>,
-        startingPosition: Int
+        startingPosition: Int,
+        useShiftReduce: Boolean
     ): Pair<ParsedExpressionStatementNode, Int> {
-        val (expressionNode, positionAfterExpression) = recursiveExpressionParser.parse(tokens, startingPosition)
+        val (expressionNode, positionAfterExpression) = if(useShiftReduce){
+            shiftReduceExpressionParser.parse(tokens, startingPosition)
+        } else {
+            recursiveExpressionParser.parse(tokens, startingPosition)
+        }
         tokenTypeAsserter.assertTokenType(tokens, positionAfterExpression, TokenType.SEMICOLON)
         val positionAfterSemicolon = positionAfterExpression + 1
         val expressionStatementNode = ParsedExpressionStatementNode(expressionNode)

@@ -27,7 +27,11 @@ class ReturnStatementParserTest {
         val positionAfterReturn = startingPosition + 1
         val expressionStatementNode = Mockito.mock(ParsedExpressionStatementNode::class.java)
         val positionAfterExpressionStatement = positionAfterReturn + 1
-        Mockito.`when`(expressionStatementParser.parse(tokens, positionAfterReturn)).thenReturn(Pair(expressionStatementNode, positionAfterExpressionStatement))
+        Mockito.`when`(expressionStatementParser.parse(
+            tokens,
+            positionAfterReturn,
+            false
+        )).thenReturn(Pair(expressionStatementNode, positionAfterExpressionStatement))
 
         val(actualReturnNode, actualFinalPosition) = returnStatementParser.parse(tokens, startingPosition)
         Assertions.assertEquals(expressionStatementNode, actualReturnNode.expressionStatement)
