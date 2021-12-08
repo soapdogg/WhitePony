@@ -186,6 +186,7 @@ internal class ShiftReduceExpressionParser(
                                     || lookAhead.value == TokenizerConstants.BITWISE_OR_OPERATOR
                                     || lookAhead.value == TokenizerConstants.BITWISE_XOR_OPERATOR
                                     || lookAhead.value == TokenizerConstants.BITWISE_AND_OPERATOR
+                                    || lookAhead.value == TokenizerConstants.ASSIGN_OPERATOR
                                 ){
                                     parseStack.push(leftItem)
                                     parseStack.push(operatorItem)
@@ -285,7 +286,9 @@ internal class ShiftReduceExpressionParser(
             }
 
 
-        } while (acceptedTokenTypes.contains(lookAhead.type) && (hasNotSeenParentheses || leftRightParentheses > 0) && (hasNotSeenBrackets || leftRightBracket > 0))
+        } while (acceptedTokenTypes.contains(lookAhead.type) && (hasNotSeenParentheses || leftRightParentheses > 0)
+            //&& (hasNotSeenBrackets || leftRightBracket > 0)
+        )
 
         val resultStackItem = parseStack.pop() as NodeShiftReduceStackItem
         return Pair(resultStackItem.node, currentPosition)
