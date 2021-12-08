@@ -15,12 +15,12 @@ import java.util.stream.Stream
 class RegressionTest {
 
     private val tokenizer = TokenizerSingleton.INSTANCE.tokenizer
-    private val recursiveParser = ParserSingleton.INSTANCE.parser
+    private val parser = ParserSingleton.INSTANCE.parser
     private val translator = TranslatorSingleton.INSTANCE.translator
     private val printer = PrinterSingleton.INSTANCE.printer
-    private val recursiveCompiler = Compiler(
+    private val compiler = Compiler(
         tokenizer,
-        recursiveParser,
+        parser,
         translator,
         printer
     )
@@ -33,7 +33,7 @@ class RegressionTest {
         val testInput = arguments.get(0) as TestInput
 
 
-        val (parseTreeString, translatedTreeString) = recursiveCompiler.compile(
+        val (parseTreeString, translatedTreeString) = compiler.compile(
             testInput.expectedParsedProgram,
         )
         Assertions.assertEquals(testInput.expectedParsedProgram, parseTreeString)
@@ -44,7 +44,7 @@ class RegressionTest {
     fun regressionIndividualTest() {
         val input = Program22
         val intermediateCode = null
-        val (parseTreeString, translatedTreeString) = recursiveCompiler.compile(
+        val (parseTreeString, translatedTreeString) = compiler.compile(
             input,
         )
         Assertions.assertEquals(input, parseTreeString)

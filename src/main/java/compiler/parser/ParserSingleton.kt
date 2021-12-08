@@ -1,5 +1,6 @@
 package compiler.parser
 
+import compiler.core.constants.TokenizerConstants
 import compiler.core.stack.StatementParserLocation
 import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.*
@@ -13,6 +14,60 @@ enum class ParserSingleton {
     private val tokenTypeAsserter = TokenTypeAsserter()
 
     private val stackGenerator = StackGenerator()
+
+    private val operatorPrecedenceMap = mapOf(
+        TokenizerConstants.LEFT_BRACKET to 0,
+        TokenizerConstants.INCREMENT to 1,
+        TokenizerConstants.DECREMENT to 1,
+        TokenizerConstants.MULTIPLY_OPERATOR to 2,
+        TokenizerConstants.DIVIDE_OPERATOR to 2,
+        TokenizerConstants.MODULUS_OPERATOR to 2,
+        TokenizerConstants.PLUS_OPERATOR to 3,
+        TokenizerConstants.MINUS_OPERATOR to 3,
+        TokenizerConstants.LEFT_SHIFT_OPERATOR to 4,
+        TokenizerConstants.RIGHT_SHIFT_OPERATOR to 4,
+        TokenizerConstants.LESS_THAN_OPERATOR to 5,
+        TokenizerConstants.LESS_THAN_EQUALS_OPERATOR to 5,
+        TokenizerConstants.GREATER_THAN_OPERATOR to 5,
+        TokenizerConstants.GREATER_THAN_EQUALS_OPERATOR to 5,
+        TokenizerConstants.RELATIONAL_EQUALS to 6,
+        TokenizerConstants.RELATIONAL_NOT_EQUALS to 6,
+        TokenizerConstants.BITWISE_AND_OPERATOR to 7,
+        TokenizerConstants.BITWISE_XOR_OPERATOR to 8,
+        TokenizerConstants.BITWISE_OR_OPERATOR to 9,
+        TokenizerConstants.AND_OPERATOR to 10,
+        TokenizerConstants.OR_OPERATOR to 11,
+        TokenizerConstants.ASSIGN_OPERATOR to 12,
+        TokenizerConstants.LEFT_SHIFT_ASSIGN_OPERATOR to 12,
+        TokenizerConstants.RIGHT_SHIFT_ASSIGN_OPERATOR to 12,
+        TokenizerConstants.AND_ASSIGN_OPERATOR to 12,
+        TokenizerConstants.DIVIDE_ASSIGN_OPERATOR to 12,
+        TokenizerConstants.MINUS_ASSIGN_OPERATOR to 12,
+        TokenizerConstants.MODULUS_ASSIGN_OPERATOR to 12,
+        TokenizerConstants.MULTIPLY_ASSIGN_OPERATOR to 12,
+        TokenizerConstants.OR_ASSIGN_OPERATOR to 12,
+        TokenizerConstants.PLUS_ASSIGN_OPERATOR to 12,
+        TokenizerConstants.XOR_ASSIGN_OPERATOR to 12
+    )
+
+    private val assignOperatorSet = setOf(
+        TokenizerConstants.ASSIGN_OPERATOR,
+        TokenizerConstants.LEFT_SHIFT_ASSIGN_OPERATOR,
+        TokenizerConstants.RIGHT_SHIFT_ASSIGN_OPERATOR,
+        TokenizerConstants.AND_ASSIGN_OPERATOR,
+        TokenizerConstants.DIVIDE_ASSIGN_OPERATOR,
+        TokenizerConstants.MINUS_ASSIGN_OPERATOR,
+        TokenizerConstants.MODULUS_ASSIGN_OPERATOR,
+        TokenizerConstants.MULTIPLY_ASSIGN_OPERATOR,
+        TokenizerConstants.OR_ASSIGN_OPERATOR,
+        TokenizerConstants.PLUS_ASSIGN_OPERATOR,
+        TokenizerConstants.XOR_ASSIGN_OPERATOR
+    )
+
+    private val operatorPrecedenceDeterminer = OperatorPrecedenceDeterminer(
+        operatorPrecedenceMap,
+        assignOperatorSet
+    )
 
     private val acceptedTokenTypes = setOf(
         TokenType.FLOATING_POINT,
@@ -34,6 +89,7 @@ enum class ParserSingleton {
         TokenType.RIGHT_BRACKET
     )
     private val shiftReduceExpressionParser = ShiftReduceExpressionParser(
+        operatorPrecedenceDeterminer,
         acceptedTokenTypes
     )
 

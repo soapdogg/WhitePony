@@ -10,8 +10,10 @@ import compiler.core.stack.Stack
 import compiler.core.tokenizer.Token
 import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.internal.IExpressionParser
+import compiler.parser.impl.internal.IOperatorPrecedenceDeterminer
 
 internal class ShiftReduceExpressionParser(
+    private val operatorPrecedenceDeterminer: IOperatorPrecedenceDeterminer,
     private val acceptedTokenTypes: Set<TokenType>
 ): IExpressionParser {
     override fun parse(
@@ -57,8 +59,7 @@ internal class ShiftReduceExpressionParser(
                         when (operatorItem.operator) {
                             TokenizerConstants.INCREMENT -> {
                                 if (
-                                    //0
-                                    lookAhead.value == TokenizerConstants.LEFT_BRACKET
+                                    operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operatorItem.operator, lookAhead.value)
                                 ) {
                                     parseStack.push(operatorItem)
                                     parseStack.push(top)
@@ -70,8 +71,7 @@ internal class ShiftReduceExpressionParser(
                             }
                             TokenizerConstants.DECREMENT -> {
                                 if (
-                                //0
-                                    lookAhead.value == TokenizerConstants.LEFT_BRACKET
+                                    operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operatorItem.operator, lookAhead.value)
                                 ) {
                                     parseStack.push(operatorItem)
                                     parseStack.push(top)
@@ -92,16 +92,8 @@ internal class ShiftReduceExpressionParser(
                             TokenizerConstants.MINUS_OPERATOR, TokenizerConstants.PLUS_OPERATOR -> {
                                 if (parseStack.isNotEmpty() ) {
                                     if (
-                                    //0
-                                        lookAhead.value == TokenizerConstants.LEFT_BRACKET
-                                        //1
-                                        || lookAhead.value == TokenizerConstants.INCREMENT
-                                        || lookAhead.value == TokenizerConstants.DECREMENT
-                                        //2
-                                        || lookAhead.value == TokenizerConstants.MULTIPLY_OPERATOR
-                                        || lookAhead.value == TokenizerConstants.DIVIDE_OPERATOR
-                                        || lookAhead.value == TokenizerConstants.MODULUS_OPERATOR
-                                    ) { //TODO this is precedence
+                                        operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operatorItem.operator, lookAhead.value)
+                                    ) {
                                         parseStack.push(operatorItem)
                                         parseStack.push(top)
                                         canReduce = false
@@ -117,12 +109,8 @@ internal class ShiftReduceExpressionParser(
                             }
                             TokenizerConstants.DIVIDE_OPERATOR, TokenizerConstants.MODULUS_OPERATOR, TokenizerConstants.MULTIPLY_OPERATOR -> {
                                 if (
-                                //0
-                                    lookAhead.value == TokenizerConstants.LEFT_BRACKET
-                                    //1
-                                    || lookAhead.value == TokenizerConstants.INCREMENT
-                                    || lookAhead.value == TokenizerConstants.DECREMENT
-                                ) { //TODO precedence
+                                    operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operatorItem.operator, lookAhead.value)
+                                ) {
                                     parseStack.push(operatorItem)
                                     parseStack.push(top)
                                     canReduce = false
@@ -134,19 +122,8 @@ internal class ShiftReduceExpressionParser(
                             }
                             TokenizerConstants.LEFT_SHIFT_OPERATOR, TokenizerConstants.RIGHT_SHIFT_OPERATOR -> {
                                 if (
-                                //0
-                                    lookAhead.value == TokenizerConstants.LEFT_BRACKET
-                                    //1
-                                    || lookAhead.value == TokenizerConstants.INCREMENT
-                                    || lookAhead.value == TokenizerConstants.DECREMENT
-                                    //2
-                                    || lookAhead.value == TokenizerConstants.MULTIPLY_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.DIVIDE_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MODULUS_OPERATOR
-                                    //3
-                                    || lookAhead.value == TokenizerConstants.PLUS_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MINUS_OPERATOR
-                                ) { //TODO precedence
+                                    operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operatorItem.operator, lookAhead.value)
+                                ) {
                                     parseStack.push(operatorItem)
                                     parseStack.push(top)
                                     canReduce = false
@@ -159,21 +136,7 @@ internal class ShiftReduceExpressionParser(
                             TokenizerConstants.LESS_THAN_OPERATOR, TokenizerConstants.LESS_THAN_EQUALS_OPERATOR,
                             TokenizerConstants.GREATER_THAN_OPERATOR, TokenizerConstants.GREATER_THAN_EQUALS_OPERATOR -> {
                                 if (
-                                //0
-                                    lookAhead.value == TokenizerConstants.LEFT_BRACKET
-                                    //1
-                                    || lookAhead.value == TokenizerConstants.INCREMENT
-                                    || lookAhead.value == TokenizerConstants.DECREMENT
-                                    //2
-                                    || lookAhead.value == TokenizerConstants.MULTIPLY_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.DIVIDE_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MODULUS_OPERATOR
-                                    //3
-                                    || lookAhead.value == TokenizerConstants.PLUS_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MINUS_OPERATOR
-                                    //4
-                                    || lookAhead.value == TokenizerConstants.LEFT_SHIFT_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.RIGHT_SHIFT_OPERATOR
+                                    operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operatorItem.operator, lookAhead.value)
                                 ) {
                                     parseStack.push(operatorItem)
                                     parseStack.push(top)
@@ -186,26 +149,7 @@ internal class ShiftReduceExpressionParser(
                             }
                             TokenizerConstants.RELATIONAL_EQUALS, TokenizerConstants.RELATIONAL_NOT_EQUALS -> {
                                 if (
-                                //0
-                                    lookAhead.value == TokenizerConstants.LEFT_BRACKET
-                                    //1
-                                    || lookAhead.value == TokenizerConstants.INCREMENT
-                                    || lookAhead.value == TokenizerConstants.DECREMENT
-                                    //2
-                                    || lookAhead.value == TokenizerConstants.MULTIPLY_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.DIVIDE_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MODULUS_OPERATOR
-                                    //3
-                                    || lookAhead.value == TokenizerConstants.PLUS_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MINUS_OPERATOR
-                                    //4
-                                    || lookAhead.value == TokenizerConstants.LEFT_SHIFT_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.RIGHT_SHIFT_OPERATOR
-                                    //5
-                                    || lookAhead.value == TokenizerConstants.LESS_THAN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.LESS_THAN_EQUALS_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.GREATER_THAN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.GREATER_THAN_EQUALS_OPERATOR
+                                    operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operatorItem.operator, lookAhead.value)
                                 ) {
                                     parseStack.push(operatorItem)
                                     parseStack.push(top)
@@ -218,30 +162,8 @@ internal class ShiftReduceExpressionParser(
                             }
                             TokenizerConstants.BITWISE_AND_OPERATOR -> {
                                 if (
-                                //0
-                                    lookAhead.value == TokenizerConstants.LEFT_BRACKET
-                                    //1
-                                    || lookAhead.value == TokenizerConstants.INCREMENT
-                                    || lookAhead.value == TokenizerConstants.DECREMENT
-                                    //2
-                                    || lookAhead.value == TokenizerConstants.MULTIPLY_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.DIVIDE_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MODULUS_OPERATOR
-                                    //3
-                                    || lookAhead.value == TokenizerConstants.PLUS_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MINUS_OPERATOR
-                                    //4
-                                    || lookAhead.value == TokenizerConstants.LEFT_SHIFT_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.RIGHT_SHIFT_OPERATOR
-                                    //5
-                                    || lookAhead.value == TokenizerConstants.LESS_THAN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.LESS_THAN_EQUALS_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.GREATER_THAN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.GREATER_THAN_EQUALS_OPERATOR
-                                    //6
-                                    || lookAhead.value == TokenizerConstants.RELATIONAL_EQUALS
-                                    || lookAhead.value == TokenizerConstants.RELATIONAL_NOT_EQUALS
-                                ) { //TODO precedence
+                                    operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operatorItem.operator, lookAhead.value)
+                                ) {
                                     parseStack.push(operatorItem)
                                     parseStack.push(top)
                                     canReduce = false
@@ -253,32 +175,8 @@ internal class ShiftReduceExpressionParser(
                             }
                             TokenizerConstants.BITWISE_XOR_OPERATOR -> {
                                 if (
-                                //0
-                                    lookAhead.value == TokenizerConstants.LEFT_BRACKET
-                                    //1
-                                    || lookAhead.value == TokenizerConstants.INCREMENT
-                                    || lookAhead.value == TokenizerConstants.DECREMENT
-                                    //2
-                                    || lookAhead.value == TokenizerConstants.MULTIPLY_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.DIVIDE_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MODULUS_OPERATOR
-                                    //3
-                                    || lookAhead.value == TokenizerConstants.PLUS_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MINUS_OPERATOR
-                                    //4
-                                    || lookAhead.value == TokenizerConstants.LEFT_SHIFT_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.RIGHT_SHIFT_OPERATOR
-                                    //5
-                                    || lookAhead.value == TokenizerConstants.LESS_THAN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.LESS_THAN_EQUALS_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.GREATER_THAN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.GREATER_THAN_EQUALS_OPERATOR
-                                    //6
-                                    || lookAhead.value == TokenizerConstants.RELATIONAL_EQUALS
-                                    || lookAhead.value == TokenizerConstants.RELATIONAL_NOT_EQUALS
-                                    //7
-                                    || lookAhead.value == TokenizerConstants.BITWISE_AND_OPERATOR
-                                ) { //TODO precedence
+                                    operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operatorItem.operator, lookAhead.value)
+                                ) {
                                     parseStack.push(operatorItem)
                                     parseStack.push(top)
                                     canReduce = false
@@ -290,34 +188,8 @@ internal class ShiftReduceExpressionParser(
                             }
                             TokenizerConstants.BITWISE_OR_OPERATOR -> {
                                 if (
-                                //0
-                                    lookAhead.value == TokenizerConstants.LEFT_BRACKET
-                                    //1
-                                    || lookAhead.value == TokenizerConstants.INCREMENT
-                                    || lookAhead.value == TokenizerConstants.DECREMENT
-                                    //2
-                                    || lookAhead.value == TokenizerConstants.MULTIPLY_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.DIVIDE_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MODULUS_OPERATOR
-                                    //3
-                                    || lookAhead.value == TokenizerConstants.PLUS_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MINUS_OPERATOR
-                                    //4
-                                    || lookAhead.value == TokenizerConstants.LEFT_SHIFT_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.RIGHT_SHIFT_OPERATOR
-                                    //5
-                                    || lookAhead.value == TokenizerConstants.LESS_THAN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.LESS_THAN_EQUALS_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.GREATER_THAN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.GREATER_THAN_EQUALS_OPERATOR
-                                    //6
-                                    || lookAhead.value == TokenizerConstants.RELATIONAL_EQUALS
-                                    || lookAhead.value == TokenizerConstants.RELATIONAL_NOT_EQUALS
-                                    //7
-                                    || lookAhead.value == TokenizerConstants.BITWISE_AND_OPERATOR
-                                    //8
-                                    || lookAhead.value == TokenizerConstants.BITWISE_XOR_OPERATOR
-                                ) { //TODO precedence
+                                    operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operatorItem.operator, lookAhead.value)
+                                ) {
                                     parseStack.push(operatorItem)
                                     parseStack.push(top)
                                     canReduce = false
@@ -329,36 +201,8 @@ internal class ShiftReduceExpressionParser(
                             }
                             TokenizerConstants.AND_OPERATOR -> {
                                 if (
-                                //0
-                                    lookAhead.value == TokenizerConstants.LEFT_BRACKET
-                                    //1
-                                    || lookAhead.value == TokenizerConstants.INCREMENT
-                                    || lookAhead.value == TokenizerConstants.DECREMENT
-                                    //2
-                                    || lookAhead.value == TokenizerConstants.MULTIPLY_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.DIVIDE_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MODULUS_OPERATOR
-                                    //3
-                                    || lookAhead.value == TokenizerConstants.PLUS_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MINUS_OPERATOR
-                                    //4
-                                    || lookAhead.value == TokenizerConstants.LEFT_SHIFT_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.RIGHT_SHIFT_OPERATOR
-                                    //5
-                                    || lookAhead.value == TokenizerConstants.LESS_THAN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.LESS_THAN_EQUALS_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.GREATER_THAN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.GREATER_THAN_EQUALS_OPERATOR
-                                    //6
-                                    || lookAhead.value == TokenizerConstants.RELATIONAL_EQUALS
-                                    || lookAhead.value == TokenizerConstants.RELATIONAL_NOT_EQUALS
-                                    //7
-                                    || lookAhead.value == TokenizerConstants.BITWISE_AND_OPERATOR
-                                    //8
-                                    || lookAhead.value == TokenizerConstants.BITWISE_XOR_OPERATOR
-                                    //9
-                                    || lookAhead.value == TokenizerConstants.BITWISE_OR_OPERATOR
-                                ) { //TODO This needs to be precedence
+                                    operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operatorItem.operator, lookAhead.value)
+                                ) {
                                     parseStack.push(operatorItem)
                                     parseStack.push(top)
                                     canReduce = false
@@ -370,38 +214,8 @@ internal class ShiftReduceExpressionParser(
                             }
                             TokenizerConstants.OR_OPERATOR -> {
                                 if (
-                                //0
-                                    lookAhead.value == TokenizerConstants.LEFT_BRACKET
-                                    //1
-                                    || lookAhead.value == TokenizerConstants.INCREMENT
-                                    || lookAhead.value == TokenizerConstants.DECREMENT
-                                    //2
-                                    || lookAhead.value == TokenizerConstants.MULTIPLY_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.DIVIDE_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MODULUS_OPERATOR
-                                    //3
-                                    || lookAhead.value == TokenizerConstants.PLUS_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MINUS_OPERATOR
-                                    //4
-                                    || lookAhead.value == TokenizerConstants.LEFT_SHIFT_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.RIGHT_SHIFT_OPERATOR
-                                    //5
-                                    || lookAhead.value == TokenizerConstants.LESS_THAN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.LESS_THAN_EQUALS_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.GREATER_THAN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.GREATER_THAN_EQUALS_OPERATOR
-                                    //6
-                                    || lookAhead.value == TokenizerConstants.RELATIONAL_EQUALS
-                                    || lookAhead.value == TokenizerConstants.RELATIONAL_NOT_EQUALS
-                                    //7
-                                    || lookAhead.value == TokenizerConstants.BITWISE_AND_OPERATOR
-                                    //8
-                                    || lookAhead.value == TokenizerConstants.BITWISE_XOR_OPERATOR
-                                    //9
-                                    || lookAhead.value == TokenizerConstants.BITWISE_OR_OPERATOR
-                                    //10
-                                    || lookAhead.value == TokenizerConstants.AND_OPERATOR
-                                ) { //TODO this is supposed to be precedence
+                                    operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operatorItem.operator, lookAhead.value)
+                                ) {
                                     parseStack.push(operatorItem)
                                     parseStack.push(top)
                                     canReduce = false
@@ -413,51 +227,7 @@ internal class ShiftReduceExpressionParser(
                             }
                             TokenizerConstants.ASSIGN_OPERATOR -> {
                                 if (
-                                    //0
-                                    lookAhead.value == TokenizerConstants.LEFT_BRACKET
-                                    //1
-                                    || lookAhead.value == TokenizerConstants.INCREMENT
-                                    || lookAhead.value == TokenizerConstants.DECREMENT
-                                    //2
-                                    || lookAhead.value == TokenizerConstants.MULTIPLY_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.DIVIDE_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MODULUS_OPERATOR
-                                    //3
-                                    || lookAhead.value == TokenizerConstants.PLUS_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MINUS_OPERATOR
-                                    //4
-                                    || lookAhead.value == TokenizerConstants.LEFT_SHIFT_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.RIGHT_SHIFT_OPERATOR
-                                    //5
-                                    || lookAhead.value == TokenizerConstants.LESS_THAN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.LESS_THAN_EQUALS_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.GREATER_THAN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.GREATER_THAN_EQUALS_OPERATOR
-                                    //6
-                                    || lookAhead.value == TokenizerConstants.RELATIONAL_EQUALS
-                                    || lookAhead.value == TokenizerConstants.RELATIONAL_NOT_EQUALS
-                                    //7
-                                    || lookAhead.value == TokenizerConstants.BITWISE_AND_OPERATOR
-                                    //8
-                                    || lookAhead.value == TokenizerConstants.BITWISE_XOR_OPERATOR
-                                    //9
-                                    || lookAhead.value == TokenizerConstants.BITWISE_OR_OPERATOR
-                                    //10
-                                    || lookAhead.value == TokenizerConstants.AND_OPERATOR
-                                    //11
-                                    || lookAhead.value == TokenizerConstants.OR_OPERATOR
-                                    //12
-                                    || lookAhead.value == TokenizerConstants.ASSIGN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.LEFT_SHIFT_ASSIGN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.RIGHT_SHIFT_ASSIGN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.AND_ASSIGN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.DIVIDE_ASSIGN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MINUS_ASSIGN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MODULUS_ASSIGN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MULTIPLY_ASSIGN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.OR_ASSIGN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.PLUS_ASSIGN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.XOR_ASSIGN_OPERATOR
+                                    operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operatorItem.operator, lookAhead.value)
                                 ){
                                     parseStack.push(operatorItem)
                                     parseStack.push(top)
@@ -474,51 +244,7 @@ internal class ShiftReduceExpressionParser(
                             TokenizerConstants.MULTIPLY_ASSIGN_OPERATOR, TokenizerConstants.OR_ASSIGN_OPERATOR,
                             TokenizerConstants.PLUS_ASSIGN_OPERATOR, TokenizerConstants.XOR_ASSIGN_OPERATOR -> {
                                 if (
-                                    //0
-                                    lookAhead.value == TokenizerConstants.LEFT_BRACKET
-                                    //1
-                                    || lookAhead.value == TokenizerConstants.INCREMENT
-                                    || lookAhead.value == TokenizerConstants.DECREMENT
-                                    //2
-                                    || lookAhead.value == TokenizerConstants.MULTIPLY_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.DIVIDE_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MODULUS_OPERATOR
-                                    //3
-                                    || lookAhead.value == TokenizerConstants.PLUS_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MINUS_OPERATOR
-                                    //4
-                                    || lookAhead.value == TokenizerConstants.LEFT_SHIFT_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.RIGHT_SHIFT_OPERATOR
-                                    //5
-                                    || lookAhead.value == TokenizerConstants.LESS_THAN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.LESS_THAN_EQUALS_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.GREATER_THAN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.GREATER_THAN_EQUALS_OPERATOR
-                                    //6
-                                    || lookAhead.value == TokenizerConstants.RELATIONAL_EQUALS
-                                    || lookAhead.value == TokenizerConstants.RELATIONAL_NOT_EQUALS
-                                    //7
-                                    || lookAhead.value == TokenizerConstants.BITWISE_AND_OPERATOR
-                                    //8
-                                    || lookAhead.value == TokenizerConstants.BITWISE_XOR_OPERATOR
-                                    //9
-                                    || lookAhead.value == TokenizerConstants.BITWISE_OR_OPERATOR
-                                    //10
-                                    || lookAhead.value == TokenizerConstants.AND_OPERATOR
-                                    //11
-                                    || lookAhead.value == TokenizerConstants.OR_OPERATOR
-                                    //12
-                                    || lookAhead.value == TokenizerConstants.ASSIGN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.LEFT_SHIFT_ASSIGN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.RIGHT_SHIFT_ASSIGN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.AND_ASSIGN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.DIVIDE_ASSIGN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MINUS_ASSIGN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MODULUS_ASSIGN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.MULTIPLY_ASSIGN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.OR_ASSIGN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.PLUS_ASSIGN_OPERATOR
-                                    || lookAhead.value == TokenizerConstants.XOR_ASSIGN_OPERATOR
+                                    operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operatorItem.operator, lookAhead.value)
                                 ){
                                     parseStack.push(operatorItem)
                                     parseStack.push(top)
