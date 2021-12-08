@@ -71,7 +71,7 @@ class RegressionTest {
         fun inputData(): Stream<TestInput> {
             return Stream.of(
                 TestInput(Program1, IProgram1, true),
-                TestInput(Program2, IProgram2, false),
+                TestInput(Program2, IProgram2, true),
                 TestInput(Program3, IProgram3, false),
                 TestInput(Program4, IProgram4, true),
                 TestInput(Program5, IProgram5, false),

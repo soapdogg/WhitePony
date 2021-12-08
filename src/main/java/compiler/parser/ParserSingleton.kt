@@ -28,6 +28,7 @@ enum class ParserSingleton {
         TokenType.BINARY_OR,
         TokenType.BINARY_ASSIGN,
         TokenType.UNARY_NOT,
+        TokenType.BIT_NEGATION,
         TokenType.LEFT_PARENTHESES,
         TokenType.RIGHT_PARENTHESES,
         TokenType.LEFT_BRACKET,
