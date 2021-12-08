@@ -12,13 +12,18 @@ internal class DeclarationStatementParser(
     private val variableDeclarationListParser: IVariableDeclarationListParser,
 ) : IDeclarationStatementParser{
 
-    override fun parse(tokens: List<Token>, startingPosition: Int): Pair<IParsedDeclarationStatementNode, Int> {
+    override fun parse(
+        tokens: List<Token>,
+        startingPosition: Int,
+        useShiftReduce: Boolean
+    ): Pair<IParsedDeclarationStatementNode, Int> {
         val decidingToken = tokens[startingPosition + 2]
 
         return if (decidingToken.type == TokenType.LEFT_PARENTHESES) {
             functionDeclarationParser.parse(
                 tokens,
                 startingPosition,
+                useShiftReduce,
             )
         } else {
             variableDeclarationListParser.parse(

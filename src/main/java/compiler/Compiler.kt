@@ -11,9 +11,15 @@ class Compiler(
     private val translator: ITranslator,
     private val printer: IPrinter
 ) {
-    fun compile(program: String): Pair<String, String> {
+    fun compile(
+        program: String,
+        useShiftReduce: Boolean
+    ): Pair<String, String> {
         val tokens = tokenizer.tokenize(program)
-        val parseTree = parser.parse(tokens)
+        val parseTree = parser.parse(
+            tokens,
+            useShiftReduce
+        )
         val parseTreeString = printer.printNode(parseTree, true)
         val translatedTree = translator.translate(parseTree)
         val translatedTreeString = printer.printNode(translatedTree, false)

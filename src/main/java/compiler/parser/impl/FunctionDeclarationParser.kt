@@ -15,6 +15,7 @@ internal class FunctionDeclarationParser(
     override fun parse(
         tokens: List<Token>,
         startingPosition: Int,
+        useShiftReduce: Boolean,
     ): Pair<ParsedFunctionDeclarationNode, Int> {
         val (typeToken, positionAfterType) = tokenTypeAsserter.assertTokenType(tokens, startingPosition, TokenType.TYPE)
         val (identifierToken, positionAfterIdentifier) = tokenTypeAsserter.assertTokenType(tokens, positionAfterType, TokenType.IDENTIFIER)
@@ -24,7 +25,7 @@ internal class FunctionDeclarationParser(
         val (basicBlockNode, finalPosition) = statementParserOrchestrator.parse(
             tokens,
             positionAfterRightParentheses,
-            true,
+            useShiftReduce,
         )
         val functionDeclarationNode = ParsedFunctionDeclarationNode(
             identifierToken.value,

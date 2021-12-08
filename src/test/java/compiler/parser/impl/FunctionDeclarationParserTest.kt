@@ -58,6 +58,7 @@ class FunctionDeclarationParserTest {
         val (actualFunctionNode, actualFinalPosition) = functionDeclarationParser.parse(
             tokens,
             startingPosition,
+            false,
         )
 
         Assertions.assertEquals(identifierValue, actualFunctionNode.functionName)

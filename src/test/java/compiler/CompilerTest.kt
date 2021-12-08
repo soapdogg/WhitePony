@@ -32,11 +32,17 @@ class CompilerTest {
         Mockito.`when`(tokenizer.tokenize(program)).thenReturn(tokens)
 
         val parseTree = Mockito.mock(ParsedProgramRootNode::class.java)
-        Mockito.`when`(parser.parse(tokens)).thenReturn(parseTree)
+        Mockito.`when`(parser.parse(
+            tokens,
+            false
+        )).thenReturn(parseTree)
 
         val translatedTree = Mockito.mock(TranslatedProgramRootNode::class.java)
         Mockito.`when`(translator.translate(parseTree)).thenReturn(translatedTree)
 
-        val actual = compiler.compile(program)
+        val actual = compiler.compile(
+            program,
+            false
+        )
     }
 }

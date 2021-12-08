@@ -10,11 +10,18 @@ internal class Parser(
     private val declarationStatementParser: IDeclarationStatementParser
 ) : IParser {
 
-    override fun parse(tokens: List<Token>): ParsedProgramRootNode {
+    override fun parse(
+        tokens: List<Token>,
+        useShiftReduce: Boolean
+    ): ParsedProgramRootNode {
         val declarationStatementNodes = mutableListOf<IParsedDeclarationStatementNode>()
         var startingPosition = 0
         while (startingPosition < tokens.size) {
-            val (declarationStatement, s) = declarationStatementParser.parse(tokens, startingPosition)
+            val (declarationStatement, s) = declarationStatementParser.parse(
+                tokens,
+                startingPosition,
+                useShiftReduce
+            )
             declarationStatementNodes.add(declarationStatement)
             startingPosition = s
         }

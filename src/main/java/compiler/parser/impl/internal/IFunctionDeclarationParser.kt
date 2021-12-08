@@ -7,5 +7,6 @@ internal interface IFunctionDeclarationParser {
     fun parse(
         tokens: List<Token>,
         startingPosition: Int,
+        useShiftReduce: Boolean,
     ): Pair<ParsedFunctionDeclarationNode, Int>
 }

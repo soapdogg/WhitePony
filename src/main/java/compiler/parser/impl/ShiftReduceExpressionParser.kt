@@ -132,8 +132,15 @@ internal class ShiftReduceExpressionParser(
                             }
                             TokenizerConstants.ASSIGN_OPERATOR -> {
                                 val leftItem = parseStack.pop() as NodeShiftReduceStackItem
-                                val resultNode = ParsedBinaryAssignExpressionNode(leftItem.node, node)
-                                parseStack.push(NodeShiftReduceStackItem(resultNode))
+                                if (lookAhead.value == TokenizerConstants.PLUS_OPERATOR){
+                                    parseStack.push(leftItem)
+                                    parseStack.push(operatorItem)
+                                    parseStack.push(top)
+                                    canReduce = false
+                                } else {
+                                    val resultNode = ParsedBinaryAssignExpressionNode(leftItem.node, node)
+                                    parseStack.push(NodeShiftReduceStackItem(resultNode))
+                                }
                             }
                             else -> {
                                 parseStack.push(operatorItem)

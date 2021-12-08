@@ -23,7 +23,7 @@ internal class StartExpressionStatementParser(
         val (expressionStatement, positionAfterExpression) = expressionStatementParser.parse(
             tokens,
             tokenPosition,
-            false
+            useShiftReduce
         )
         resultStack.push(expressionStatement)
         return positionAfterExpression
