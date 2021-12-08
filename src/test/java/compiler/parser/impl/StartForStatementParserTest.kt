@@ -19,7 +19,6 @@ class StartForStatementParserTest {
 
     private val startForStatementParser = StartForStatementParser(
         tokenTypeAsserter,
-        recursiveExpressionParser,
         shiftReduceExpressionParser
     )
 
@@ -41,21 +40,21 @@ class StartForStatementParserTest {
 
         val initExpression = Mockito.mock(IParsedExpressionNode::class.java)
         val positionAfterInitExpression = 3
-        Mockito.`when`(recursiveExpressionParser.parse(tokens, positionAfterLeftParentheses)).thenReturn(Pair(initExpression, positionAfterInitExpression))
+        Mockito.`when`(shiftReduceExpressionParser.parse(tokens, positionAfterLeftParentheses)).thenReturn(Pair(initExpression, positionAfterInitExpression))
 
         val positionAfterFirstSemi = 4
         Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, positionAfterInitExpression, TokenType.SEMICOLON)).thenReturn(Pair(token, positionAfterFirstSemi))
 
         val testExpression = Mockito.mock(IParsedExpressionNode::class.java)
         val positionAfterTestExpression = 5
-        Mockito.`when`(recursiveExpressionParser.parse(tokens, positionAfterFirstSemi)).thenReturn(Pair(testExpression, positionAfterTestExpression))
+        Mockito.`when`(shiftReduceExpressionParser.parse(tokens, positionAfterFirstSemi)).thenReturn(Pair(testExpression, positionAfterTestExpression))
 
         val positionAfterSecondSemi = 6
         Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, positionAfterTestExpression, TokenType.SEMICOLON)).thenReturn(Pair(token, positionAfterSecondSemi))
 
         val incrementExpression = Mockito.mock(IParsedExpressionNode::class.java)
         val positionAfterIncrementExpression = 7
-        Mockito.`when`(recursiveExpressionParser.parse(tokens, positionAfterSecondSemi)).thenReturn(Pair(incrementExpression, positionAfterIncrementExpression))
+        Mockito.`when`(shiftReduceExpressionParser.parse(tokens, positionAfterSecondSemi)).thenReturn(Pair(incrementExpression, positionAfterIncrementExpression))
 
         val positionAfterRightParentheses = 8
         Mockito.`when`(tokenTypeAsserter.assertTokenType(tokens, positionAfterIncrementExpression, TokenType.RIGHT_PARENTHESES)).thenReturn(Pair(token, positionAfterRightParentheses))

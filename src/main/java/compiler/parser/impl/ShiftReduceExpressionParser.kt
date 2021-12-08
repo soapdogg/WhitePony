@@ -25,7 +25,7 @@ internal class ShiftReduceExpressionParser(
         var hasNotSeenParentheses = true
         var leftRight = 0
 
-        do {
+        top@ do {
             //Shift
             val stackItem = when (lookAhead.type) {
                 TokenType.INTEGER, TokenType.FLOATING_POINT -> {
@@ -55,6 +55,10 @@ internal class ShiftReduceExpressionParser(
                     if (parseStack.isNotEmpty()) {
                         val operatorItem = parseStack.pop() as OperatorShiftReduceStackItem
                         when (operatorItem.operator) {
+                            TokenizerConstants.INCREMENT -> {
+                                val resultNode = ParsedUnaryPreOperatorExpressionNode(node, TokenizerConstants.PLUS_OPERATOR)
+                                parseStack.push(NodeShiftReduceStackItem(resultNode))
+                            }
                             TokenizerConstants.NEGATION -> {
                                 val resultNode = ParsedUnaryNotOperatorExpressionNode(node)
                                 parseStack.push(NodeShiftReduceStackItem(resultNode))
@@ -109,6 +113,11 @@ internal class ShiftReduceExpressionParser(
                                     parseStack.push(NodeShiftReduceStackItem(resultNode))
                                 }
                             }
+                            TokenizerConstants.ASSIGN_OPERATOR -> {
+                                val leftItem = parseStack.pop() as NodeShiftReduceStackItem
+                                val resultNode = ParsedBinaryAssignExpressionNode(leftItem.node, node)
+                                parseStack.push(NodeShiftReduceStackItem(resultNode))
+                            }
                             else -> {
                                 parseStack.push(operatorItem)
                                 parseStack.push(top)
@@ -126,6 +135,10 @@ internal class ShiftReduceExpressionParser(
 
                     if (operator == TokenizerConstants.RIGHT_PARENTHESES) {
                         --leftRight
+                        if (leftRight < 0) {
+                            currentPosition--
+                            break@top
+                        }
                         hasNotSeenParentheses = false
                         val nodeItem = parseStack.pop() as NodeShiftReduceStackItem
                         parseStack.pop() //LEFT_PARENTHESES
@@ -136,6 +149,16 @@ internal class ShiftReduceExpressionParser(
                         hasNotSeenParentheses = false
                         parseStack.push(top)
                         canReduce = false
+                    }
+                    else if (operator == TokenizerConstants.INCREMENT) {
+                        if (parseStack.isNotEmpty()) {
+                            val nodeItem = parseStack.pop() as NodeShiftReduceStackItem
+                            val resultNode = ParsedUnaryPostOperatorExpressionNode(nodeItem.node, TokenizerConstants.PLUS_OPERATOR, TokenizerConstants.MINUS_OPERATOR)
+                            parseStack.push(NodeShiftReduceStackItem(resultNode))
+                        } else {
+                            parseStack.push(top)
+                            canReduce = false
+                        }
                     }
                     else {
                         parseStack.push(top)

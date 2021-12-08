@@ -12,7 +12,6 @@ import compiler.parser.impl.internal.ITokenTypeAsserter
 
 internal class StartForStatementParser(
     private val tokenTypeAsserter: ITokenTypeAsserter,
-    private val recursiveExpressionParser: IExpressionParser,
     private val shiftReduceExpressionParser: IExpressionParser
 ): IStatementParser {
     override fun parse(
@@ -26,11 +25,11 @@ internal class StartForStatementParser(
     ): Int {
         val (_, positionAfterFor) = tokenTypeAsserter.assertTokenType(tokens, tokenPosition, TokenType.FOR)
         val (_, positionAfterLeftParentheses) = tokenTypeAsserter.assertTokenType(tokens, positionAfterFor, TokenType.LEFT_PARENTHESES)
-        val (initExpression, positionAfterInitExpression) = recursiveExpressionParser.parse(tokens, positionAfterLeftParentheses)
+        val (initExpression, positionAfterInitExpression) = shiftReduceExpressionParser.parse(tokens, positionAfterLeftParentheses)
         val (_, positionAfterFirstSemi) = tokenTypeAsserter.assertTokenType(tokens, positionAfterInitExpression, TokenType.SEMICOLON)
-        val (testExpression, positionAfterTestExpression) = recursiveExpressionParser.parse(tokens, positionAfterFirstSemi)
+        val (testExpression, positionAfterTestExpression) = shiftReduceExpressionParser.parse(tokens, positionAfterFirstSemi)
         val (_, positionAfterSecondSemi) = tokenTypeAsserter.assertTokenType(tokens, positionAfterTestExpression, TokenType.SEMICOLON)
-        val (incrementExpression, positionAfterIncrementExpression) = recursiveExpressionParser.parse(tokens, positionAfterSecondSemi)
+        val (incrementExpression, positionAfterIncrementExpression) = shiftReduceExpressionParser.parse(tokens, positionAfterSecondSemi)
         val (_, positionAfterRightParentheses) = tokenTypeAsserter.assertTokenType(tokens,  positionAfterIncrementExpression, TokenType.RIGHT_PARENTHESES)
         expressionStack.push(incrementExpression)
         expressionStack.push(testExpression)
