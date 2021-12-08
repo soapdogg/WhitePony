@@ -90,10 +90,24 @@ enum class ParserSingleton {
         TokenType.LEFT_BRACKET,
         TokenType.RIGHT_BRACKET
     )
+
+    private val binaryOperatorExpressionNodeReducer = BinaryOperatorExpressionNodeReducer()
+    private val binaryRelationalOperatorExpressionNodeReducer = BinaryRelationalOperatorExpressionNodeReducer()
+    private val binaryAndExpressionNodeReducer = BinaryAndExpressionNodeReducer()
+    private val binaryOrExpressionNodeReducer = BinaryOrExpressionNodeReducer()
+    private val binaryAssignExpressionNodeReducer = BinaryAssignExpressionNodeReducer()
+    private val binaryAssignOperatorExpressionNodeReducer = BinaryAssignOperatorExpressionNodeReducer()
+
     private val shiftReduceExpressionParser = ShiftReduceExpressionParser(
         shifter,
         operatorPrecedenceDeterminer,
-        acceptedTokenTypes
+        acceptedTokenTypes,
+        binaryOperatorExpressionNodeReducer,
+        binaryRelationalOperatorExpressionNodeReducer,
+        binaryAndExpressionNodeReducer,
+        binaryOrExpressionNodeReducer,
+        binaryAssignExpressionNodeReducer,
+        binaryAssignOperatorExpressionNodeReducer
     )
 
     private val arrayParser = ArrayParser(
