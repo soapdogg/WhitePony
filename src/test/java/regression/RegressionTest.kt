@@ -43,7 +43,7 @@ class RegressionTest {
 
     @Test
     fun regressionIndividualTest() {
-        val input = Program6
+        val input = Program3
         val intermediateCode = null
         val (parseTreeString, translatedTreeString) = recursiveCompiler.compile(
             input,
@@ -72,7 +72,7 @@ class RegressionTest {
             return Stream.of(
                 TestInput(Program1, IProgram1, true),
                 TestInput(Program2, IProgram2, true),
-                TestInput(Program3, IProgram3, false),
+                TestInput(Program3, IProgram3, true),
                 TestInput(Program4, IProgram4, true),
                 TestInput(Program5, IProgram5, false),
                 TestInput(Program6, IProgram6, false),

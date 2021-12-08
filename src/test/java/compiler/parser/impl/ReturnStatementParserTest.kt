@@ -30,7 +30,7 @@ class ReturnStatementParserTest {
         Mockito.`when`(expressionStatementParser.parse(
             tokens,
             positionAfterReturn,
-            false
+            true
         )).thenReturn(Pair(expressionStatementNode, positionAfterExpressionStatement))
 
         val(actualReturnNode, actualFinalPosition) = returnStatementParser.parse(tokens, startingPosition)

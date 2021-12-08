@@ -196,6 +196,27 @@ internal class ShiftReduceExpressionParser(
                                     parseStack.push(NodeShiftReduceStackItem(resultNode))
                                 }
                             }
+                            TokenizerConstants.LEFT_SHIFT_ASSIGN_OPERATOR, TokenizerConstants.RIGHT_SHIFT_ASSIGN_OPERATOR,
+                            TokenizerConstants.AND_ASSIGN_OPERATOR, TokenizerConstants.DIVIDE_ASSIGN_OPERATOR,
+                            TokenizerConstants.MINUS_ASSIGN_OPERATOR, TokenizerConstants.MODULUS_ASSIGN_OPERATOR,
+                            TokenizerConstants.MULTIPLY_ASSIGN_OPERATOR, TokenizerConstants.OR_ASSIGN_OPERATOR,
+                            TokenizerConstants.PLUS_ASSIGN_OPERATOR, TokenizerConstants.XOR_ASSIGN_OPERATOR -> {
+                                val leftItem = parseStack.pop() as NodeShiftReduceStackItem
+                                if (
+                                    lookAhead.value == TokenizerConstants.PLUS_OPERATOR
+                                    || lookAhead.value == TokenizerConstants.BITWISE_OR_OPERATOR
+                                    || lookAhead.value == TokenizerConstants.BITWISE_XOR_OPERATOR
+                                    || lookAhead.value == TokenizerConstants.BITWISE_AND_OPERATOR
+                                ){
+                                    parseStack.push(leftItem)
+                                    parseStack.push(operatorItem)
+                                    parseStack.push(top)
+                                    canReduce = false
+                                } else {
+                                    val resultNode = ParsedBinaryAssignOperatorExpressionNode(leftItem.node, node, operatorItem.operator.replace(TokenizerConstants.ASSIGN_OPERATOR, PrinterConstants.EMPTY))
+                                    parseStack.push(NodeShiftReduceStackItem(resultNode))
+                                }
+                            }
                             else -> {
                                 parseStack.push(operatorItem)
                                 parseStack.push(top)
