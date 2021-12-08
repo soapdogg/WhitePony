@@ -152,9 +152,5 @@ class BinaryAssignArrayLValueExpressionTranslatorTest {
         Assertions.assertEquals(rightExpressionAddress, top.address)
         Assertions.assertEquals(listOf(insideArrayExpressionCode, rightExpressionCode, assignCode), top.code)
         Assertions.assertEquals(type, top.type)
-
-
-
-
     }
 }

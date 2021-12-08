@@ -137,15 +137,6 @@ enum class ParserSingleton {
         TokenizerConstants.BIT_NEGATION to unaryExpressionNodeReducer
     )
 
-
-
-    private val unaryExpressionNodeReducerMap = mapOf(
-        TokenizerConstants.INCREMENT to unaryPreExpressionOperatorNodeReducer,
-        TokenizerConstants.DECREMENT to unaryPreExpressionOperatorNodeReducer,
-        TokenizerConstants.NEGATION to unaryNotExpressionNodeReducer,
-        TokenizerConstants.BIT_NEGATION to unaryExpressionNodeReducer
-    )
-
     private val plusMinusOperatorSet = setOf(
         TokenizerConstants.PLUS_OPERATOR,
         TokenizerConstants.MINUS_OPERATOR
@@ -153,23 +144,25 @@ enum class ParserSingleton {
 
     private val reductionEnder = ReductionEnder()
 
-    private val binaryExpressionNodeReductionOrchestrator = ExpressionNodeReductionOrchestrator(
+    private val expressionNodeReductionOrchestrator = ExpressionNodeReductionOrchestrator(
         operatorPrecedenceDeterminer,
         reductionEnder,
         expressionNodeReducerMap
     )
 
+    private val plusMinusExpressionNodeReductionOrchestrator = PlusMinusExpressionNodeReductionOrchestrator(
+        operatorPrecedenceDeterminer, reductionEnder, binaryOperatorExpressionNodeReducer, unaryExpressionNodeReducer
+    )
+
+    private val nodeReducer = NodeReducer(
+        expressionNodeReducerMap, expressionNodeReductionOrchestrator, plusMinusOperatorSet, plusMinusExpressionNodeReductionOrchestrator, reductionEnder
+    )
 
     private val shiftReduceExpressionParser = ShiftReduceExpressionParser(
         shifter,
-        binaryExpressionNodeReductionOrchestrator,
-        expressionNodeReducerMap,
-        plusMinusOperatorSet,
+        nodeReducer,
         reductionEnder,
-        operatorPrecedenceDeterminer,
-        acceptedTokenTypes,
-        binaryOperatorExpressionNodeReducer,
-        unaryExpressionNodeReducer
+        acceptedTokenTypes
     )
 
     private val arrayParser = ArrayParser(
