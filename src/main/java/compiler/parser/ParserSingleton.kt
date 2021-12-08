@@ -98,16 +98,42 @@ enum class ParserSingleton {
     private val binaryAssignExpressionNodeReducer = BinaryAssignExpressionNodeReducer()
     private val binaryAssignOperatorExpressionNodeReducer = BinaryAssignOperatorExpressionNodeReducer()
 
+    private val binaryExpressionNodeReducerMap = mapOf(
+        TokenizerConstants.AND_OPERATOR to binaryAndExpressionNodeReducer,
+        TokenizerConstants.OR_OPERATOR to binaryOrExpressionNodeReducer,
+        TokenizerConstants.ASSIGN_OPERATOR to binaryAssignExpressionNodeReducer,
+        TokenizerConstants.LESS_THAN_OPERATOR to binaryRelationalOperatorExpressionNodeReducer,
+        TokenizerConstants.LESS_THAN_EQUALS_OPERATOR to binaryRelationalOperatorExpressionNodeReducer,
+        TokenizerConstants.GREATER_THAN_OPERATOR to binaryRelationalOperatorExpressionNodeReducer,
+        TokenizerConstants.GREATER_THAN_EQUALS_OPERATOR to binaryRelationalOperatorExpressionNodeReducer,
+        TokenizerConstants.RELATIONAL_EQUALS to binaryRelationalOperatorExpressionNodeReducer,
+        TokenizerConstants.RELATIONAL_NOT_EQUALS to binaryRelationalOperatorExpressionNodeReducer,
+        TokenizerConstants.LEFT_SHIFT_ASSIGN_OPERATOR to binaryAssignOperatorExpressionNodeReducer,
+        TokenizerConstants.RIGHT_SHIFT_ASSIGN_OPERATOR to binaryAssignOperatorExpressionNodeReducer,
+        TokenizerConstants.AND_ASSIGN_OPERATOR to binaryAssignOperatorExpressionNodeReducer,
+        TokenizerConstants.DIVIDE_ASSIGN_OPERATOR to binaryAssignOperatorExpressionNodeReducer,
+        TokenizerConstants.MINUS_ASSIGN_OPERATOR to binaryAssignOperatorExpressionNodeReducer,
+        TokenizerConstants.MODULUS_ASSIGN_OPERATOR to binaryAssignOperatorExpressionNodeReducer,
+        TokenizerConstants.MULTIPLY_ASSIGN_OPERATOR to binaryAssignOperatorExpressionNodeReducer,
+        TokenizerConstants.OR_ASSIGN_OPERATOR to binaryAssignOperatorExpressionNodeReducer,
+        TokenizerConstants.PLUS_ASSIGN_OPERATOR to binaryAssignOperatorExpressionNodeReducer,
+        TokenizerConstants.XOR_ASSIGN_OPERATOR to binaryAssignOperatorExpressionNodeReducer,
+        TokenizerConstants.DIVIDE_OPERATOR to binaryOperatorExpressionNodeReducer,
+        TokenizerConstants.MODULUS_OPERATOR to binaryOperatorExpressionNodeReducer,
+        TokenizerConstants.MULTIPLY_OPERATOR to binaryOperatorExpressionNodeReducer,
+        TokenizerConstants.LEFT_SHIFT_OPERATOR to binaryOperatorExpressionNodeReducer,
+        TokenizerConstants.RIGHT_SHIFT_OPERATOR to binaryOperatorExpressionNodeReducer,
+        TokenizerConstants.BITWISE_AND_OPERATOR to binaryOperatorExpressionNodeReducer,
+        TokenizerConstants.BITWISE_OR_OPERATOR to binaryOperatorExpressionNodeReducer,
+        TokenizerConstants.BITWISE_XOR_OPERATOR to binaryOperatorExpressionNodeReducer
+    )
+
     private val shiftReduceExpressionParser = ShiftReduceExpressionParser(
         shifter,
+        binaryExpressionNodeReducerMap,
         operatorPrecedenceDeterminer,
         acceptedTokenTypes,
-        binaryOperatorExpressionNodeReducer,
-        binaryRelationalOperatorExpressionNodeReducer,
-        binaryAndExpressionNodeReducer,
-        binaryOrExpressionNodeReducer,
-        binaryAssignExpressionNodeReducer,
-        binaryAssignOperatorExpressionNodeReducer
+        binaryOperatorExpressionNodeReducer
     )
 
     private val arrayParser = ArrayParser(
