@@ -14,8 +14,7 @@ internal class DeclarationStatementParser(
 
     override fun parse(
         tokens: List<Token>,
-        startingPosition: Int,
-        useShiftReduce: Boolean
+        startingPosition: Int
     ): Pair<IParsedDeclarationStatementNode, Int> {
         val decidingToken = tokens[startingPosition + 2]
 
@@ -23,7 +22,6 @@ internal class DeclarationStatementParser(
             functionDeclarationParser.parse(
                 tokens,
                 startingPosition,
-                useShiftReduce,
             )
         } else {
             variableDeclarationListParser.parse(

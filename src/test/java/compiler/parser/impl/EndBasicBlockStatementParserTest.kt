@@ -39,8 +39,7 @@ class EndBasicBlockStatementParserTest {
             stack,
             resultStack,
             expressionStack,
-            numberOfStatementsBlockStack,
-            false
+            numberOfStatementsBlockStack
         )
 
         Assertions.assertEquals(tokenPosition, actual)
@@ -84,8 +83,7 @@ class EndBasicBlockStatementParserTest {
             stack,
             resultStack,
             expressionStack,
-            numberOfStatementsBlockStack,
-            false
+            numberOfStatementsBlockStack
         )
 
         Assertions.assertEquals(positionAfterRightBrace, actual)

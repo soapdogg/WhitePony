@@ -50,15 +50,13 @@ class FunctionDeclarationParserTest {
         Mockito.`when`(
             statementParser.parse(
                 tokens,
-                positionAfterRightParentheses,
-                true
+                positionAfterRightParentheses
             )
         ).thenReturn(Pair(basicBlockNode, finalPosition))
 
         val (actualFunctionNode, actualFinalPosition) = functionDeclarationParser.parse(
             tokens,
             startingPosition,
-            true,
         )
 
         Assertions.assertEquals(identifierValue, actualFunctionNode.functionName)

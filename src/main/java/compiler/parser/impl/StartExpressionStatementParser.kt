@@ -17,13 +17,11 @@ internal class StartExpressionStatementParser(
         stack: Stack<StatementParserLocation>,
         resultStack: Stack<IParsedStatementNode>,
         expressionStack: Stack<IParsedExpressionNode>,
-        numberOfStatementsBlockStack: Stack<Int>,
-        useShiftReduce: Boolean
+        numberOfStatementsBlockStack: Stack<Int>
     ): Int {
         val (expressionStatement, positionAfterExpression) = expressionStatementParser.parse(
             tokens,
-            tokenPosition,
-            useShiftReduce
+            tokenPosition
         )
         resultStack.push(expressionStatement)
         return positionAfterExpression

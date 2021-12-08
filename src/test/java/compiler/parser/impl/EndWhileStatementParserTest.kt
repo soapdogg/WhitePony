@@ -35,8 +35,7 @@ class EndWhileStatementParserTest {
             stack,
             resultStack,
             expressionStack,
-            numberOfStatementsBlockStack,
-            false
+            numberOfStatementsBlockStack
         )
         Assertions.assertEquals(tokenPosition, actual)
         val top = resultStack.pop() as ParsedWhileNode

@@ -20,13 +20,11 @@ class ParserTest {
         val declarationStatementNode = Mockito.mock(IParsedDeclarationStatementNode::class.java)
         Mockito.`when`(declarationStatementParser.parse(
             tokens,
-            0,
-            false
+            0
         )).thenReturn(Pair(declarationStatementNode, tokens.size))
 
         val actual = parser.parse(
             tokens,
-            false
         )
         Assertions.assertEquals(declarationStatementNode, actual.declarationStatements[0])
     }

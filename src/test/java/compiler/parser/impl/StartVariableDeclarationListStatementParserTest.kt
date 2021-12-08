@@ -40,8 +40,7 @@ class StartVariableDeclarationListStatementParserTest {
             stack,
             resultStack,
             expressionStack,
-            numberOfStatementsBlockStack,
-            false
+            numberOfStatementsBlockStack
         )
         Assertions.assertEquals(positionAfterVariable, actual)
 

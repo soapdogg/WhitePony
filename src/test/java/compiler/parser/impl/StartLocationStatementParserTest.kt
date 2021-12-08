@@ -40,8 +40,7 @@ class StartLocationStatementParserTest {
             stack,
             resultStack,
             expressionStack,
-            numberOfStatementsBlockStack,
-            false
+            numberOfStatementsBlockStack
         )).thenReturn(expected)
 
         val actual = startLocationStatementParser.parse(
@@ -50,8 +49,7 @@ class StartLocationStatementParserTest {
             stack,
             resultStack,
             expressionStack,
-            numberOfStatementsBlockStack,
-            false
+            numberOfStatementsBlockStack
         )
         Assertions.assertEquals(expected, actual)
     }
@@ -74,8 +72,7 @@ class StartLocationStatementParserTest {
             stack,
             resultStack,
             expressionStack,
-            numberOfStatementsBlockStack,
-            false
+            numberOfStatementsBlockStack
         )).thenReturn(expected)
 
         val actual = startLocationStatementParser.parse(
@@ -84,8 +81,7 @@ class StartLocationStatementParserTest {
             stack,
             resultStack,
             expressionStack,
-            numberOfStatementsBlockStack,
-            false
+            numberOfStatementsBlockStack
         )
         Assertions.assertEquals(expected, actual)
     }

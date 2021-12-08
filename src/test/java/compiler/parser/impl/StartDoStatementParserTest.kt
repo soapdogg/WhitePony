@@ -32,8 +32,7 @@ class StartDoStatementParserTest {
             stack,
             resultStack,
             expressionStack,
-            numberOfStatementsBlockStack,
-            false
+            numberOfStatementsBlockStack
         )
         Assertions.assertEquals(positionAfterDo, actual)
         val startLocation = stack.pop()

@@ -50,8 +50,7 @@ class EndDoStatementParserTest {
             stack,
             resultStack,
             expressionStack,
-            numberOfStatementsBlockStack,
-            false
+            numberOfStatementsBlockStack
         )
 
         Assertions.assertEquals(positionAfterSemiColon, actual)

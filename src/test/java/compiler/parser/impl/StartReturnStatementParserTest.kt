@@ -38,8 +38,7 @@ class StartReturnStatementParserTest {
             stack,
             resultStack,
             expressionStack,
-            numberOfStatementsBlockStack,
-            false
+            numberOfStatementsBlockStack
         )
         Assertions.assertEquals(positionAfterReturn, actual)
 

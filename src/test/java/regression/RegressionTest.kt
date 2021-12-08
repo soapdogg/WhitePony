@@ -35,7 +35,6 @@ class RegressionTest {
 
         val (parseTreeString, translatedTreeString) = recursiveCompiler.compile(
             testInput.expectedParsedProgram,
-            testInput.useShiftReduce
         )
         Assertions.assertEquals(testInput.expectedParsedProgram, parseTreeString)
         Assertions.assertEquals(testInput.expectedTranslatedProgram, translatedTreeString)
@@ -47,7 +46,6 @@ class RegressionTest {
         val intermediateCode = null
         val (parseTreeString, translatedTreeString) = recursiveCompiler.compile(
             input,
-            true
         )
         Assertions.assertEquals(input, parseTreeString)
         if (intermediateCode != null) {
@@ -62,38 +60,109 @@ class RegressionTest {
 
     data class TestInput(
         val expectedParsedProgram: String,
-        val expectedTranslatedProgram: String,
-        val useShiftReduce: Boolean
+        val expectedTranslatedProgram: String
     )
 
     companion object {
         @JvmStatic
         fun inputData(): Stream<TestInput> {
             return Stream.of(
-                TestInput(Program1, IProgram1, true),
-                TestInput(Program2, IProgram2, true),
-                TestInput(Program3, IProgram3, true),
-                TestInput(Program4, IProgram4, true),
-                TestInput(Program5, IProgram5, true),
-                TestInput(Program6, IProgram6, true),
-                TestInput(Program7, IProgram7, true),
-                TestInput(Program8, IProgram8, true),
-                TestInput(Program9, IProgram9, true),
-                TestInput(Program10, IProgram10, true),
-                TestInput(Program11, IProgram11, true),
-                TestInput(Program12, IProgram12, true),
-                TestInput(Program13, IProgram13, true),
-                TestInput(Program14, IProgram14, true),
-                TestInput(Program15, IProgram15, true),
-                TestInput(Program16, IProgram16, true),
-                TestInput(Program17, IProgram17, true),
-                TestInput(Program18, IProgram18, true),
-                TestInput(Program19, IProgram19, true),
-                TestInput(Program20, IProgram20, true),
-                TestInput(Program21, IProgram21, true),
-                TestInput(Program22, IProgram22, true),
-                TestInput(Program23, IProgram23, true),
-                TestInput(Program24, IProgram24, true)
+                TestInput(
+                    Program1,
+                    IProgram1
+                ),
+                TestInput(
+                    Program2,
+                    IProgram2
+                ),
+                TestInput(
+                    Program3,
+                    IProgram3
+                ),
+                TestInput(
+                    Program4,
+                    IProgram4
+                ),
+                TestInput(
+                    Program5,
+                    IProgram5
+                ),
+                TestInput(
+                    Program6,
+                    IProgram6
+                ),
+                TestInput(
+                    Program7,
+                    IProgram7
+                ),
+                TestInput(
+                    Program8,
+                    IProgram8
+                ),
+                TestInput(
+                    Program9,
+                    IProgram9
+                ),
+                TestInput(
+                    Program10,
+                    IProgram10
+                ),
+                TestInput(
+                    Program11,
+                    IProgram11
+                ),
+                TestInput(
+                    Program12,
+                    IProgram12
+                ),
+                TestInput(
+                    Program13,
+                    IProgram13
+                ),
+                TestInput(
+                    Program14,
+                    IProgram14
+                ),
+                TestInput(
+                    Program15,
+                    IProgram15
+                ),
+                TestInput(
+                    Program16,
+                    IProgram16
+                ),
+                TestInput(
+                    Program17,
+                    IProgram17
+                ),
+                TestInput(
+                    Program18,
+                    IProgram18
+                ),
+                TestInput(
+                    Program19,
+                    IProgram19
+                ),
+                TestInput(
+                    Program20,
+                    IProgram20
+                ),
+                TestInput(
+                    Program21,
+                    IProgram21
+                ),
+                TestInput(
+                    Program22,
+                    IProgram22
+                ),
+                TestInput(
+                    Program23,
+                    IProgram23
+                ),
+                TestInput(
+                    Program24,
+                    IProgram24
+                )
             )
         }
 

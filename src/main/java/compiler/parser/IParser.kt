@@ -5,7 +5,6 @@ import compiler.core.tokenizer.Token
 
 interface IParser {
     fun parse(
-        tokens: List<Token>,
-        useShiftReduce: Boolean
+        tokens: List<Token>
     ): ParsedProgramRootNode
 }

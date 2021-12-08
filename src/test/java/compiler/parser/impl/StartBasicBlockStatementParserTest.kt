@@ -40,8 +40,7 @@ class StartBasicBlockStatementParserTest {
             stack,
             resultStack,
             expressionStack,
-            numberOfStatementsBlockStack,
-            false
+            numberOfStatementsBlockStack
         )
         Assertions.assertEquals(positionAfterLeftBrace, actual)
         val start = stack.pop()
@@ -78,8 +77,7 @@ class StartBasicBlockStatementParserTest {
             stack,
             resultStack,
             expressionStack,
-            numberOfStatementsBlockStack,
-            false
+            numberOfStatementsBlockStack
         )
         Assertions.assertEquals(positionAfterRightBrace, actual)
         val top = resultStack.pop() as ParsedBasicBlockNode

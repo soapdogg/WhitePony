@@ -44,8 +44,7 @@ class StartIfStatementParserTest {
             stack,
             resultStack,
             expressionStack,
-            numberOfStatementsBlockStack,
-            false
+            numberOfStatementsBlockStack
         )
         Assertions.assertEquals(positionAfterBooleanExpression, actual)
 

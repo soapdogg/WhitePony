@@ -17,7 +17,6 @@ class ExpressionStatementParserTest {
 
     private val expressionStatementParser = ExpressionStatementParser(
         tokenTypeAsserter,
-        recursiveExpressionParser,
         shiftReduceExpressionParser
     )
 
@@ -36,8 +35,7 @@ class ExpressionStatementParserTest {
         val positionAfterSemicolon = positionAfterExpression + 1
         val (actualExpressionStatementNode, actualFinalPosition) = expressionStatementParser.parse(
             tokens,
-            startingPosition,
-            false
+            startingPosition
         )
         Assertions.assertEquals(actualExpressionStatementNode.expressionNode, expressionNode)
         Assertions.assertEquals(positionAfterSemicolon, actualFinalPosition)

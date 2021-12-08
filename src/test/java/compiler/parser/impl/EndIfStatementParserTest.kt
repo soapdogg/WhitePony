@@ -42,8 +42,7 @@ class EndIfStatementParserTest {
             stack,
             resultStack,
             expressionStack,
-            numberOfStatementsBlockStack,
-            false
+            numberOfStatementsBlockStack
         )
         Assertions.assertEquals(tokenPosition, actual)
         val top = resultStack.pop() as ParsedIfNode
@@ -73,8 +72,7 @@ class EndIfStatementParserTest {
             stack,
             resultStack,
             expressionStack,
-            numberOfStatementsBlockStack,
-            false
+            numberOfStatementsBlockStack
         )
         Assertions.assertEquals(positionAfterElse, actual)
         val start = stack.pop()

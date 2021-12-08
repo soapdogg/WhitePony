@@ -18,8 +18,7 @@ internal class StartLocationStatementParser(
         stack: Stack<StatementParserLocation>,
         resultStack: Stack<IParsedStatementNode>,
         expressionStack: Stack<IParsedExpressionNode>,
-        numberOfStatementsBlockStack: Stack<Int>,
-        useShiftReduce: Boolean
+        numberOfStatementsBlockStack: Stack<Int>
     ): Int {
         val parser = tokenTypeToParserMap.getOrDefault(tokens[tokenPosition].type, startExpressionStatementParser)
         return parser.parse(
@@ -28,8 +27,7 @@ internal class StartLocationStatementParser(
             stack,
             resultStack,
             expressionStack,
-            numberOfStatementsBlockStack,
-            useShiftReduce
+            numberOfStatementsBlockStack
         )
     }
 }

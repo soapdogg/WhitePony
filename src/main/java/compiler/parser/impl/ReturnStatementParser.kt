@@ -19,8 +19,7 @@ internal class ReturnStatementParser(
         val positionAfterReturn = startingPosition + 1
         val (expressionStatementNode, positionAfterExpressionStatement) = expressionStatementParser.parse(
             tokens,
-            positionAfterReturn,
-            true
+            positionAfterReturn
         )
         val returnNode = ParsedReturnNode(expressionStatementNode)
         return Pair(returnNode, positionAfterExpressionStatement)

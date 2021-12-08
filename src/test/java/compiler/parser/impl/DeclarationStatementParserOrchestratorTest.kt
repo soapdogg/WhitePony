@@ -36,14 +36,12 @@ class DeclarationStatementParserOrchestratorTest {
             functionDeclarationParser.parse(
                 tokens,
                 startingPosition,
-                false,
             )
         ).thenReturn(Pair(functionDeclarationNode, currentPosition))
 
         val (actualDeclarationStatement, actualPosition) = declarationStatementParser.parse(
             tokens,
-            startingPosition,
-            false
+            startingPosition
         )
 
         Assertions.assertEquals(functionDeclarationNode, actualDeclarationStatement)
@@ -72,8 +70,7 @@ class DeclarationStatementParserOrchestratorTest {
 
         val (actualDeclarationStatement, actualPosition) = declarationStatementParser.parse(
             tokens,
-            startingPosition,
-            false
+            startingPosition
         )
 
         Assertions.assertEquals(variableDeclarationListNode, actualDeclarationStatement)

@@ -19,8 +19,7 @@ internal class EndIfStatementParser(
         stack: Stack<StatementParserLocation>,
         resultStack: Stack<IParsedStatementNode>,
         expressionStack: Stack<IParsedExpressionNode>,
-        numberOfStatementsBlockStack: Stack<Int>,
-        useShiftReduce: Boolean
+        numberOfStatementsBlockStack: Stack<Int>
     ): Int {
         if (tokens[tokenPosition].type != TokenType.ELSE) {
             val booleanExpression = expressionStack.pop()

@@ -34,7 +34,6 @@ class CompilerTest {
         val parseTree = Mockito.mock(ParsedProgramRootNode::class.java)
         Mockito.`when`(parser.parse(
             tokens,
-            false
         )).thenReturn(parseTree)
 
         val translatedTree = Mockito.mock(TranslatedProgramRootNode::class.java)
@@ -42,7 +41,6 @@ class CompilerTest {
 
         val actual = compiler.compile(
             program,
-            false
         )
     }
 }

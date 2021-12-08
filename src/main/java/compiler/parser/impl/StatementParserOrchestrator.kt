@@ -15,8 +15,7 @@ internal class StatementParserOrchestrator(
 ): IStatementParserOrchestrator {
     override fun parse(
         tokens: List<Token>,
-        startingPosition: Int,
-        useShiftReduce: Boolean
+        startingPosition: Int
     ): Pair<ParsedBasicBlockNode, Int> {
         val stack = stackGenerator.generateNewStack(StatementParserLocation::class.java)
         val resultStack = stackGenerator.generateNewStack(IParsedStatementNode::class.java)
@@ -34,8 +33,7 @@ internal class StatementParserOrchestrator(
                 stack,
                 resultStack,
                 expressionStack,
-                numberOfStatementsBlockStack,
-                useShiftReduce
+                numberOfStatementsBlockStack
             )
         }
         return Pair(resultStack.pop() as ParsedBasicBlockNode, tokenPosition)

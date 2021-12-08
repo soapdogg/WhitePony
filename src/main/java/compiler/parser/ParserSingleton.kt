@@ -14,8 +14,6 @@ enum class ParserSingleton {
 
     private val stackGenerator = StackGenerator()
 
-    private val recursiveExpressionParser = RecursiveExpressionParser()
-
     private val acceptedTokenTypes = setOf(
         TokenType.FLOATING_POINT,
         TokenType.INTEGER,
@@ -60,7 +58,6 @@ enum class ParserSingleton {
 
     private val expressionStatementParser = ExpressionStatementParser(
         tokenTypeAsserter,
-        recursiveExpressionParser,
         shiftReduceExpressionParser
     )
 

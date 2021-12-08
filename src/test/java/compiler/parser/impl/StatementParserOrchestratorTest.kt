@@ -51,8 +51,7 @@ class StatementParserOrchestratorTest {
                 stack,
                 resultStack,
                 expressionStack,
-                numberOfStatementsBlockStack,
-                false
+                numberOfStatementsBlockStack
             )
         ).then{
             resultStack.push(result)
@@ -61,8 +60,7 @@ class StatementParserOrchestratorTest {
 
         val (actual, actualPosition) = statementParserOrchestrator.parse(
             tokens,
-            startingPosition,
-            false
+            startingPosition
         )
         Assertions.assertEquals(result, actual)
         Assertions.assertEquals(positionAfterStatement, actualPosition)
