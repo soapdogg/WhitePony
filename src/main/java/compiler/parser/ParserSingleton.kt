@@ -125,12 +125,15 @@ enum class ParserSingleton {
         TokenizerConstants.RIGHT_SHIFT_OPERATOR to binaryOperatorExpressionNodeReducer,
         TokenizerConstants.BITWISE_AND_OPERATOR to binaryOperatorExpressionNodeReducer,
         TokenizerConstants.BITWISE_OR_OPERATOR to binaryOperatorExpressionNodeReducer,
-        TokenizerConstants.BITWISE_XOR_OPERATOR to binaryOperatorExpressionNodeReducer
+        TokenizerConstants.BITWISE_XOR_OPERATOR to binaryOperatorExpressionNodeReducer,
     )
+
+    private val reductionEnder = ReductionEnder()
 
     private val shiftReduceExpressionParser = ShiftReduceExpressionParser(
         shifter,
         binaryExpressionNodeReducerMap,
+        reductionEnder,
         operatorPrecedenceDeterminer,
         acceptedTokenTypes,
         binaryOperatorExpressionNodeReducer

@@ -11,11 +11,13 @@ import compiler.core.tokenizer.TokenType
 import compiler.parser.impl.internal.IBinaryExpressionNodeReducer
 import compiler.parser.impl.internal.IExpressionParser
 import compiler.parser.impl.internal.IOperatorPrecedenceDeterminer
+import compiler.parser.impl.internal.IReductionEnder
 import compiler.parser.impl.internal.IShifter
 
 internal class ShiftReduceExpressionParser(
     private val shifter: IShifter,
     private val binaryExpressionNodeReducerMap: Map<String, IBinaryExpressionNodeReducer>,
+    private val reductionEnder: IReductionEnder,
     private val operatorPrecedenceDeterminer: IOperatorPrecedenceDeterminer,
     private val acceptedTokenTypes: Set<TokenType>,
     private val binaryOperatorExpressionNodeReducer: BinaryOperatorExpressionNodeReducer
@@ -51,9 +53,7 @@ internal class ShiftReduceExpressionParser(
                                 lookAhead.value
                             )
                             if (isLookaheadLowerPrecedence) {
-                                parseStack.push(operatorItem)
-                                parseStack.push(top)
-                                canReduce = false
+                                canReduce = reductionEnder.endReduction(parseStack, listOf(operatorItem, top))
                             } else {
                                 val binaryExpressionReducer = binaryExpressionNodeReducerMap.getValue(operator)
                                 binaryExpressionReducer.reduceToBinaryNode(
@@ -68,9 +68,7 @@ internal class ShiftReduceExpressionParser(
                                     if (
                                         operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operatorItem.operator, lookAhead.value)
                                     ) {
-                                        parseStack.push(operatorItem)
-                                        parseStack.push(top)
-                                        canReduce = false
+                                        canReduce = reductionEnder.endReduction(parseStack, listOf(operatorItem, top))
                                     } else {
                                         val resultNode = ParsedUnaryPreOperatorExpressionNode(
                                             node,
@@ -95,9 +93,7 @@ internal class ShiftReduceExpressionParser(
                                         if (
                                             operatorPrecedenceDeterminer.determinerIfLookaheadIsLowerPrecedenceThanCurrent(operatorItem.operator, lookAhead.value)
                                         ) {
-                                            parseStack.push(operatorItem)
-                                            parseStack.push(top)
-                                            canReduce = false
+                                            canReduce = reductionEnder.endReduction(parseStack, listOf(operatorItem, top))
                                         } else {
                                             binaryOperatorExpressionNodeReducer.reduceToBinaryNode(node, operatorItem.operator, parseStack)
                                         }
@@ -107,75 +103,66 @@ internal class ShiftReduceExpressionParser(
                                     }
                                 }
                                 else -> {
-                                    parseStack.push(operatorItem)
-                                    parseStack.push(top)
-                                    canReduce = false
+                                    canReduce = reductionEnder.endReduction(parseStack, listOf(operatorItem, top))
                                 }
                             }
                         }
                     }
                     else {
-                        parseStack.push(top)
-                        canReduce = false
+                        canReduce = reductionEnder.endReduction(parseStack, listOf(top))
                     }
                 }
                 else {
                     top as OperatorShiftReduceStackItem
-                    val operator = top.operator
 
-                    if (operator == TokenizerConstants.RIGHT_PARENTHESES) {
-                        --leftRightParentheses
-                        if (leftRightParentheses < 0) {
-                            currentPosition--
-                            break@top
-                        }
-                        hasNotSeenParentheses = lookAhead.value == TokenizerConstants.MINUS_OPERATOR //TODO this is hack
-                        val nodeItem = parseStack.pop() as NodeShiftReduceStackItem
-                        parseStack.pop() //LEFT_PARENTHESES
-                        parseStack.push(NodeShiftReduceStackItem(ParsedInnerExpressionNode(nodeItem.node)))
-                    }
-                    else if (operator == TokenizerConstants.LEFT_PARENTHESES) {
-                        ++leftRightParentheses
-                        hasNotSeenParentheses = false
-                        parseStack.push(top)
-                        canReduce = false
-                    }
-                    else if (operator == TokenizerConstants.RIGHT_BRACKET) {
-                        --leftRightBracket
-                        if (leftRightBracket < 0) {
-                            currentPosition--
-                            break@top
-                        }
-                        val nodeItem = parseStack.pop() as NodeShiftReduceStackItem
-                        parseStack.pop() //LEFT_BRACKET
-                        val variableItem = parseStack.pop() as NodeShiftReduceStackItem
-                        parseStack.push(NodeShiftReduceStackItem(ParsedBinaryArrayExpressionNode(variableItem.node as ParsedVariableExpressionNode, nodeItem.node)))
-                    }
-                    else if (operator == TokenizerConstants.LEFT_BRACKET) {
-                        ++leftRightBracket
-                        parseStack.push(top)
-                        canReduce = false
-                    }
-                    else if (operator == TokenizerConstants.INCREMENT) {
-                        if (parseStack.isNotEmpty()) {
-                            val nodeItem = parseStack.pop()
-                            if (nodeItem is NodeShiftReduceStackItem) {
-                                val resultNode = ParsedUnaryPostOperatorExpressionNode(nodeItem.node, TokenizerConstants.PLUS_OPERATOR, TokenizerConstants.MINUS_OPERATOR)
-                                parseStack.push(NodeShiftReduceStackItem(resultNode))
+                    when (top.operator) {
+                        TokenizerConstants.RIGHT_PARENTHESES -> {
+                            --leftRightParentheses
+                            if (leftRightParentheses < 0) {
+                                currentPosition--
+                                break@top
                             }
-                            else {
-                                parseStack.push(nodeItem)
-                                parseStack.push(top)
-                                canReduce = false
-                            }
-                        } else {
-                            parseStack.push(top)
-                            canReduce = false
+                            hasNotSeenParentheses = lookAhead.value == TokenizerConstants.MINUS_OPERATOR //TODO this is hack
+                            val nodeItem = parseStack.pop() as NodeShiftReduceStackItem
+                            parseStack.pop() //LEFT_PARENTHESES
+                            parseStack.push(NodeShiftReduceStackItem(ParsedInnerExpressionNode(nodeItem.node)))
                         }
-                    }
-                    else {
-                        parseStack.push(top)
-                        canReduce = false
+                        TokenizerConstants.LEFT_PARENTHESES -> {
+                            ++leftRightParentheses
+                            hasNotSeenParentheses = false
+                            canReduce = reductionEnder.endReduction(parseStack, listOf(top))
+                        }
+                        TokenizerConstants.RIGHT_BRACKET -> {
+                            --leftRightBracket
+                            if (leftRightBracket < 0) {
+                                currentPosition--
+                                break@top
+                            }
+                            val nodeItem = parseStack.pop() as NodeShiftReduceStackItem
+                            parseStack.pop() //LEFT_BRACKET
+                            val variableItem = parseStack.pop() as NodeShiftReduceStackItem
+                            parseStack.push(NodeShiftReduceStackItem(ParsedBinaryArrayExpressionNode(variableItem.node as ParsedVariableExpressionNode, nodeItem.node)))
+                        }
+                        TokenizerConstants.LEFT_BRACKET -> {
+                            ++leftRightBracket
+                            canReduce = reductionEnder.endReduction(parseStack, listOf(top))
+                        }
+                        TokenizerConstants.INCREMENT -> {
+                            if (parseStack.isNotEmpty()) {
+                                val nodeItem = parseStack.pop()
+                                if (nodeItem is NodeShiftReduceStackItem) {
+                                    val resultNode = ParsedUnaryPostOperatorExpressionNode(nodeItem.node, TokenizerConstants.PLUS_OPERATOR, TokenizerConstants.MINUS_OPERATOR)
+                                    parseStack.push(NodeShiftReduceStackItem(resultNode))
+                                } else {
+                                    canReduce = reductionEnder.endReduction(parseStack, listOf(nodeItem, top))
+                                }
+                            } else {
+                                canReduce = reductionEnder.endReduction(parseStack, listOf(top))
+                            }
+                        }
+                        else -> {
+                            canReduce = reductionEnder.endReduction(parseStack, listOf(top))
+                        }
                     }
                 }
             }
