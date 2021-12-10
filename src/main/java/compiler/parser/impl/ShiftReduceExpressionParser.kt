@@ -3,20 +3,17 @@ package compiler.parser.impl
 import compiler.core.nodes.parsed.*
 import compiler.core.stack.IShiftReduceStackItem
 import compiler.core.stack.NodeShiftReduceStackItem
-import compiler.core.stack.OperatorShiftReduceStackItem
 import compiler.core.stack.Stack
 import compiler.core.tokenizer.Token
-import compiler.core.tokenizer.TokenType
+import compiler.parser.impl.internal.IContinueParsingDeterminer
 import compiler.parser.impl.internal.IExpressionParser
-import compiler.parser.impl.internal.INodeReducer
-import compiler.parser.impl.internal.IOperatorReducer
+import compiler.parser.impl.internal.IReducer
 import compiler.parser.impl.internal.IShifter
 
 internal class ShiftReduceExpressionParser(
     private val shifter: IShifter,
-    private val nodeReducer: INodeReducer,
-    private val operatorReducer: IOperatorReducer,
-    private val acceptedTokenTypes: Set<TokenType>
+    private val reducer: IReducer,
+    private val continueParsingDeterminer: IContinueParsingDeterminer
 ): IExpressionParser {
     override fun parse(
         tokens: List<Token>,
@@ -27,35 +24,21 @@ internal class ShiftReduceExpressionParser(
         var hasNotSeenParentheses = true
         var leftRightParentheses = 0
         var leftRightBracket = 0
+        var shouldBreak: Boolean
+        var continueParsing: Boolean
 
-        top@ do {
+        do {
             currentPosition = shifter.shift(tokens, currentPosition, parseStack)
-
             val lookAhead = tokens[currentPosition]
-
-            //Reduce
-            var continueReducing = true
-            while(continueReducing) {
-                val top = parseStack.pop()
-                if (top is NodeShiftReduceStackItem) {
-                    continueReducing = nodeReducer.reduce(lookAhead.value, top, parseStack)
-                }
-                else {
-                    top as OperatorShiftReduceStackItem
-                    val reducerResult = operatorReducer.reduce(top, lookAhead.value, parseStack, leftRightParentheses, leftRightBracket)
-                    if (reducerResult.shouldBreak) {
-                        --currentPosition
-                        break@top
-                    }
-                    leftRightParentheses = reducerResult.leftRightParentheses
-                    leftRightBracket = reducerResult.leftRightBracket
-                    continueReducing = reducerResult.continueReducing
-                    hasNotSeenParentheses = reducerResult.hasNotSeenParentheses
-                }
-            }
-        } while (acceptedTokenTypes.contains(lookAhead.type)
-            && (hasNotSeenParentheses || leftRightParentheses > 0)
-        )
+            val reducerResult = reducer.reduce(lookAhead.value, parseStack, leftRightParentheses, leftRightBracket, hasNotSeenParentheses)
+            leftRightParentheses = reducerResult.leftRightParentheses
+            leftRightBracket = reducerResult.leftRightBracket
+            hasNotSeenParentheses = reducerResult.hasNotSeenParentheses
+            shouldBreak = reducerResult.shouldBreak
+            continueParsing = continueParsingDeterminer.shouldContinueParsing(shouldBreak, lookAhead.type, hasNotSeenParentheses, leftRightParentheses)
+        } while (continueParsing)
+        
+        if(shouldBreak) --currentPosition
 
         val resultStackItem = parseStack.pop() as NodeShiftReduceStackItem
         return Pair(resultStackItem.node, currentPosition)

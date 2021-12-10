@@ -192,11 +192,17 @@ enum class ParserSingleton {
         reductionEnder
     )
 
+    private val reducer = Reducer(
+        nodeReducer,
+        operatorReducer
+    )
+
+    private val continueParsingDeterminer = ContinueParsingDeterminer(acceptedTokenTypes)
+
     private val shiftReduceExpressionParser = ShiftReduceExpressionParser(
         shifter,
-        nodeReducer,
-        operatorReducer,
-        acceptedTokenTypes
+        reducer,
+        continueParsingDeterminer
     )
 
     private val arrayParser = ArrayParser(
