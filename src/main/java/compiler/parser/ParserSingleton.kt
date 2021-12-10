@@ -160,19 +160,43 @@ enum class ParserSingleton {
 
     private val operators = plusMinusOperatorSet + expressionNodeReducerMap.keys
 
-    private val binaryArrayExpressionNodeReducer = BinaryArrayExpressionNodeReducer()
     private val innerExpressionNodeReducer = InnerExpressionNodeReducer()
+    private val rightParenthesesOperatorReducer = RightParenthesesOperatorReducer(
+        innerExpressionNodeReducer,
+        operators
+    )
+
+    private val leftParenthesesOperatorReducer = LeftParenthesesOperatorReducer(reductionEnder)
+
+    private val binaryArrayExpressionNodeReducer = BinaryArrayExpressionNodeReducer()
+    private val rightBracketOperatorReducer = RightBracketOperatorReducer(binaryArrayExpressionNodeReducer)
+    private val leftBracketOperatorReducer = LeftBracketOperatorReducer(reductionEnder)
+
     private val unaryPostExpressionNodeReducer = UnaryPostExpressionNodeReducer()
+    private val postOperatorReducer = PostOperatorReducer(
+        unaryPostExpressionNodeReducer,
+        reductionEnder
+    )
+
+    private val operatorReducerMap = mapOf(
+        TokenizerConstants.RIGHT_PARENTHESES to rightParenthesesOperatorReducer,
+        TokenizerConstants.LEFT_PARENTHESES to leftParenthesesOperatorReducer,
+        TokenizerConstants.LEFT_BRACKET to leftBracketOperatorReducer,
+        TokenizerConstants.RIGHT_BRACKET to rightBracketOperatorReducer,
+        TokenizerConstants.INCREMENT to postOperatorReducer,
+        TokenizerConstants.DECREMENT to postOperatorReducer
+    )
+
+    private val operatorReducer = OperatorReducer(
+        operatorReducerMap,
+        reductionEnder
+    )
 
     private val shiftReduceExpressionParser = ShiftReduceExpressionParser(
         shifter,
         nodeReducer,
-        reductionEnder,
-        acceptedTokenTypes,
-        operators,
-        binaryArrayExpressionNodeReducer,
-        innerExpressionNodeReducer,
-        unaryPostExpressionNodeReducer
+        operatorReducer,
+        acceptedTokenTypes
     )
 
     private val arrayParser = ArrayParser(
