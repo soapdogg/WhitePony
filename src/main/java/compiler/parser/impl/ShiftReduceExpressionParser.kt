@@ -5,12 +5,15 @@ import compiler.core.stack.IShiftReduceStackItem
 import compiler.core.stack.NodeShiftReduceStackItem
 import compiler.core.stack.Stack
 import compiler.core.tokenizer.Token
+import compiler.parser.impl.internal.*
 import compiler.parser.impl.internal.IContinueParsingDeterminer
 import compiler.parser.impl.internal.IExpressionParser
 import compiler.parser.impl.internal.IReducer
 import compiler.parser.impl.internal.IShifter
+import compiler.parser.impl.internal.IStackGenerator
 
 internal class ShiftReduceExpressionParser(
+    private val stackGenerator: IStackGenerator,
     private val shifter: IShifter,
     private val reducer: IReducer,
     private val continueParsingDeterminer: IContinueParsingDeterminer
@@ -19,7 +22,7 @@ internal class ShiftReduceExpressionParser(
         tokens: List<Token>,
         startingPosition: Int
     ): Pair<IParsedExpressionNode, Int> {
-        val parseStack = Stack<IShiftReduceStackItem>()
+        val parseStack = stackGenerator.generateNewStack(IShiftReduceStackItem::class.java)
         var currentPosition = startingPosition
         var hasNotSeenParentheses = true
         var leftRightParentheses = 0

@@ -200,6 +200,7 @@ enum class ParserSingleton {
     private val continueParsingDeterminer = ContinueParsingDeterminer(acceptedTokenTypes)
 
     private val shiftReduceExpressionParser = ShiftReduceExpressionParser(
+        stackGenerator,
         shifter,
         reducer,
         continueParsingDeterminer
