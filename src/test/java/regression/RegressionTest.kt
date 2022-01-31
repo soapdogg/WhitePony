@@ -1,10 +1,10 @@
 package regression
 
 import compiler.Compiler
-import compiler.parser.ParserSingleton
-import compiler.printer.PrinterSingleton
-import compiler.tokenizer.TokenizerSingleton
-import compiler.translator.TranslatorSingleton
+import compiler.frontend.parser.ParserSingleton
+import compiler.frontend.printer.PrinterSingleton
+import compiler.frontend.tokenizer.TokenizerSingleton
+import compiler.frontend.translator.TranslatorSingleton
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest

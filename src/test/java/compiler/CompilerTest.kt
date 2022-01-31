@@ -3,10 +3,10 @@ package compiler
 import compiler.core.nodes.parsed.ParsedProgramRootNode
 import compiler.core.tokenizer.Token
 import compiler.core.nodes.translated.TranslatedProgramRootNode
-import compiler.parser.IParser
-import compiler.printer.IPrinter
-import compiler.tokenizer.ITokenizer
-import compiler.translator.ITranslator
+import compiler.frontend.parser.IParser
+import compiler.frontend.printer.IPrinter
+import compiler.frontend.tokenizer.ITokenizer
+import compiler.frontend.translator.ITranslator
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 
